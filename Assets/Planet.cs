@@ -2,9 +2,10 @@
 using System.Collections;
 
 public class Planet : MonoBehaviour {
-	
-	// Use this for initialization
+
 	public GameObject rocket;
+	public string planetType;
+	public int counter=5;
 	bool collision=false;
 	SphereCollider myCollider;
 	float gravity;
@@ -17,7 +18,7 @@ public class Planet : MonoBehaviour {
 	Vector3 mousePosNew;
 	float timeClickUp;
 	bool doubleClick=true;
-	public bool raise=true;
+	bool raise=true;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -32,6 +33,10 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision gravityCollision)
 	{
+		if(planetType.Equals("count")){
+			// starts counter
+			InvokeRepeating("CountDown",1,1);
+		}
 		collision=true;
 		print("touch @ "+gravityCollision.transform.position.x+" "+gravityCollision.transform.position.y+" "+gravityCollision.transform.position.z);
 	}
@@ -87,9 +92,28 @@ public class Planet : MonoBehaviour {
 			}
 			// if double tap
 			else{
-				//shoot
-				rocket.rigidbody.AddForce(acceleration,0f,0f);
+				// shoot
+				rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
 			}
+		}
+	}
+
+	void CountDown()
+	{
+		counter--;
+		print(counter+"!!!");
+		if(counter < 1)
+		{
+			print ("Count down finished");
+			CancelInvoke("CountDown");
+			// check if rocket is orbiting here
+			if(collision){
+				// destroy rocket
+				Destroy(rocket);
+				// TODO: add some restore method
+			}
+			// destroy planet
+			Destroy(this);
 		}
 	}
 
