@@ -17,7 +17,7 @@ public class Planet : MonoBehaviour {
 	Vector3 mousePosNew;
 	float timeClickUp;
 	bool doubleClick=true;
-	bool raise=true;
+	public bool raise=true;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -51,9 +51,12 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionExit (Collision coll){
 		collision=false;
-		print("left the orbit: x'="+rocket.rigidbody.velocity.x+" y'="+rocket.rigidbody.velocity.y+" z'="+rocket.rigidbody.velocity.z);
 	}
 
+	// TODO: setup this function because now it is not well working
+	// double tap = single tap (increase) + single tap (then shoot)
+	// double tap = single tap (decrease) + single tap (then shoot)
+	// this is not a good thing
 	void tap ()
 	{
 		if (Input.GetMouseButtonUp (0)) {
@@ -69,13 +72,15 @@ public class Planet : MonoBehaviour {
 			if(!doubleClick){
 				if(raise){
 					// increase orbit size
-					myCollider.radius += 0.1f;
+					myCollider.radius += 0.15f;
 					if(myCollider.radius>=0.9f)
 						raise=false;
 				}
 				else{
 					// decrease orbit size
-					myCollider.radius -= 0.1f;
+					myCollider.radius -= 0.15f;
+					// add force for continue collision
+					rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
 					if(myCollider.radius<=0.6f)
 						raise=true;
 				}
