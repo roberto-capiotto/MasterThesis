@@ -7,6 +7,7 @@ public class Rocket : MonoBehaviour {
 	GameObject planet;
 	bool collided=false;
 	float acceleration=80.0f;
+	public int people=0;
 
 	void Start () {
 		//this.rigidbody.AddForce(acceleration,0f,0f);
@@ -23,5 +24,9 @@ public class Rocket : MonoBehaviour {
 
 	void OnTriggerExit(Collider collider){
 		collided=false;
+	}
+
+	public void SavePeople(int num){
+		people+=num;
 	}
 }

@@ -6,6 +6,7 @@ public class Planet : MonoBehaviour {
 	public GameObject rocket;
 	public string planetType;
 	public int counter=5;
+	public int people=1;
 	bool collision=false;
 	SphereCollider myCollider;
 	float gravity;
@@ -19,12 +20,30 @@ public class Planet : MonoBehaviour {
 	float timeClickUp;
 	bool doubleClick=true;
 	bool raise=true;
+	Rocket rocketManager;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
+		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		myCollider = transform.GetComponent<SphereCollider>();
 		rocket.transform.position=new Vector3
 			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
+
+		// TODO: dynamical creation of orbital
+		// define number of orbital and planetSize
+
+		if(planetType.Equals("count")){
+			// graphics
+		}
+		if(planetType.Equals("dockingStation")){
+			// dockingStation is supposed to be half of a normalPlanet
+			this.transform.localScale= new Vector3 (this.transform.localScale.x/2,this.transform.localScale.y/2,this.transform.localScale.z/2);
+			// TODO: Destroy child??
+			// graphics
+		}
+		if(planetType.Equals("planet")){
+			// graphics
+		}
 	}
 
 	void Update () {
@@ -36,6 +55,11 @@ public class Planet : MonoBehaviour {
 		if(planetType.Equals("count")){
 			// starts counter
 			InvokeRepeating("CountDown",1,1);
+		}
+		if(planetType.Equals("dockingStation")){
+			// save people
+			rocketManager.SavePeople(people);
+			people=0;
 		}
 		collision=true;
 		print("touch @ "+gravityCollision.transform.position.x+" "+gravityCollision.transform.position.y+" "+gravityCollision.transform.position.z);
@@ -101,6 +125,7 @@ public class Planet : MonoBehaviour {
 	void CountDown()
 	{
 		counter--;
+		// TODO: use GUI TEXT for showing seconds remaining
 		print(counter+"!!!");
 		if(counter < 1)
 		{
@@ -114,6 +139,7 @@ public class Planet : MonoBehaviour {
 			}
 			// destroy planet
 			Destroy(this);
+			// TODO: destroy not working
 		}
 	}
 
