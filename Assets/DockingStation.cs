@@ -18,8 +18,7 @@ public class DockingStation : MonoBehaviour {
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		tap();
 	}

@@ -19,12 +19,16 @@ public class Planet : MonoBehaviour {
 	float timeClickUp;
 	bool doubleClick=true;
 	bool raise=true;
+	Vector3 initialPosition;
+	Rocket rocketManager;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
 		myCollider = transform.GetComponent<SphereCollider>();
-		rocket.transform.position=new Vector3
+		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
+		initialPosition=new Vector3
 			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
+		rocket.transform.position=initialPosition;
 
 		// TODO: dynamical creation of orbital
 		// define number of orbital and planetSize
@@ -121,12 +125,12 @@ public class Planet : MonoBehaviour {
 			// check if rocket is orbiting here
 			if(collision){
 				// destroy rocket
-				Destroy(rocket);
-				// TODO: add some restore method
+				// TODO: add some animation, wait a second, then replace rocket
+				rocketManager.SetInitialPosition();
 			}
 			// destroy planet
-			Destroy(this);
-			// TODO: destroy not working
+			// TODO: add some animation
+			Destroy(this.gameObject);
 		}
 	}
 

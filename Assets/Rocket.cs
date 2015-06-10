@@ -2,17 +2,22 @@
 using System.Collections;
 
 public class Rocket : MonoBehaviour {
-
-	// Use this for initialization
+	
 	bool collided=false;
 	//float acceleration=80.0f;
 	public int people=0;
+	Vector3 initialPosition;
+	//SphereCollider myCollider;
 
+	// TODO: define initialPosition
+	// now fixed
+	// then there will be checkpoint or something other
 	void Start () {
-		//this.rigidbody.AddForce(acceleration,0f,0f);
+		//myCollider = transform.GetComponent<SphereCollider>();
+		initialPosition=new Vector3(0 ,1.6f,0);
+		SetInitialPosition();
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 	}
 
@@ -26,5 +31,9 @@ public class Rocket : MonoBehaviour {
 
 	public void SavePeople(int num){
 		people+=num;
+	}
+
+	public void SetInitialPosition(){
+		this.transform.position=initialPosition;
 	}
 }
