@@ -4,9 +4,8 @@ using System.Collections;
 public class Rocket : MonoBehaviour {
 
 	// Use this for initialization
-	GameObject planet;
 	bool collided=false;
-	float acceleration=80.0f;
+	//float acceleration=80.0f;
 	public int people=0;
 
 	void Start () {
@@ -17,12 +16,11 @@ public class Rocket : MonoBehaviour {
 	void Update () {
 	}
 
-	void OnTriggerEnter (Collider collider) {
+	void OnCollisionEnter (Collision collision) {
 		collided=true;	
-		planet=collider.gameObject;
 	}
 
-	void OnTriggerExit(Collider collider){
+	void OnCollisionExit(Collision collision){
 		collided=false;
 	}
 
