@@ -6,10 +6,15 @@ public class AtmosphereScript : MonoBehaviour {
 	float gravity;
 	float acceleration=180f;
 	GameObject rocket;
+	GameObject swing;
+	Swing swingManager;
+	SphereCollider orbitCollider;
 
 	// Use this for initialization
 	void Start () {
 		rocket=GameObject.Find("Rocket");
+		swing=GameObject.Find("Swing");
+		swingManager = swing.GetComponent ("Swing") as Swing;
 	}
 	
 	// Update is called once per frame
@@ -17,12 +22,14 @@ public class AtmosphereScript : MonoBehaviour {
 	
 	}
 
-	void OnCollisionEnter (Collision gravityCollision)
+	void OnTriggerEnter (Collider gravityCollision)
 	{
-		print("enter");
+		print(gravityCollision.transform.position.x);
+		orbitCollider = transform.GetComponent<SphereCollider>();
+		swingManager.SetRadius(orbitCollider.radius);
 	}
 
-	void OnCollisionStay (Collision collider) {
+	void OnTriggerStay (Collider collider) {
 
 			gravity=acceleration*(this.transform.localScale.x-1)*
 				(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
@@ -31,7 +38,7 @@ public class AtmosphereScript : MonoBehaviour {
 			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity);
 	}
 
-	void OnCollisionExit (Collision gravityCollision)
+	void OnTriggerExit (Collider gravityCollision)
 	{
 		print("exit");
 	}

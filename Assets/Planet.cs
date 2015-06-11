@@ -18,7 +18,7 @@ public class Planet : MonoBehaviour {
 	Vector3 mousePosNew;
 	float timeClickUp;
 	bool doubleClick=true;
-	bool raise=true;
+	bool raise=false;
 	Vector3 initialPosition;
 	Rocket rocketManager;
 	bool mouseClicksStarted = false;
