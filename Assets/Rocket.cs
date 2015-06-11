@@ -36,4 +36,8 @@ public class Rocket : MonoBehaviour {
 	public void SetInitialPosition(){
 		this.transform.position=initialPosition;
 	}
+
+	public Vector3 GetInitialPosition(){
+		return initialPosition;
+	}
 }
