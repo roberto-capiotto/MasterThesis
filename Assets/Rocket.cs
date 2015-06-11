@@ -16,6 +16,9 @@ public class Rocket : MonoBehaviour {
 		//myCollider = transform.GetComponent<SphereCollider>();
 		initialPosition=new Vector3(0 ,1.6f,0);
 		SetInitialPosition();
+		Renderer rend = GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Specular");
+		rend.material.SetColor("_Color", Color.red);
 	}
 
 	void Update () {

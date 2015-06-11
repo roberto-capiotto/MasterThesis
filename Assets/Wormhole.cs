@@ -7,7 +7,9 @@ public class Wormhole : MonoBehaviour {
 	float acceleration=180f;
 
 	void Start () {
-	
+		Renderer rend = GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Specular");
+		rend.material.SetColor("_Color", Color.black);
 	}
 
 	void Update () {

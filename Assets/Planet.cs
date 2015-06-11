@@ -44,6 +44,9 @@ public class Planet : MonoBehaviour {
 		if(planetType.Equals("count")){
 			//this.transform.localScale= new Vector3 (this.transform.localScale.x/2,this.transform.localScale.y/2,this.transform.localScale.z/2);
 			// graphics
+			Renderer rend = GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Specular");
+			rend.material.SetColor("_Color", Color.yellow);
 		}
 		else{
 			/*if(planetType.Equals("planet")){

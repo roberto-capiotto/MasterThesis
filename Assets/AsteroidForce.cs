@@ -16,6 +16,10 @@ public class AsteroidForce : MonoBehaviour {
 		this.transform.rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
 		this.transform.rigidbody.constraints = RigidbodyConstraints.FreezePositionZ;
 		this.rigidbody.freezeRotation=true;
+
+		Renderer rend = GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Specular");
+		rend.material.SetColor("_Color", Color.green);
 		
 	}
 	
