@@ -49,6 +49,8 @@ public class CameraMovement : MonoBehaviour {
 			}
 		}
 		else{
+			// TODO: optimize. The rocket should always be almost @ center
+			// better controls should became the game better
 			// we are moving the camera 0.1 every update
 			// it seems ok
 			if(right){

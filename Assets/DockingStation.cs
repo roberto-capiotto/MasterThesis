@@ -13,6 +13,11 @@ public class DockingStation : MonoBehaviour {
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
 	float gravity;
+	bool mouseClicksStarted = false;
+	int mouseClicks = 0;
+	float mouseTimerLimit = .25f;
+	bool shoot=false;
+	bool collision=false;
 
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -20,13 +25,19 @@ public class DockingStation : MonoBehaviour {
 	}
 
 	void Update () {
-		tap();
+		if(shoot){
+			print("shoot");
+			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+		}
+//		tap();
 	}
 
 	void OnCollisionEnter(){
 		// save people
 		rocketManager.SavePeople(people);
 		people=0;
+		collision=true;
 	}
 
 	void OnCollisionStay(Collision collision){
@@ -41,8 +52,38 @@ public class DockingStation : MonoBehaviour {
 				(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
 		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*3);
 	}
+
+	void OnCollisionExit(){
+		shoot=false;
+		collision=false;
+	}
+
+	public void OnMouseDown(){
+		mouseClicks++;
+		if(mouseClicksStarted){
+			return;
+		}
+		mouseClicksStarted = true;
+		Invoke("checkMouseDoubleClick",mouseTimerLimit);
+	}
 	
-	void tap ()
+	
+	private void checkMouseDoubleClick()
+	{
+		if(mouseClicks > 1){
+			//			Debug.Log("Double Clicked");
+			if(collision)
+				shoot=true;
+			/*			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);*/
+			//			rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
+			
+		}
+		mouseClicksStarted = false;
+		mouseClicks = 0;
+	}
+
+/*	void tap ()
 	{
 		if (Input.GetMouseButtonUp (0)) {
 			// distinguish between single and double tap
@@ -56,11 +97,12 @@ public class DockingStation : MonoBehaviour {
 			// if double tap
 			if(doubleClick){
 				// shoot
+				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 				rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
 			}
 		}
 	}
-
+*/
 	float tan (Vector3 pos)
 	{
 		if (pos.x >= 0) {

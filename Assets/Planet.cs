@@ -24,28 +24,41 @@ public class Planet : MonoBehaviour {
 	bool mouseClicksStarted = false;
 	int mouseClicks = 0;
 	float mouseTimerLimit = .25f;
+	public bool shoot=false;
+//	public float planetSize;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
 		myCollider = transform.GetComponent<SphereCollider>();
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
+//		planetSize=Random.Range(1.8f,2.2f);
 		initialPosition=new Vector3
 			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
 		rocket.transform.position=initialPosition;
 
-		// TODO: dynamical creation of orbital
-		// define number of orbital and planetSize
+		// TODO: dynamical creation of orbits
+		// define number of orbits
+		// planetSize might be a random number?
+		// there will be a correlation between size and #orbit ?
 
 		if(planetType.Equals("count")){
 			//this.transform.localScale= new Vector3 (this.transform.localScale.x/2,this.transform.localScale.y/2,this.transform.localScale.z/2);
 			// graphics
 		}
-		if(planetType.Equals("planet")){
-			// graphics
+		else{
+			/*if(planetType.Equals("planet")){
+				// graphics
+			}*/
+//			this.transform.localScale=new Vector3(planetSize,planetSize,2);
 		}
 	}
 
 	void Update () {
+		if(shoot){
+			print("shoot");
+			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+		}
 	}
 	
 	void OnCollisionEnter (Collision gravityCollision)
@@ -73,6 +86,7 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionExit (Collision coll){
 		collision=false;
+		shoot=false;
 	}
 	
 	public void OnMouseDown(){
@@ -89,8 +103,11 @@ public class Planet : MonoBehaviour {
 	{
 		if(mouseClicks > 1){
 //			Debug.Log("Double Clicked");
-			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-			rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
+			if(collision)
+				shoot=true;
+/*			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);*/
+//			rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
 			
 		}else{
 //			Debug.Log("Single Clicked");
