@@ -21,6 +21,9 @@ public class Planet : MonoBehaviour {
 	bool raise=true;
 	Vector3 initialPosition;
 	Rocket rocketManager;
+	bool mouseClicksStarted = false;
+	int mouseClicks = 0;
+	float mouseTimerLimit = .25f;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -43,7 +46,6 @@ public class Planet : MonoBehaviour {
 	}
 
 	void Update () {
-		tap();
 	}
 	
 	void OnCollisionEnter (Collision gravityCollision)
@@ -72,45 +74,44 @@ public class Planet : MonoBehaviour {
 	void OnCollisionExit (Collision coll){
 		collision=false;
 	}
-
-	// TODO: setup this function because now it is not well working
-	// double tap = single tap (increase) + single tap (then shoot)
-	// double tap = single tap (decrease) + single tap (then shoot)
-	// this is not a good thing
-	void tap ()
-	{
-		if (Input.GetMouseButtonUp (0)) {
-			// distinguish between single and double tap
-			if (Time.time - timeClickUp > 0.4f) {
-				doubleClick = false;
-			} else {
-				doubleClick = true;
-			}
-			timeClickUp = Time.time;
-
-			// if single tap
-			if(!doubleClick){
-				if(raise){
-					// increase orbit size
-					myCollider.radius += 0.15f;
-					if(myCollider.radius>=0.9f)
-						raise=false;
-				}
-				else{
-					// decrease orbit size
-					myCollider.radius -= 0.15f;
-					// add force for continue collision
-					rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
-					if(myCollider.radius<=0.6f)
-						raise=true;
-				}
-			}
-			// if double tap
-			else{
-				// shoot
-				rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
-			}
+	
+	public void OnMouseDown(){
+		mouseClicks++;
+		if(mouseClicksStarted){
+			return;
 		}
+		mouseClicksStarted = true;
+		Invoke("checkMouseDoubleClick",mouseTimerLimit);
+	}
+	
+	
+	private void checkMouseDoubleClick()
+	{
+		if(mouseClicks > 1){
+//			Debug.Log("Double Clicked");
+			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+			rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
+			
+		}else{
+//			Debug.Log("Single Clicked");
+			if(raise){
+				// increase orbit size
+				myCollider.radius += 0.15f;
+				if(myCollider.radius>=0.9f)
+					raise=false;
+			}
+			else{
+				// decrease orbit size
+				myCollider.radius -= 0.15f;
+				// add force for continue collision
+				rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
+				if(myCollider.radius<=0.6f)
+					raise=true;
+			}
+			
+		}
+		mouseClicksStarted = false;
+		mouseClicks = 0;
 	}
 
 	void CountDown()

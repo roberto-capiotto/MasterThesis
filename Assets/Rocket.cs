@@ -34,6 +34,7 @@ public class Rocket : MonoBehaviour {
 	}
 
 	public void SetInitialPosition(){
+		this.rigidbody.velocity = (new Vector3 (0, 0, 0));
 		this.transform.position=initialPosition;
 	}
 
