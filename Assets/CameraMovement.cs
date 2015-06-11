@@ -7,6 +7,9 @@ public class CameraMovement : MonoBehaviour {
 	GameObject rocket;
 	Vector3 position;
 	Rocket rocketManager;
+	bool moving=false;
+	bool right=false;
+	bool left=false;
 
 	// DONE: define how to move in the level
 	// we have to define boundaries?
@@ -23,7 +26,6 @@ public class CameraMovement : MonoBehaviour {
 		// upper bound and lower bound
 		if(Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
 			rocketManager.SetInitialPosition();
-			this.transform.position = new Vector3(rocketManager.GetInitialPosition().x,rocketManager.GetInitialPosition().y,-10);
 		}
 		// left bound
 		// I suppose the level will be totally on right side
@@ -32,11 +34,37 @@ public class CameraMovement : MonoBehaviour {
 		if(rocket.transform.position.x<-2*camSize){
 			rocketManager.SetInitialPosition();
 		}
-		// TODO: soft move of camera
-		// now is strongly switched
-		if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize){
-			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
-			this.transform.position = position;
+
+		if(!moving){
+			if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize){
+				moving=true;
+				// if moving right
+				if(rocket.transform.position.x-position.x>camSize)
+					right=true;
+				// if moving left
+				else
+					left=true;
+				// set destination position
+				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+			}
+		}
+		else{
+			// we are moving the camera 0.1 every update
+			// it seems ok
+			if(right){
+				this.transform.position = new Vector3(this.transform.position.x+0.1f,this.transform.position.y,-10);
+				if(this.transform.position.x-position.x>0){
+					right=false;
+					moving=false;
+				}
+			}
+			else{
+				this.transform.position = new Vector3(this.transform.position.x-0.1f,this.transform.position.y,-10);
+				if(this.transform.position.x-position.x<0){
+					left=false;
+					moving=false;
+				}
+			}
 		}
 	}
 }
