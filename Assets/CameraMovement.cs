@@ -10,6 +10,9 @@ public class CameraMovement : MonoBehaviour {
 	bool moving=false;
 	bool right=false;
 	bool left=false;
+	float leftBound;
+	float upBound;
+	float downBound;
 
 	// DONE: define how to move in the level
 	// we have to define boundaries?
@@ -20,6 +23,11 @@ public class CameraMovement : MonoBehaviour {
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.mainCamera.orthographicSize;
 		position = new Vector3(0,0,0);
+
+		// define statics bound, now not used
+		SetBound(-camSize,0);
+		SetBound(camSize,1);
+		SetBound(-camSize,2);
 	}
 	
 	void Update () {
@@ -67,6 +75,40 @@ public class CameraMovement : MonoBehaviour {
 					moving=false;
 				}
 			}
+		}
+	}
+
+	/* TYPE values
+	 * 0 is left
+	 * 1 is up
+	 * 2 is down
+	 */
+	public void SetBound(float bound,int type){
+		if(type==0){
+			leftBound=bound;
+		}
+		if(type==1){
+			upBound=bound;
+		}
+		if(type==2){
+			downBound=bound;
+		}
+	}
+
+	/* TYPE values
+	 * 0 is left
+	 * 1 is up
+	 * 2 is down
+	 */
+	public float GetBound(int type){
+		if(type==0){
+			return leftBound;
+		}
+		if(type==1){
+			return upBound;
+		}
+		if(type==2){
+			return downBound;
 		}
 	}
 }
