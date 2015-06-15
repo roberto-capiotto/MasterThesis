@@ -4,25 +4,32 @@ using System.Collections;
 public class Wormhole : MonoBehaviour {
 
 	public GameObject exit;
+	GameObject rocket;
+	float velocity;
 	float acceleration=180f;
+	bool collision=false;
 
 	void Start () {
+		rocket = GameObject.Find ("Rocket");
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");
 		rend.material.SetColor("_Color", Color.black);
 	}
 
-	void Update () {
-	
+	void FixedUpdate () {
+		if(collision){
+			// The rocket loses all its characteristics of direction and velocity
+			// the wormhole shots it right with an its own velocity
+			rocket.rigidbody.velocity=new Vector3(0,0,0);
+			rocket.transform.position=new Vector3 (exit.transform.position.x+this.transform.localScale.x/2+rocket.transform.localScale.x/2+0.5f,
+			                                         exit.transform.position.y,
+			                                         exit.transform.position.z);
+			rocket.rigidbody.AddForce(acceleration,0f,0f);
+			collision=false;
+		}
 	}
-
-	// I suppose that rocket loses all its characteristics of velocity and direction and follow the wormhole rules
-	// the wormhole shots right
+	
 	void OnCollisionEnter (Collision collider) {
-		collider.rigidbody.velocity=new Vector3(0,0,0);
-		collider.transform.position=new Vector3 (exit.transform.position.x+this.transform.localScale.x/2+collider.transform.localScale.x/2+0.5f,
-		                                         exit.transform.position.y,
-		                                         exit.transform.position.z);
-		collider.rigidbody.AddForce(acceleration,0f,0f);
+		collision=true;
 	}
 }

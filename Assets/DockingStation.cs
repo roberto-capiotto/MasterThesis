@@ -5,7 +5,7 @@ public class DockingStation : MonoBehaviour {
 
 	Rocket rocketManager;
 	GameObject rocket;
-	public int people=1;
+	public int fuel=100;
 	bool doubleClick=false;
 	float timeClickUp;
 	float acceleration=180f;
@@ -27,19 +27,18 @@ public class DockingStation : MonoBehaviour {
 		rend.material.SetColor("_Color", Color.blue);
 	}
 
-	void Update () {
+	void FixedUpdate () {
 		if(shoot){
 			print("shoot");
 			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
 		}
-//		tap();
 	}
 
 	void OnCollisionEnter(){
-		// save people
-		rocketManager.SavePeople(people);
-		people=0;
+		// refill
+		rocketManager.Refill(fuel);
+		fuel=0;
 		collision=true;
 	}
 
@@ -74,7 +73,7 @@ public class DockingStation : MonoBehaviour {
 	private void checkMouseDoubleClick()
 	{
 		if(mouseClicks > 1){
-			//			Debug.Log("Double Clicked");
+			//	Double Click
 			if(collision)
 				shoot=true;
 			/*			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
@@ -86,26 +85,6 @@ public class DockingStation : MonoBehaviour {
 		mouseClicks = 0;
 	}
 
-/*	void tap ()
-	{
-		if (Input.GetMouseButtonUp (0)) {
-			// distinguish between single and double tap
-			if (Time.time - timeClickUp > 0.4f) {
-				doubleClick = false;
-			} else {
-				doubleClick = true;
-			}
-			timeClickUp = Time.time;
-
-			// if double tap
-			if(doubleClick){
-				// shoot
-				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-				rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
-			}
-		}
-	}
-*/
 	float tan (Vector3 pos)
 	{
 		if (pos.x >= 0) {

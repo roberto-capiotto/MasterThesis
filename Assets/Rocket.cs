@@ -5,7 +5,8 @@ public class Rocket : MonoBehaviour {
 	
 	bool collided=false;
 	//float acceleration=80.0f;
-	public int people=0;
+	public int fuel;
+	public int maxFuel=1000;
 	Vector3 initialPosition;
 	//SphereCollider myCollider;
 
@@ -19,6 +20,7 @@ public class Rocket : MonoBehaviour {
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");
 		rend.material.SetColor("_Color", Color.red);
+		fuel=maxFuel;
 	}
 
 	void Update () {
@@ -32,8 +34,11 @@ public class Rocket : MonoBehaviour {
 		collided=false;
 	}
 
-	public void SavePeople(int num){
-		people+=num;
+	public void Refill(int num){
+		if(fuel+num<maxFuel)
+			fuel+=num;
+		else
+			fuel=maxFuel;
 	}
 
 	public void SetInitialPosition(){

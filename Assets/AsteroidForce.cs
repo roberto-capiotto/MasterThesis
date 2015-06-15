@@ -6,6 +6,7 @@ public class AsteroidForce : MonoBehaviour {
 	Vector3 myPos;
 	GameObject rocket;
 	Rocket rocketManager;
+	bool collision=false;
 	
 	void Start () {
 		// this instruction enable you having asteroid of different dimension
@@ -26,13 +27,17 @@ public class AsteroidForce : MonoBehaviour {
 		
 	}
 	
-	void Update(){
+	void FixedUpdate(){
 		this.transform.position = myPos;
+		if(collision){
+			//	rocket die
+			rocketManager.SetInitialPosition();
+			collision=false;
+		}
 	}
 	
-	void OnCollisionEnter(Collision collision)
+	void OnCollisionEnter()
 	{
-		//	rocket die
-		rocketManager.SetInitialPosition();
+		collision=true;
 	}
 }

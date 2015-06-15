@@ -110,5 +110,8 @@ public class CameraMovement : MonoBehaviour {
 		if(type==2){
 			return downBound;
 		}
+		else{
+			return 0;
+		}
 	}
 }

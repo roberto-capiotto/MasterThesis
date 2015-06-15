@@ -143,8 +143,8 @@ public class Planet : MonoBehaviour {
 			CancelInvoke("CountDown");
 			// check if rocket is orbiting here
 			if(collision){
-				// TODO: fix shoot rocket away
-				rocket.rigidbody.AddForce((rocket.transform.position-this.transform.position).normalized * gravity);
+				// shoot rocket away
+				rocket.rigidbody.AddForce((rocket.transform.position-this.transform.position).normalized * acceleration * this.transform.localScale.x/2);
 			}
 			// destroy planet
 			// TODO: add some animation
