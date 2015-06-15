@@ -36,10 +36,8 @@ public class Planet : MonoBehaviour {
 			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
 		rocket.transform.position=initialPosition;
 
-		// TODO: dynamical creation of orbits
-		// define number of orbits
-		// planetSize might be a random number?
-		// there will be a correlation between size and #orbit ?
+		// TODO: random planetSize
+		// it will scale also orbits
 
 		if(planetType.Equals("count")){
 			//this.transform.localScale= new Vector3 (this.transform.localScale.x/2,this.transform.localScale.y/2,this.transform.localScale.z/2);
@@ -145,9 +143,8 @@ public class Planet : MonoBehaviour {
 			CancelInvoke("CountDown");
 			// check if rocket is orbiting here
 			if(collision){
-				// destroy rocket
-				// TODO: add some animation, wait a second, then replace rocket
-				rocketManager.SetInitialPosition();
+				// TODO: fix shoot rocket away
+				rocket.rigidbody.AddForce((rocket.transform.position-this.transform.position).normalized * gravity);
 			}
 			// destroy planet
 			// TODO: add some animation
