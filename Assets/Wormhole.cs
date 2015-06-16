@@ -5,7 +5,6 @@ public class Wormhole : MonoBehaviour {
 
 	public GameObject exit;
 	GameObject rocket;
-	float velocity;
 	float acceleration=180f;
 	bool collision=false;
 

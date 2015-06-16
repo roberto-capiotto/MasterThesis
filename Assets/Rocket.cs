@@ -4,7 +4,7 @@ using System.Collections;
 public class Rocket : MonoBehaviour {
 	
 	public int fuel;
-	public int maxFuel=1000;
+	public int maxFuel=2000;
 	Vector3 initialPosition;
 
 	// TODO: define initialPosition

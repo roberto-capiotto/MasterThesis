@@ -5,20 +5,22 @@ public class DockingStation : MonoBehaviour {
 
 	Rocket rocketManager;
 	GameObject rocket;
-	public int fuel=500;
-	bool doubleClick=false;
-	float timeClickUp;
+	public int fuel=1000;
+	int fuelForShoot=10;
+	// phisics vars
 	float acceleration=180f;
 	float rocketVelocity=60f;
 	float newangle;
-	Quaternion rotate = new Quaternion (0, 0, 0, 0);
 	float gravity;
-	bool mouseClicksStarted = false;
+	Quaternion rotate = new Quaternion (0, 0, 0, 0);
+	// mouseClick vars
 	int mouseClicks = 0;
+	bool mouseClicksStarted = false;
 	float mouseTimerLimit = .25f;
+	float timeClickUp;
+	// flags
 	bool shoot=false;
 	bool collision=false;
-	int fuelForShoot=50;
 
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -30,7 +32,7 @@ public class DockingStation : MonoBehaviour {
 
 	void FixedUpdate () {
 		if(shoot){
-			if(rocketManager.Consume(fuelForShoot/5)){
+			if(rocketManager.Consume(fuelForShoot)){
 				print("shoot");
 				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 				rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
@@ -76,17 +78,12 @@ public class DockingStation : MonoBehaviour {
 		Invoke("checkMouseDoubleClick",mouseTimerLimit);
 	}
 	
-	
 	private void checkMouseDoubleClick()
 	{
 		if(mouseClicks > 1){
 			//	Double Click
 			if(collision)
-				shoot=true;
-			/*			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);*/
-			//			rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
-			
+				shoot=true;			
 		}
 		mouseClicksStarted = false;
 		mouseClicks = 0;

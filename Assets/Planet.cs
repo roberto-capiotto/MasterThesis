@@ -3,31 +3,35 @@ using System.Collections;
 
 public class Planet : MonoBehaviour {
 
+	// rocket vars
 	public GameObject rocket;
+	Rocket rocketManager;
+	Vector3 initialPosition;
+	int fuelForShoot=50;
+	// planet vars
 	public string planetType;
 	public int counter=5;
-	bool collision=false;
 	SphereCollider myCollider;
+//	public float planetSize;
+	int orbitLevel;
+	// phisics vars
 	float gravity;
 	float acceleration=180f;
 	float rocketVelocity=60f;
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
+	// mouseClick vars
 	Vector3 mousePosClick;
 	Vector3 mousePosBefore;
 	Vector3 mousePosNew;
-	float timeClickUp;
-	bool doubleClick=true;
-	bool raise=false;
-	Vector3 initialPosition;
-	Rocket rocketManager;
 	bool mouseClicksStarted = false;
 	int mouseClicks = 0;
 	float mouseTimerLimit = .25f;
-	public bool shoot=false;
-	int fuelForShoot=50;
-	int orbitLevel;
-//	public float planetSize;
+	float timeClickUp;
+	// flags
+	bool shoot=false;
+	bool collision=false;
+	bool raise=false;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");

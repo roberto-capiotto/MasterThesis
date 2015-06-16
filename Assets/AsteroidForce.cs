@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class AsteroidForce : MonoBehaviour {
-	
-	Vector3 myPos;
+
 	GameObject rocket;
 	Rocket rocketManager;
+	Vector3 myPos;
 	bool collision=false;
 	
 	void Start () {

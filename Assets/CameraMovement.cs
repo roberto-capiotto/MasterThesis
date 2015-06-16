@@ -2,19 +2,21 @@
 using System.Collections;
 
 public class CameraMovement : MonoBehaviour {
-
-	float camSize;
+	
 	GameObject rocket;
-	Vector3 position;
 	Rocket rocketManager;
+	// camera vars
+	Vector3 position;
+	float camSize;
+	float leftBound;
+	float upBound;
+	float downBound;
+	// flags
 	bool moving=false;
 	bool right=false;
 	bool left=false;
 	bool up=false;
 	bool down=false;
-	float leftBound;
-	float upBound;
-	float downBound;
 
 	/* DONE: define how to move in the level
 	 * Up and down boundaries will be defined after the generation
@@ -25,7 +27,7 @@ public class CameraMovement : MonoBehaviour {
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
-		camSize = Camera.mainCamera.orthographicSize;
+		camSize = Camera.main.orthographicSize;
 		position = new Vector3(0,0,0);
 
 		// define statics bound, now not used
