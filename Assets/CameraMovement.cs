@@ -10,14 +10,18 @@ public class CameraMovement : MonoBehaviour {
 	bool moving=false;
 	bool right=false;
 	bool left=false;
+	bool up=false;
+	bool down=false;
 	float leftBound;
 	float upBound;
 	float downBound;
 
-	// DONE: define how to move in the level
-	// we have to define boundaries?
-	// especially up and down
-	// eventually left
+	/* DONE: define how to move in the level
+	 * Up and down boundaries will be defined after the generation
+	 * Now the boundaries are fixed
+	 * especially up and down
+	 * eventually left
+	 */
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
@@ -25,23 +29,33 @@ public class CameraMovement : MonoBehaviour {
 		position = new Vector3(0,0,0);
 
 		// define statics bound, now not used
-		SetBound(-camSize,0);
+		SetBound(-2*camSize,0);
 		SetBound(camSize,1);
 		SetBound(-camSize,2);
 	}
 	
-	void Update () {
+	void FixedUpdate () {
+		/* OLD STATIC CONTROL
 		// upper bound and lower bound
 		if(Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
 			rocketManager.SetInitialPosition();
 		}
-		// left bound
-		// I suppose the level will be totally on right side
-		// It works because the starting point is in (0,0,0)
-		// if it changes, also this control will be changed
+		*/
+
+		// upper bound and lower bound
+		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2))
+			rocketManager.SetInitialPosition();
+
+		/* OLD STATIC CONTROL
 		if(rocket.transform.position.x<-2*camSize){
 			rocketManager.SetInitialPosition();
-		}
+		}*/
+
+		/* left bound
+		 * Once generated the first (starting) planet, the others will be all on right side
+		 */
+		if(rocket.transform.position.x<GetBound(0))
+			rocketManager.SetInitialPosition();
 
 		if(!moving){
 			if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize){
@@ -55,26 +69,50 @@ public class CameraMovement : MonoBehaviour {
 				// set destination position
 				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
 			}
+			if(Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
+				moving=true;
+				// if moving up
+				if(rocket.transform.position.y-position.y>camSize)
+					up=true;
+				// if moving down
+				else
+					down=true;
+				// set destination position
+				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+			}
 		}
 		else{
 			// TODO: optimize. The rocket should always be almost @ center
 			// better controls should became the game better
 			// we are moving the camera 0.1 every update
 			// it seems ok
+			// control movement up and down: problem on replace!!
 			if(right){
 				this.transform.position = new Vector3(this.transform.position.x+0.1f,this.transform.position.y,-10);
 				if(this.transform.position.x-position.x>0){
 					right=false;
-					moving=false;
 				}
 			}
-			else{
+			if(left){
 				this.transform.position = new Vector3(this.transform.position.x-0.1f,this.transform.position.y,-10);
 				if(this.transform.position.x-position.x<0){
 					left=false;
-					moving=false;
 				}
 			}
+			if(up){
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.1f,-10);
+				if(this.transform.position.y-position.y>0){
+					up=false;
+				}
+			}
+			if(down){
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.1f,-10);
+				if(this.transform.position.y-position.y<0){
+					down=false;
+				}
+			}
+			if(!up && !down && !left && !right )
+				moving=false;
 		}
 	}
 
