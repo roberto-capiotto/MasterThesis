@@ -5,7 +5,7 @@ public class DockingStation : MonoBehaviour {
 
 	Rocket rocketManager;
 	GameObject rocket;
-	public int fuel=100;
+	public int fuel=500;
 	bool doubleClick=false;
 	float timeClickUp;
 	float acceleration=180f;
@@ -18,6 +18,7 @@ public class DockingStation : MonoBehaviour {
 	float mouseTimerLimit = .25f;
 	bool shoot=false;
 	bool collision=false;
+	int fuelForShoot=50;
 
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -29,16 +30,22 @@ public class DockingStation : MonoBehaviour {
 
 	void FixedUpdate () {
 		if(shoot){
-			print("shoot");
-			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+			if(rocketManager.Consume(fuelForShoot/5)){
+				print("shoot");
+				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+				rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+			}
+			else{
+				shoot=false;
+				rocketManager.SetInitialPosition();
+				rocketManager.FullRefill();
+			}
 		}
 	}
 
 	void OnCollisionEnter(){
 		// refill
 		rocketManager.Refill(fuel);
-		fuel=0;
 		collision=true;
 	}
 

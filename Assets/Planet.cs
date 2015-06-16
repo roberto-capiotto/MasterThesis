@@ -25,6 +25,8 @@ public class Planet : MonoBehaviour {
 	int mouseClicks = 0;
 	float mouseTimerLimit = .25f;
 	public bool shoot=false;
+	int fuelForShoot=50;
+	int orbitLevel;
 //	public float planetSize;
 	
 	void Start () {
@@ -35,6 +37,7 @@ public class Planet : MonoBehaviour {
 		initialPosition=new Vector3
 			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
 		rocket.transform.position=initialPosition;
+		orbitLevel=3;
 
 		// TODO: random planetSize
 		// it will scale also orbits
@@ -54,11 +57,19 @@ public class Planet : MonoBehaviour {
 		}
 	}
 
-	void Update () {
+	void FixedUpdate () {
 		if(shoot){
-			print("shoot");
-			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+			// less distance from planet, more fuel required
+			if(rocketManager.Consume((4-orbitLevel)*fuelForShoot/5)){
+				print("shoot");
+				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+				rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+			}
+			else{
+				shoot=false;
+				rocketManager.SetInitialPosition();
+				rocketManager.FullRefill();
+			}
 		}
 	}
 	
@@ -113,18 +124,32 @@ public class Planet : MonoBehaviour {
 		}else{
 //			Debug.Log("Single Clicked");
 			if(raise){
-				// increase orbit size
-				myCollider.radius += 0.15f;
-				if(myCollider.radius>=0.9f)
-					raise=false;
+				if(rocketManager.Consume(fuelForShoot/2)){
+					// increase orbit size
+					myCollider.radius += 0.15f;
+					orbitLevel++;
+					if(myCollider.radius>=0.9f)
+						raise=false;
+				}
+				else{
+					rocketManager.SetInitialPosition();
+					rocketManager.FullRefill();
+				}
 			}
 			else{
-				// decrease orbit size
-				myCollider.radius -= 0.15f;
-				// add force for continue collision
-				rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
-				if(myCollider.radius<=0.6f)
-					raise=true;
+				if(rocketManager.Consume(fuelForShoot/2)){
+					// decrease orbit size
+					myCollider.radius -= 0.15f;
+					orbitLevel--;
+					// add force for continue collision
+					rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
+					if(myCollider.radius<=0.6f)
+						raise=true;
+				}
+				else{
+					rocketManager.SetInitialPosition();
+					rocketManager.FullRefill();
+				}
 			}
 			
 		}

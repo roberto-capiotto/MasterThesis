@@ -3,18 +3,14 @@ using System.Collections;
 
 public class Rocket : MonoBehaviour {
 	
-	bool collided=false;
-	//float acceleration=80.0f;
 	public int fuel;
 	public int maxFuel=1000;
 	Vector3 initialPosition;
-	//SphereCollider myCollider;
 
 	// TODO: define initialPosition
 	// now fixed
 	// then there will be checkpoint or something other
 	void Start () {
-		//myCollider = transform.GetComponent<SphereCollider>();
 		initialPosition=new Vector3(0 ,1.6f,0);
 		SetInitialPosition();
 		Renderer rend = GetComponent<Renderer>();
@@ -23,22 +19,27 @@ public class Rocket : MonoBehaviour {
 		fuel=maxFuel;
 	}
 
-	void Update () {
+	void FixedUpdate () {
 	}
 
-	void OnCollisionEnter (Collision collision) {
-		collided=true;	
+	public void FullRefill(){
+		fuel=maxFuel;
 	}
 
-	void OnCollisionExit(Collision collision){
-		collided=false;
-	}
-
-	public void Refill(int num){
-		if(fuel+num<maxFuel)
-			fuel+=num;
+	public void Refill(int propellant){
+		if(fuel+propellant<maxFuel)
+			fuel+=propellant;
 		else
 			fuel=maxFuel;
+	}
+
+	public bool Consume(int propellant){
+		fuel-=propellant;
+		if(fuel<0){
+			print ("NOT ENOUGH FUEL");
+			return false;
+		}
+		return true;
 	}
 
 	public void SetInitialPosition(){
