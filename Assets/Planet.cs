@@ -4,12 +4,12 @@ using System.Collections;
 public class Planet : MonoBehaviour {
 
 	// rocket vars
-	public GameObject rocket;
+	GameObject rocket;
 	Rocket rocketManager;
 	Vector3 initialPosition;
 	int fuelForShoot=50;
 	// planet vars
-	public string planetType;
+	public string planetType;	/* "count" for exploding planet */
 	public int counter=5;
 	SphereCollider myCollider;
 //	public float planetSize;
@@ -68,7 +68,11 @@ public class Planet : MonoBehaviour {
 			if(rocketManager.Consume((4-orbitLevel)*fuelForShoot/5)){
 				print("shoot");
 				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-				rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+				rocketManager.SetShootPosition(rocket.transform.position);
+				if(clockWise)
+					rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+				else
+					rocket.rigidbody.AddForce(-rocket.transform.right * acceleration);
 			}
 			else{
 				shoot=false;
@@ -86,6 +90,35 @@ public class Planet : MonoBehaviour {
 		}
 		collision=true;
 		print("touch @ "+gravityCollision.transform.position.x+" "+gravityCollision.transform.position.y+" "+gravityCollision.transform.position.z);
+		float ang=tan (gravityCollision.transform.position-this.transform.position);
+		print("angle in: "+ang);
+		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+		print("angle throw: "+m);
+		/* TODO: all
+		if(ang<45 || ang>315){
+			if(m>180)
+				print ("YES ang: "+ang+" m: "+m);
+			else
+				print ("NO ang: "+ang+" m: "+m);
+		}
+		if(ang>45 && ang<135){//TODO: check
+			if(m>270)
+				print ("YES ang: "+ang+" m: "+m);
+			else
+				print ("NO ang: "+ang+" m: "+m);
+		}
+		if(ang>135 && ang<225){//TODO: check
+			if(m<180)
+				print ("YES ang: "+ang+" m: "+m);
+			else
+				print ("NO ang: "+ang+" m: "+m);
+		}
+		if(ang>225 && ang<315){//TODO: check
+			if(m>90)
+				print ("YES ang: "+ang+" m: "+m);
+			else
+				print ("NO ang: "+ang+" m: "+m);
+		}*/
 	}
 	
 	void OnCollisionStay(Collision collision){

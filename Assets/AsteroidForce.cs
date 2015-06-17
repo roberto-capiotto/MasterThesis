@@ -32,6 +32,7 @@ public class AsteroidForce : MonoBehaviour {
 		if(collision){
 			//	rocket die
 			rocketManager.SetInitialPosition();
+			rocketManager.FullRefill();
 			collision=false;
 		}
 	}

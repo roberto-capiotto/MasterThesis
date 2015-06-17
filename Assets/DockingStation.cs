@@ -35,6 +35,7 @@ public class DockingStation : MonoBehaviour {
 			if(rocketManager.Consume(fuelForShoot)){
 				print("shoot");
 				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+				rocketManager.SetShootPosition(rocket.transform.position);
 				rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
 			}
 			else{

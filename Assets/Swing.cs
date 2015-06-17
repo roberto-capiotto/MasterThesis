@@ -6,7 +6,7 @@ public class Swing : MonoBehaviour {
 	string expandFrame;
 	string clickFrame;
 	string rotationFrame;
-	float expandAcceleration = 500;
+//	float expandAcceleration = 500f;
 	public float increasingSpeed = 3;
 	public float decreasingSpeed = 1;
 	public int frameIndex;
@@ -16,10 +16,10 @@ public class Swing : MonoBehaviour {
 	public float maxRotationSpeed = 5;
 	float shootAcceleration = 200f;
 	public string colour;
-	bool expandTrapp = true;
+//	bool expandTrapp = true;
 	// flag
 	bool increase;
-	bool down;
+	bool down=false;
 	bool RotationExpand;
 	bool colliding = false;
 	bool doubleClick = true;
@@ -55,6 +55,10 @@ public class Swing : MonoBehaviour {
 	RaycastHit hit;
 	GameObject rocket;
 	public SphereCollider myCollider;
+	bool clockwise=false;
+	float rocketVelocity=60f;
+	float newangle;
+	Quaternion rotate = new Quaternion (0, 0, 0, 0);
 	
 	//TODO: be careful on imLeft imRight
 	// many things are going bad
@@ -66,9 +70,8 @@ public class Swing : MonoBehaviour {
 		down = false;
 	}
 	
-	void Update ()
+	void FixedUpdate ()
 	{
-		resizePlanet ();
 		if(colliding && imRight){
 			// rocket comes from right
 			// if rocket arrives @ pole
@@ -87,14 +90,14 @@ public class Swing : MonoBehaviour {
 			}
 			// if you was @ north pole
 			if(imUp && !startRound){
-				// and now you are @ south pole
-				if(rocket.transform.position.x>this.transform.position.x && rocket.transform.position.y<this.transform.position.y)
-					shoot(Vector3.right);
+				// and now you are @ left pole
+				if(rocket.transform.position.y<this.transform.position.y)
+					shoot(Vector3.left);
 			}
 			// if you was @ south pole
 			if(imDown && !startRound){
-				// and now you are @ north pole
-				if(rocket.transform.position.x>this.transform.position.x && rocket.transform.position.y>this.transform.position.y)
+				// and now you are @ left pole
+				if(rocket.transform.position.y>this.transform.position.y)
 					shoot(Vector3.right);
 			}
 		}
@@ -117,34 +120,38 @@ public class Swing : MonoBehaviour {
 				}
 				// if you was @ north pole
 				if(imUp && !startRound){
-					// and now you are @ south pole
-					if(rocket.transform.position.x<this.transform.position.x && rocket.transform.position.y<this.transform.position.y){
+					// and now you are @ right pole
+					if(rocket.transform.position.y<this.transform.position.y){
 						shoot(Vector3.right);
 					}
 				}
 				// if you was @ south pole
 				if(imDown && !startRound){
-					// and now you are @ north pole
-					if(rocket.transform.position.x<this.transform.position.x && rocket.transform.position.y>this.transform.position.y){
-						shoot(Vector3.right);
+					// and now you are @ right pole
+					if(rocket.transform.position.y>this.transform.position.y){
+						shoot(Vector3.left);
 					}
 				}
 			}
 		}
+		if(colliding){
+//			rocket.transform.parent=this.transform;
+		}
+		//transform.Rotate(Vector3.forward * Time.deltaTime*50);
 	}
-	
+
 	void OnCollisionEnter (Collision gravityCollision)
 	{
+		colliding = true;
+		print(gravityCollision.transform.position.x);
 		if(myCollider.radius>=1f){
 			// decrease orbit size
 			print("lowerize");
 			myCollider.radius -= 0.15f;
 			// add force for continue collision
-			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
+			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity);
 		}
-
-		colliding = true;
-		print(gravityCollision.transform.position.x);
+		
 		if(rocket.transform.position.x>this.transform.position.x){
 			imRight=true;
 			print("*********I'M RIGHT*******");
@@ -153,15 +160,24 @@ public class Swing : MonoBehaviour {
 			imLeft=true;
 			print("*********I'M LEFT********");
 		}
+
+		if(rocket.transform.position.y>this.transform.position.y){
+			clockwise=true;
+		}
+		else
+			clockwise=false;
 	}
 
 	void OnCollisionStay (Collision collider) {
 
-		gravity=acceleration*(this.transform.localScale.x-1)*
-			(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
-				(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
-		
-		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity);
+		rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
+		if(clockwise)
+			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
+		else
+			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
+		newangle = tan (rocket.transform.position - this.transform.position);
+		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
+		rocket.transform.rotation = rotate;
 	}
 
 	void OnCollisionExit (Collision gravityCollision)
@@ -172,6 +188,7 @@ public class Swing : MonoBehaviour {
 		imDown=false;
 		imLeft=false;
 		imRight=false;
+//		rocket.transform.parent=null;
 	}
 	
 	void shoot (Vector3 shootingDirection)
@@ -181,7 +198,11 @@ public class Swing : MonoBehaviour {
 			rocket.rigidbody.velocity=new Vector3(0,0,0);
 			// it works just for horizontal shooting (left and right)
 			// code must be improved passing a parameter to function shoot() with the correct angle
-			rocket.rigidbody.AddForce(shootingDirection * shootAcceleration * (this.transform.parent.gameObject).transform.localScale.x/2);
+			if(shootingDirection==Vector3.right)
+				rocket.rigidbody.AddForce(rocket.transform.right * shootAcceleration*3);
+			if(shootingDirection==Vector3.left)
+				rocket.rigidbody.AddForce(-rocket.transform.right * shootAcceleration*3);
+			//rocket.rigidbody.AddForce(shootingDirection * shootAcceleration * 3 * this.transform.localScale.x/2);
 		}
 	}
 
@@ -189,131 +210,6 @@ public class Swing : MonoBehaviour {
 		myCollider.radius=radius;
 	}
 
-	void resizePlanet ()
-	{
-		if (Input.GetMouseButtonDown (0)) {
-			
-			mousePosClick = Input.mousePosition;
-			
-			if (MouseTouch ()) {
-				moved = false;
-				down = true;	
-				mousePosBefore = Input.mousePosition;
-			}
-		}
-		
-		if (Input.GetMouseButton (0) && down && Time.time - timeClickDown > 0.2f) {
-			
-			mousePosNew = (Input.mousePosition);
-			angleNew = tan (WorldCoordinate (mousePosNew) - transform.position);
-			distanceExpand = distanceCenterPlanetExpand (mousePosNew) - distanceCenterPlanetExpand (mousePosBefore);
-			angleBefore = tan (WorldCoordinate (mousePosBefore) - transform.position);
-			angleMovement = angleNew - angleBefore;
-			mousePosBefore = (Input.mousePosition);
-			
-			if (distanceExpand + angleMovement != 0) {
-				moved = true;
-			}
-			
-			if (RotationExpand) {
-				rotate ();
-			}
-			
-			if (!RotationExpand) {
-				
-				//expand ();
-				//TODO:remove
-				//shoot(Vector3.zero);
-				if (expandTrapp) {
-					expandTrapp = false;
-				}
-			}
-			
-		} 
-		if (Input.GetMouseButtonUp (0)) {
-			expandTrapp = true;
-			if (Time.time - timeClickUp > 0.4f) {
-				doubleClick = false;
-			} else {
-				doubleClick = true;
-			}
-			timeClickUp = Time.time;
-			down = false;
-		}
-	}
-	
-	
-	// return true if the click is on the object 
-	bool MouseTouch ()
-	{
-		
-		if (Physics.Raycast (WorldCoordinate (mousePosClick), Vector3.forward, out hit, Mathf.Infinity, 1 << 9)) {//,11))
-			if (this.transform.GetInstanceID () == hit.collider.transform.GetInstanceID ()) {
-				timeClickDown = Time.time;
-				trapIncrease = true;	
-			}
-		}
-		
-		if (Physics.Raycast (WorldCoordinate (mousePosClick), Vector3.forward, out hit, Mathf.Infinity, 1 << 15)) {//,11))
-			if (collider.transform.GetInstanceID () == hit.collider.transform.parent.transform.GetInstanceID ()) {
-				RotationExpand = true;
-				return true;
-			}
-		}
-		if (Physics.Raycast (WorldCoordinate (mousePosClick), Vector3.forward, out hit, Mathf.Infinity, 1 << 16)) {//,11))
-			if (collider.transform.GetInstanceID () == hit.collider.transform.parent.transform.GetInstanceID ()) {
-				RotationExpand = false;
-				return true;
-			}
-		}
-		
-		
-		return false;
-	}
-	
-	
-	//transform a cordinate in pixel in dUnity coordinate
-	Vector3 WorldCoordinate (Vector3 mouseCoordinates)
-	{
-		return Camera.main.ScreenToWorldPoint (mouseCoordinates);
-	}
-	
-	//return the distance between the center of the panet and the coordinate
-	float distanceCenterPlanetExpand (Vector3 mousePositiona)
-	{
-		return modulo (WorldCoordinate (new Vector3 (0, mousePositiona.y, 0)) - WorldCoordinate (new Vector3 (mousePosClick.x, 0, 0)));
-		
-	}
-	
-	float distanceCenterPlanet (Vector3 mousePositiona)
-	{
-		return modulo ((WorldCoordinate (mousePositiona) - transform.position));
-	}
-	
-	float modulo (Vector3 modulo)
-	{
-		return Mathf.Sqrt (modulo.x * modulo.x + modulo.y * modulo.y);
-	}
-	
-	void rotate ()
-	{
-		this.transform.Rotate (new Vector3 (0, 0, Mathf.Clamp (angleMovement, -maxRotationSpeed, maxRotationSpeed)));
-		
-		if (colliding) {
-			rocket.transform.RotateAround (this.transform.position, new Vector3 (0f, 0f, 1f), 0.5f * Mathf.Clamp (angleMovement, -maxRotationSpeed, maxRotationSpeed));
-		}
-		
-	}
-	
-	void expand ()
-	{
-		Vector3 delta = new Vector3 (2f * Mathf.Clamp (distanceExpand, -maxExpandSpeed, maxExpandSpeed), 2f * Mathf.Clamp (distanceExpand, -maxExpandSpeed, maxExpandSpeed), 0);
-		transform.localScale = new Vector3 (Mathf.Clamp (delta.x + transform.localScale.x, downSize, upperSize), Mathf.Clamp (delta.y + transform.localScale.y, downSize, upperSize), 1);
-		if (!colliding) {
-			rocket.rigidbody.AddForce (-(rocket.transform.position - (this.transform.position)).normalized * expandAcceleration * delta.sqrMagnitude);
-		}
-	}
-	
 	float tan (Vector3 pos)
 	{
 		if (pos.x >= 0) {
@@ -339,53 +235,4 @@ public class Swing : MonoBehaviour {
 		}
 	}
 
-	
-	public string getColour ()
-	{
-		return colour;
-	}
-	
-}	
-
-
-/*using UnityEngine;
-using System.Collections;
-
-public class Swing : MonoBehaviour {
-
-	GameObject rocket;
-//	GameObject joint;
-	bool collided=false;
-
-	void Start () {
-		rocket = GameObject.Find ("Rocket");
-		Renderer rend = GetComponent<Renderer>();
-		rend.material.shader = Shader.Find("Specular");
-		rend.material.SetColor("_Color", Color.cyan);
-	}
-
-	void Update () {
-		if(collided){
-			//Create HingeJoints
-			/*joint = gameObject.AddComponent<HingeJoint> ();
-			joint.axis = Vector3.back; /// (0,0,-1)
-			joint.anchor = Vector3.zero;
-			joint.connectedBody = anchor.rigidbody;
-			anchorJoint = anchor.AddComponent<HingeJoint> ();
-			anchorJoint.axis = Vector3.back; /// (0,0,-1)
-			anchorJoint.anchor = Vector3.zero;
-		}
-	}
-
-	void OnCollisionEnter(Collision collision){
-		collided=true;
-		// capisci da che parte arrivi e dove devi girare
-		// unisci gli oggetti
-		// quando sei arrivato spara
-	}
-
-	void OnCollisionExit(Collision collision){
-		collided = false;
-	}
 }
-*/

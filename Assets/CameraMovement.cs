@@ -32,8 +32,8 @@ public class CameraMovement : MonoBehaviour {
 
 		// define statics bound, now not used
 		SetBound(-2*camSize,0);
-		SetBound(camSize,1);
-		SetBound(-camSize,2);
+		SetBound(camSize*2,1);
+		SetBound(-camSize*2,2);
 	}
 	
 	void FixedUpdate () {
@@ -45,8 +45,10 @@ public class CameraMovement : MonoBehaviour {
 		*/
 
 		// upper bound and lower bound
-		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2))
+		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2)){
 			rocketManager.SetInitialPosition();
+			rocketManager.FullRefill();
+		}
 
 		/* OLD STATIC CONTROL
 		if(rocket.transform.position.x<-2*camSize){
@@ -56,8 +58,10 @@ public class CameraMovement : MonoBehaviour {
 		/* left bound
 		 * Once generated the first (starting) planet, the others will be all on right side
 		 */
-		if(rocket.transform.position.x<GetBound(0))
+		if(rocket.transform.position.x<GetBound(0)){
 			rocketManager.SetInitialPosition();
+			rocketManager.FullRefill();
+		}
 
 		if(!moving){
 			if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize){

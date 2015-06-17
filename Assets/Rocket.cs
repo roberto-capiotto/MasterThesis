@@ -6,6 +6,7 @@ public class Rocket : MonoBehaviour {
 	public int fuel;
 	public int maxFuel=2000;
 	Vector3 initialPosition;
+	Vector3 shootPosition;
 
 	// TODO: define initialPosition
 	// now fixed
@@ -49,5 +50,13 @@ public class Rocket : MonoBehaviour {
 
 	public Vector3 GetInitialPosition(){
 		return initialPosition;
+	}
+
+	public void SetShootPosition(Vector3 pos){
+		shootPosition=pos;
+	}
+	
+	public Vector3 GetShootPosition(){
+		return shootPosition;
 	}
 }
