@@ -14,6 +14,7 @@ public class Planet : MonoBehaviour {
 	SphereCollider myCollider;
 //	public float planetSize;
 	int orbitLevel;
+	public bool clockWise=false;
 	// phisics vars
 	float gravity;
 	float acceleration=180f;
@@ -89,7 +90,11 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionStay(Collision collision){
 		rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-		rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
+		// check if the planet is rotating clockWise or not
+		if(clockWise)
+			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
+		else
+			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
 		newangle = tan (rocket.transform.position - this.transform.position);
 		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
 		rocket.transform.rotation = rotate;
