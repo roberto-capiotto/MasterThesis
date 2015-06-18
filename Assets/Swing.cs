@@ -2,33 +2,16 @@
 using System.Collections;
 
 public class Swing : MonoBehaviour {
-	// public variables
-	string expandFrame;
-	string clickFrame;
-	string rotationFrame;
-//	float expandAcceleration = 500f;
-	public float increasingSpeed = 3;
-	public float decreasingSpeed = 1;
-	public int frameIndex;
-	public float upperSize;
-	public float downSize;
-	public float maxExpandSpeed = 0.1f;
-	public float maxRotationSpeed = 5;
+
 	float shootAcceleration = 200f;
-	public string colour;
-//	bool expandTrapp = true;
 	// flag
 	bool increase;
-	bool down=false;
 	bool RotationExpand;
 	bool colliding = false;
-	bool doubleClick = true;
 	bool longClick;
-	bool trapIncrease = false;
 	bool trapDecrease;
-	bool moved = false;
 	bool oldAlienChangeStatus;
-	//flag about cometLikeBehaviour
+	//flag about swingBehaviour
 	bool startRound=true;
 	bool imUp=false;
 	bool imDown=false;
@@ -36,10 +19,7 @@ public class Swing : MonoBehaviour {
 	bool imRight=false;
 	// other params
 	float timeClickUp;
-	float timeClickDown = Mathf.Infinity;
 	float distanceExpand;
-	float gravity;
-	float acceleration=180f;
 	double k;
 	float x;
 	float y;
@@ -54,7 +34,7 @@ public class Swing : MonoBehaviour {
 	float camerascreenHight;
 	RaycastHit hit;
 	GameObject rocket;
-	public SphereCollider myCollider;
+	SphereCollider myCollider;
 	bool clockwise=false;
 	float rocketVelocity=60f;
 	float newangle;
@@ -67,7 +47,9 @@ public class Swing : MonoBehaviour {
 	{
 		rocket = GameObject.Find ("Rocket");
 		myCollider = transform.GetComponent<SphereCollider>();
-		down = false;
+		Renderer rend = GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Specular");
+		rend.material.SetColor("_Color", Color.cyan);
 	}
 	
 	void FixedUpdate ()
@@ -148,8 +130,6 @@ public class Swing : MonoBehaviour {
 			// decrease orbit size
 			print("lowerize");
 			myCollider.radius -= 0.15f;
-			// add force for continue collision
-			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity);
 		}
 		
 		if(rocket.transform.position.x>this.transform.position.x){

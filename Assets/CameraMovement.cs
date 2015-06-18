@@ -6,6 +6,7 @@ public class CameraMovement : MonoBehaviour {
 	GameObject rocket;
 	Rocket rocketManager;
 	// camera vars
+	Vector3 initialPosition;
 	Vector3 position;
 	float camSize;
 	float leftBound;
@@ -28,6 +29,7 @@ public class CameraMovement : MonoBehaviour {
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.main.orthographicSize;
+		initialPosition=Camera.main.transform.position;
 		position = new Vector3(0,0,0);
 
 		// define statics bound, now not used
@@ -37,23 +39,13 @@ public class CameraMovement : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-		/* OLD STATIC CONTROL
-		// upper bound and lower bound
-		if(Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
-			rocketManager.SetInitialPosition();
-		}
-		*/
-
 		// upper bound and lower bound
 		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2)){
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
+			this.transform.position=initialPosition;
+			reset();
 		}
-
-		/* OLD STATIC CONTROL
-		if(rocket.transform.position.x<-2*camSize){
-			rocketManager.SetInitialPosition();
-		}*/
 
 		/* left bound
 		 * Once generated the first (starting) planet, the others will be all on right side
@@ -61,58 +53,55 @@ public class CameraMovement : MonoBehaviour {
 		if(rocket.transform.position.x<GetBound(0)){
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
+			this.transform.position=initialPosition;
+			reset();
 		}
 
-		if(!moving){
-			if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize){
-				moving=true;
-				// if moving right
-				if(rocket.transform.position.x-position.x>camSize)
-					right=true;
-				// if moving left
-				else
-					left=true;
-				// set destination position
-				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
-			}
-			if(Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
-				moving=true;
-				// if moving up
-				if(rocket.transform.position.y-position.y>camSize)
-					up=true;
-				// if moving down
-				else
-					down=true;
-				// set destination position
-				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
-			}
+		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize){
+			moving=true;
+			// if moving right
+			if(rocket.transform.position.x-this.transform.position.x>camSize)
+				right=true;
+			// if moving left
+			else
+				left=true;
 		}
-		else{
+		if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>camSize){
+			moving=true;
+			// if moving up
+			if(rocket.transform.position.y-this.transform.position.y>camSize)
+				up=true;
+			// if moving down
+			else
+				down=true;
+		}
+		if(moving){
+			// set destination position
+			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
 			// TODO: optimize. The rocket should always be almost @ center
 			// better controls should became the game better
-			// we are moving the camera 0.1 every update
+			// we are moving the camera 0.2 every update
 			// it seems ok
-			// control movement up and down: problem on replace!!
 			if(right){
-				this.transform.position = new Vector3(this.transform.position.x+0.1f,this.transform.position.y,-10);
+				this.transform.position = new Vector3(this.transform.position.x+0.2f,this.transform.position.y,-10);
 				if(this.transform.position.x-position.x>0){
 					right=false;
 				}
 			}
 			if(left){
-				this.transform.position = new Vector3(this.transform.position.x-0.1f,this.transform.position.y,-10);
+				this.transform.position = new Vector3(this.transform.position.x-0.2f,this.transform.position.y,-10);
 				if(this.transform.position.x-position.x<0){
 					left=false;
 				}
 			}
 			if(up){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.1f,-10);
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.2f,-10);
 				if(this.transform.position.y-position.y>0){
 					up=false;
 				}
 			}
 			if(down){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.1f,-10);
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.2f,-10);
 				if(this.transform.position.y-position.y<0){
 					down=false;
 				}
@@ -157,5 +146,13 @@ public class CameraMovement : MonoBehaviour {
 		else{
 			return 0;
 		}
+	}
+
+	void reset(){
+		moving=false;
+		right=false;
+		left=false;
+		up=false;
+		down=false;
 	}
 }
