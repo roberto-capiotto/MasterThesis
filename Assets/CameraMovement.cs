@@ -26,6 +26,7 @@ public class CameraMovement : MonoBehaviour {
 	 * eventually left
 	 */
 	void Start () {
+
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.main.orthographicSize;
