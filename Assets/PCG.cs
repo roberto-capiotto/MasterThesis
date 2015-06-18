@@ -4,7 +4,7 @@ using System.Collections;
 public class PCG : MonoBehaviour {
 	
 	bool creation=false;
-	GameObject rocket,planet;
+	GameObject rocket,planet,cam;
 	public int gen=0;
 	float x,y;
 	Vector3 initialPosition;
@@ -24,6 +24,8 @@ public class PCG : MonoBehaviour {
 		beforePosition=new Vector3(0,0,0);
 		newPosition=new Vector3(0,0,0);
 		creation=true;
+		cam=GameObject.Find("Main Camera");
+		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
 		GeneratePlanet(newPosition);
 	}
 
@@ -50,7 +52,7 @@ public class PCG : MonoBehaviour {
 		planet.name="Planet";
 		gen++;
 		print (gen+" "+x+" "+y);
-		if(gen<2){
+		if(gen<4){
 			GeneratePlanet(newPosition);
 		}
 	}
