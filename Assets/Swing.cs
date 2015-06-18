@@ -39,6 +39,7 @@ public class Swing : MonoBehaviour {
 	float rocketVelocity=60f;
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
+	Rocket rocketManager;
 	
 	//TODO: be careful on imLeft imRight
 	// many things are going bad
@@ -46,6 +47,7 @@ public class Swing : MonoBehaviour {
 	void Start ()
 	{
 		rocket = GameObject.Find ("Rocket");
+		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		myCollider = transform.GetComponent<SphereCollider>();
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");
@@ -116,10 +118,6 @@ public class Swing : MonoBehaviour {
 				}
 			}
 		}
-		if(colliding){
-//			rocket.transform.parent=this.transform;
-		}
-		//transform.Rotate(Vector3.forward * Time.deltaTime*50);
 	}
 
 	void OnCollisionEnter (Collision gravityCollision)
@@ -141,20 +139,49 @@ public class Swing : MonoBehaviour {
 			print("*********I'M LEFT********");
 		}
 
-		if(rocket.transform.position.y>this.transform.position.y){
-			clockwise=true;
+		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+		if(imRight){
+			if(m>180){
+				clockwise=true;
+			}
+			if(m<90){
+				clockwise=false;
+			}
+			if(m<180 && m>90){
+				if(rocket.transform.position.y>this.transform.position.y){
+					clockwise=false;
+				}
+				else{
+					clockwise=true;
+				}
+			}
 		}
-		else
-			clockwise=false;
+
+		if(imLeft){
+			if(m>180){
+				clockwise=false;
+			}
+			else{
+				clockwise=true;
+			}/*
+			if(m<180 && m>90){
+				if(rocket.transform.position.y>this.transform.position.y){
+					clockwise=false;
+				}
+				else{
+					clockwise=true;
+				}
+			}*/
+		}
 	}
 
 	void OnCollisionStay (Collision collider) {
 
 		rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 		if(clockwise)
-			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
+			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*3));
 		else
-			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
+			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*3));
 		newangle = tan (rocket.transform.position - this.transform.position);
 		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
 		rocket.transform.rotation = rotate;
@@ -168,7 +195,6 @@ public class Swing : MonoBehaviour {
 		imDown=false;
 		imLeft=false;
 		imRight=false;
-//		rocket.transform.parent=null;
 	}
 	
 	void shoot (Vector3 shootingDirection)
@@ -186,8 +212,9 @@ public class Swing : MonoBehaviour {
 		}
 	}
 
-	public void SetRadius(float radius){
-		myCollider.radius=radius;
+	public void SetRadius(float raggio){
+		print ("raggio "+raggio);
+		myCollider.radius=raggio;
 	}
 
 	float tan (Vector3 pos)

@@ -24,7 +24,7 @@ public class AtmosphereScript : MonoBehaviour {
 	{
 		print(gravityCollision.transform.position.x);
 		orbitCollider = transform.GetComponent<SphereCollider>();
-		swingManager.SetRadius(orbitCollider.radius);
+		swingManager.SetRadius(orbitCollider.radius*orbitCollider.transform.localScale.x/swing.transform.localScale.x);
 	}
 
 	void OnTriggerStay (Collider collider) {
@@ -32,8 +32,7 @@ public class AtmosphereScript : MonoBehaviour {
 			gravity=acceleration*(this.transform.localScale.x-1)*
 				(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
 					(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
-		print("localscale: "+this.transform.localScale.x+" gravity: "+gravity);
-			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity);
+			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*2);
 	}
 
 	void OnTriggerExit (Collider gravityCollision)

@@ -15,6 +15,8 @@ public class Planet : MonoBehaviour {
 //	public float planetSize;
 	int orbitLevel;
 	public bool clockWise=false;
+	float maxRadius=0.9f;
+	float minRadius=0.6f;
 	// phisics vars
 	float gravity;
 	float acceleration=180f;
@@ -70,9 +72,9 @@ public class Planet : MonoBehaviour {
 				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 				rocketManager.SetShootPosition(rocket.transform.position);
 				if(clockWise)
-					rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+					rocket.rigidbody.AddForce(rocket.transform.right *2* acceleration);
 				else
-					rocket.rigidbody.AddForce(-rocket.transform.right * acceleration);
+					rocket.rigidbody.AddForce(-rocket.transform.right *2* acceleration);
 			}
 			else{
 				shoot=false;
@@ -125,9 +127,9 @@ public class Planet : MonoBehaviour {
 		rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 		// check if the planet is rotating clockWise or not
 		if(clockWise)
-			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
+			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
 		else
-			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
+			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
 		newangle = tan (rocket.transform.position - this.transform.position);
 		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
 		rocket.transform.rotation = rotate;
@@ -135,7 +137,7 @@ public class Planet : MonoBehaviour {
 		gravity=acceleration*(this.transform.localScale.x-1)*
 			(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
 				(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
-		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity);
+		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*2);
 	}
 	
 	void OnCollisionExit (Collision coll){
@@ -170,7 +172,7 @@ public class Planet : MonoBehaviour {
 					// increase orbit size
 					myCollider.radius += 0.15f;
 					orbitLevel++;
-					if(myCollider.radius>=0.9f)
+					if(myCollider.radius>=maxRadius)
 						raise=false;
 				}
 				else{
@@ -185,7 +187,7 @@ public class Planet : MonoBehaviour {
 					orbitLevel--;
 					// add force for continue collision
 					rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
-					if(myCollider.radius<=0.6f)
+					if(myCollider.radius<=minRadius)
 						raise=true;
 				}
 				else{
@@ -242,5 +244,9 @@ public class Planet : MonoBehaviour {
 				return(180f + Mathf.Atan (pos.y / pos.x) * 180 / Mathf.PI);
 			}
 		}
+	}
+
+	public void SetRotation(bool rotation){
+		clockWise=rotation;
 	}
 }

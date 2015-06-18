@@ -23,7 +23,7 @@ public class BlackHoleCatch : MonoBehaviour {
 			(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
 				(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
 		print("localscale: "+this.transform.localScale.x+" gravity: "+gravity);
-		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity/100);
+		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity/50);
 	}
 	
 	void OnTriggerExit (Collider gravityCollision){
