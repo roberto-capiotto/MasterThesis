@@ -39,10 +39,10 @@ public class Planet : MonoBehaviour {
 		myCollider = transform.GetComponent<SphereCollider>();
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 //		planetSize=Random.Range(1.8f,2.2f);
-		initialPosition=new Vector3
+/*		initialPosition=new Vector3
 			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
 		rocket.transform.position=initialPosition;
-		orbitLevel=3;
+*/		orbitLevel=3;
 
 		// TODO: random planetSize
 		// it will scale also orbits
