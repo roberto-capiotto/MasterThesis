@@ -17,6 +17,10 @@ public class Swing : MonoBehaviour {
 	bool imDown=false;
 	bool imLeft=false;
 	bool imRight=false;
+	bool up=false;
+	bool down=false;
+	bool left=false;
+	bool right=false;
 	// other params
 	float timeClickUp;
 	float distanceExpand;
@@ -129,7 +133,87 @@ public class Swing : MonoBehaviour {
 			print("lowerize");
 			myCollider.radius -= 0.15f;
 		}
-		
+
+		if(rocket.transform.position.x>this.transform.position.x)
+			right=true;
+		else
+			left=true;
+
+		if(rocket.transform.position.y>this.transform.position.y)
+			up=true;
+		else
+			down=true;
+
+		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+
+		if(right && up){
+			if(m<90 || m>=270){
+				clockwise=true;
+			}
+			else{
+				if(m>=90 && m<180){
+					clockwise=false;
+				}
+				else{
+					if( tan (rocket.transform.position - this.transform.position)>45)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+
+		if(right && down){
+			if(m<90){
+				clockwise=false;
+			}
+			else{
+				if(m>=180){
+					clockwise=true;
+				}
+				else{
+					if( tan (rocket.transform.position - this.transform.position)>315)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+
+		if(left && up){
+			if(m<90){
+				clockwise=true;
+			}
+			else{
+				if(m>=90 && m<270){
+					clockwise=false;
+				}
+				else{
+					if( tan (rocket.transform.position - this.transform.position)>135)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+
+		if(left && down){
+			if(m>180){
+				clockwise=false;
+			}
+			else{
+				if(m>=90){
+					clockwise=true;
+				}
+				else{
+					if( tan (rocket.transform.position - this.transform.position)>225)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+		/*
 		if(rocket.transform.position.x>this.transform.position.x){
 			imRight=true;
 			print("*********I'M RIGHT*******");
@@ -139,7 +223,7 @@ public class Swing : MonoBehaviour {
 			print("*********I'M LEFT********");
 		}
 
-		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+		m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
 		if(imRight){
 			if(m>180){
 				clockwise=true;
@@ -172,7 +256,7 @@ public class Swing : MonoBehaviour {
 					clockwise=true;
 				}
 			}*/
-		}
+		//}
 	}
 
 	void OnCollisionStay (Collision collider) {
