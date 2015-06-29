@@ -13,8 +13,6 @@ public class tutorialScript : MonoBehaviour {
 	Vector3 initialPosition;
 	public Text text;
 	public Text text2;
-	int cont=100;
-	bool gen=false;
 	bool fuel=false;
 
 	void Start () {
@@ -31,16 +29,6 @@ public class tutorialScript : MonoBehaviour {
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			this.transform.position=initialPosition;
-		}
-
-		if(gen){
-			text2.text="";
-			if(planetManager.GetIfCounting()){
-				cont = planetManager.GetCounter();
-				text2.text="Time left: "+cont.ToString();
-			}
-			if(cont<=0)
-				text2.text="Planet Destroyed";
 		}
 
 		if(fuel){
@@ -130,7 +118,6 @@ public class tutorialScript : MonoBehaviour {
 					else{
 						if(counter==2){
 							// two planets and wormholes
-							gen=false;
 							rocketManager.SetInitialPosition();
 							rocketManager.FullRefill();
 							planetManager.SetPlanetType("");
@@ -156,7 +143,7 @@ public class tutorialScript : MonoBehaviour {
 								text.text="The planet on the right is an exploding planet";
 								planetManager = planet.GetComponent ("Planet") as Planet;
 								planetManager.SetPlanetType("count");
-								gen=true;
+								planetManager.SetText(text2);
 								counter++;
 							}
 							else{

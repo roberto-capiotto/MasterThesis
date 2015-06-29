@@ -18,7 +18,7 @@ public class Planet : MonoBehaviour {
 	public bool clockWise=false;
 	float maxRadius=0.9f;
 	float minRadius=0.6f;
-//	public Text text2;
+	public Text text;
 	// phisics vars
 	float gravity;
 	float acceleration=180f;
@@ -214,9 +214,7 @@ public class Planet : MonoBehaviour {
 	{
 		counting=true;
 		counter--;
-		/* TODO: set ui text
-		 * text2.text="Planet will explodes in ... "+counter;
-		 */
+		text.text="EXPLODING IN ... "+counter;
 		print(counter+"!!!");
 		if(counter < 1)
 		{
@@ -230,6 +228,7 @@ public class Planet : MonoBehaviour {
 			// destroy planet
 			// TODO: add some animation
 			Destroy(this.gameObject);
+			text.text="";
 		}
 	}
 
@@ -282,5 +281,9 @@ public class Planet : MonoBehaviour {
 
 	public int GetCounter(){
 		return counter;
+	}
+
+	public void SetText(Text txt){
+		text=txt;
 	}
 }
