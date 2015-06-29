@@ -5,48 +5,22 @@ public class Swing : MonoBehaviour {
 
 	float shootAcceleration = 200f;
 	// flag
-	bool increase;
-	bool RotationExpand;
 	bool colliding = false;
-	bool longClick;
-	bool trapDecrease;
-	bool oldAlienChangeStatus;
-	//flag about swingBehaviour
-	bool startRound=true;
-	bool imUp=false;
-	bool imDown=false;
-	bool imLeft=false;
-	bool imRight=false;
 	bool up=false;
 	bool down=false;
 	bool left=false;
 	bool right=false;
-	// other params
-	float timeClickUp;
-	float distanceExpand;
-	double k;
-	float x;
-	float y;
-	float angleBefore;
-	float angleNew;
-	float angleMovement;
-	float deltaPlanet;
-	Vector3 mousePosClick;
-	Vector3 mousePosBefore;
-	Vector3 mousePosNew;
-	float camerascreenWidht;
-	float camerascreenHight;
-	RaycastHit hit;
-	GameObject rocket;
-	SphereCollider myCollider;
 	bool clockwise=false;
-	float rocketVelocity=60f;
+	// other params
+	float angleCollision;
+	float angleDestination;
+	float angleCurrent;
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
+	GameObject rocket;
 	Rocket rocketManager;
-	
-	//TODO: be careful on imLeft imRight
-	// many things are going bad
+	float rocketVelocity=60f;
+	SphereCollider myCollider;
 	
 	void Start ()
 	{
@@ -60,66 +34,25 @@ public class Swing : MonoBehaviour {
 	
 	void FixedUpdate ()
 	{
-		if(colliding && imRight){
-			// rocket comes from right
-			// if rocket arrives @ pole
-			if(rocket.transform.position.x<this.transform.position.x && startRound && colliding){
-				startRound=false;
-				// south pole
-				if(rocket.transform.position.y<this.transform.position.y){
-					imDown=true;
-					print ("i'm down from right");
-				}
-				// north pole
-				else{
-					imUp=true;
-					print ("i'm up from right");
-				}
+		angleCurrent=tan(rocket.transform.position - this.transform.position);
+		if(!clockwise){
+			if(angleDestination<90){
+				if(angleCurrent>angleDestination && angleCurrent<180)
+					shoot(clockwise);
 			}
-			// if you was @ north pole
-			if(imUp && !startRound){
-				// and now you are @ left pole
-				if(rocket.transform.position.y<this.transform.position.y)
-					shoot(Vector3.left);
-			}
-			// if you was @ south pole
-			if(imDown && !startRound){
-				// and now you are @ left pole
-				if(rocket.transform.position.y>this.transform.position.y)
-					shoot(Vector3.right);
+			else{
+				if(angleCurrent>angleDestination)
+					shoot(clockwise);
 			}
 		}
 		else{
-			if(colliding && imLeft){
-				// rocket comes from left
-				// if rocket arrives @ pole
-				if(rocket.transform.position.x>this.transform.position.x && startRound && colliding){
-					startRound=false;
-					// south pole
-					if(rocket.transform.position.y<this.transform.position.y){
-						imDown=true;
-						print ("i'm down from left");
-					}
-					// north pole
-					else{
-						imUp=true;
-						print ("i'm up from left");
-					}
-				}
-				// if you was @ north pole
-				if(imUp && !startRound){
-					// and now you are @ right pole
-					if(rocket.transform.position.y<this.transform.position.y){
-						shoot(Vector3.right);
-					}
-				}
-				// if you was @ south pole
-				if(imDown && !startRound){
-					// and now you are @ right pole
-					if(rocket.transform.position.y>this.transform.position.y){
-						shoot(Vector3.left);
-					}
-				}
+			if(angleDestination>270){
+				if(angleCurrent<angleDestination && angleCurrent>180)
+					shoot(clockwise);
+			}
+			else{
+				if(angleCurrent<angleDestination)
+					shoot(clockwise);
 			}
 		}
 	}
@@ -127,25 +60,28 @@ public class Swing : MonoBehaviour {
 	void OnCollisionEnter (Collision gravityCollision)
 	{
 		colliding = true;
-		print(gravityCollision.transform.position.x);
+		angleCollision=tan(rocket.transform.position - this.transform.position);
+		print ("angleCollision: "+angleCollision);
 		if(myCollider.radius>=1f){
 			// decrease orbit size
 			print("lowerize");
 			myCollider.radius -= 0.15f;
 		}
 
+		// find where the rocket will touch swingPlanet
 		if(rocket.transform.position.x>this.transform.position.x)
 			right=true;
 		else
 			left=true;
-
 		if(rocket.transform.position.y>this.transform.position.y)
 			up=true;
 		else
 			down=true;
 
+		// calculate the shootingAngle
 		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
 
+		// 1st quad
 		if(right && up){
 			if(m<90 || m>=270){
 				clockwise=true;
@@ -155,7 +91,7 @@ public class Swing : MonoBehaviour {
 					clockwise=false;
 				}
 				else{
-					if( tan (rocket.transform.position - this.transform.position)>45)
+					if(angleCollision>45)
 						clockwise=false;
 					else
 						clockwise=true;
@@ -163,23 +99,7 @@ public class Swing : MonoBehaviour {
 			}
 		}
 
-		if(right && down){
-			if(m<90){
-				clockwise=false;
-			}
-			else{
-				if(m>=180){
-					clockwise=true;
-				}
-				else{
-					if( tan (rocket.transform.position - this.transform.position)>315)
-						clockwise=false;
-					else
-						clockwise=true;
-				}
-			}
-		}
-
+		//2nd quad
 		if(left && up){
 			if(m<90){
 				clockwise=true;
@@ -189,7 +109,7 @@ public class Swing : MonoBehaviour {
 					clockwise=false;
 				}
 				else{
-					if( tan (rocket.transform.position - this.transform.position)>135)
+					if(angleCollision>135)
 						clockwise=false;
 					else
 						clockwise=true;
@@ -197,6 +117,7 @@ public class Swing : MonoBehaviour {
 			}
 		}
 
+		//3rd quad
 		if(left && down){
 			if(m>180){
 				clockwise=false;
@@ -206,57 +127,49 @@ public class Swing : MonoBehaviour {
 					clockwise=true;
 				}
 				else{
-					if( tan (rocket.transform.position - this.transform.position)>225)
+					if(angleCollision>225)
 						clockwise=false;
 					else
 						clockwise=true;
 				}
 			}
 		}
-		/*
-		if(rocket.transform.position.x>this.transform.position.x){
-			imRight=true;
-			print("*********I'M RIGHT*******");
-		}
-		else{
-			imLeft=true;
-			print("*********I'M LEFT********");
-		}
 
-		m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
-		if(imRight){
-			if(m>180){
-				clockwise=true;
-			}
+		// 4th quad
+		if(right && down){
 			if(m<90){
 				clockwise=false;
 			}
-			if(m<180 && m>90){
-				if(rocket.transform.position.y>this.transform.position.y){
-					clockwise=false;
+			else{
+				if(m>=180){
+					clockwise=true;
 				}
 				else{
-					clockwise=true;
+					if(angleCollision>315)
+						clockwise=false;
+					else
+						clockwise=true;
 				}
 			}
 		}
 
-		if(imLeft){
-			if(m>180){
-				clockwise=false;
-			}
-			else{
-				clockwise=true;
-			}/*
-			if(m<180 && m>90){
-				if(rocket.transform.position.y>this.transform.position.y){
-					clockwise=false;
-				}
-				else{
-					clockwise=true;
-				}
-			}*/
-		//}
+		/* calculate angleDestination
+		 * if clockwise, sub 90
+		 * if !clockwise, add 90
+		 * check if overflow or underflow
+		 */
+		if(clockwise){
+			if(angleCollision>90)
+				angleDestination=angleCollision-90;
+			else
+				angleDestination=angleCollision-90+360;
+		}
+		else{
+			if(angleCollision<270)
+				angleDestination=angleCollision+90;
+			else
+				angleDestination=angleCollision+90-360;
+		}
 	}
 
 	void OnCollisionStay (Collision collider) {
@@ -273,26 +186,23 @@ public class Swing : MonoBehaviour {
 
 	void OnCollisionExit (Collision gravityCollision)
 	{
-		colliding = false;
-		startRound=true;
-		imUp=false;
-		imDown=false;
-		imLeft=false;
-		imRight=false;
+		// reset all flags
+		colliding=false;
+		up=false;
+		down=false;
+		left=false;
+		right=false;
 	}
 	
-	void shoot (Vector3 shootingDirection)
+	void shoot (bool direction)
 	{
 		if(colliding)
 		{
 			rocket.rigidbody.velocity=new Vector3(0,0,0);
-			// it works just for horizontal shooting (left and right)
-			// code must be improved passing a parameter to function shoot() with the correct angle
-			if(shootingDirection==Vector3.right)
+			if(direction)
 				rocket.rigidbody.AddForce(rocket.transform.right * shootAcceleration*3);
-			if(shootingDirection==Vector3.left)
+			else
 				rocket.rigidbody.AddForce(-rocket.transform.right * shootAcceleration*3);
-			//rocket.rigidbody.AddForce(shootingDirection * shootAcceleration * 3 * this.transform.localScale.x/2);
 		}
 	}
 

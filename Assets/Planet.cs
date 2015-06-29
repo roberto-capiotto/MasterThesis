@@ -65,12 +65,6 @@ public class Planet : MonoBehaviour {
 			}*/
 //			this.transform.localScale=new Vector3(planetSize,planetSize,2);
 		}
-		/*
-		text2 = Instantiate(Resources.Load("Text")) as Text;
-		text2.name="Text-2";
-		//text2.transform.position=new Vector3(8,0,0);
-		text2.text="CIAO";
-		*/
 	}
 
 	void FixedUpdate () {
@@ -100,11 +94,8 @@ public class Planet : MonoBehaviour {
 			InvokeRepeating("CountDown",1,1);
 		}
 		collision=true;
-		print("touch @ "+gravityCollision.transform.position.x+" "+gravityCollision.transform.position.y+" "+gravityCollision.transform.position.z);
 		float ang=tan (gravityCollision.transform.position-this.transform.position);
-		print("angle in: "+ang);
 		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
-		print("angle throw: "+m);
 		/* TODO: all
 		if(ang<45 || ang>315){
 			if(m>180)
