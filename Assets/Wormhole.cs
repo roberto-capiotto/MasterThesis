@@ -31,4 +31,8 @@ public class Wormhole : MonoBehaviour {
 	void OnCollisionEnter (Collision collider) {
 		collision=true;
 	}
+
+	public void SetExit(GameObject obj){
+		exit=obj;
+	}
 }

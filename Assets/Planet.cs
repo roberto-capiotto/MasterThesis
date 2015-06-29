@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Planet : MonoBehaviour {
@@ -17,6 +18,7 @@ public class Planet : MonoBehaviour {
 	public bool clockWise=false;
 	float maxRadius=0.9f;
 	float minRadius=0.6f;
+//	public Text text2;
 	// phisics vars
 	float gravity;
 	float acceleration=180f;
@@ -35,6 +37,7 @@ public class Planet : MonoBehaviour {
 	bool shoot=false;
 	bool collision=false;
 	bool raise=false;
+	bool counting=false;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -62,6 +65,12 @@ public class Planet : MonoBehaviour {
 			}*/
 //			this.transform.localScale=new Vector3(planetSize,planetSize,2);
 		}
+		/*
+		text2 = Instantiate(Resources.Load("Text")) as Text;
+		text2.name="Text-2";
+		//text2.transform.position=new Vector3(8,0,0);
+		text2.text="CIAO";
+		*/
 	}
 
 	void FixedUpdate () {
@@ -203,8 +212,11 @@ public class Planet : MonoBehaviour {
 
 	void CountDown()
 	{
+		counting=true;
 		counter--;
-		// TODO: use GUI TEXT for showing seconds remaining
+		/* TODO: set ui text
+		 * text2.text="Planet will explodes in ... "+counter;
+		 */
 		print(counter+"!!!");
 		if(counter < 1)
 		{
@@ -248,5 +260,27 @@ public class Planet : MonoBehaviour {
 
 	public void SetRotation(bool rotation){
 		clockWise=rotation;
+	}
+
+	public void SetPlanetType(string type){
+		planetType=type;
+		if(type.Equals("count")){
+			Renderer rend = GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Specular");
+			rend.material.SetColor("_Color", Color.yellow);
+		}
+		else{
+			Renderer rend = GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Specular");
+			rend.material.SetColor("_Color", Color.white);
+		}
+	}
+
+	public bool GetIfCounting(){
+		return counting;
+	}
+
+	public int GetCounter(){
+		return counter;
 	}
 }
