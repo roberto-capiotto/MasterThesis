@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class CameraMovement : MonoBehaviour {
 	
 	GameObject rocket;
 	Rocket rocketManager;
+	public Text text;
 	// camera vars
 	Vector3 initialPosition;
 	Vector3 position;
@@ -40,6 +42,9 @@ public class CameraMovement : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
+
+		text.text="Fuel: "+rocketManager.GetFuel();
+
 		// upper bound and lower bound
 		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2)){
 			rocketManager.SetInitialPosition();
