@@ -43,6 +43,10 @@ public class Rocket : MonoBehaviour {
 		return true;
 	}
 
+	public int GetFuel(){
+		return fuel;
+	}
+
 	public void SetInitialPosition(){
 		this.rigidbody.velocity = (new Vector3 (0, 0, 0));
 		this.transform.position=initialPosition;
