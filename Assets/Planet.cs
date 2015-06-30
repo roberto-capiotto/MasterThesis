@@ -7,17 +7,14 @@ public class Planet : MonoBehaviour {
 	// rocket vars
 	GameObject rocket;
 	Rocket rocketManager;
-	Vector3 initialPosition;
 	int fuelForShoot=50;
 	// planet vars
 	public string planetType;	/* "count" for exploding planet */
 	public int counter=5;
 	SphereCollider myCollider;
 //	public float planetSize;
-	int orbitLevel;
+	int orbitLevel=2;
 	public bool clockWise=false;
-	float maxRadius=0.9f;
-	float minRadius=0.6f;
 	public Text text;
 	// phisics vars
 	float gravity;
@@ -43,28 +40,13 @@ public class Planet : MonoBehaviour {
 		rocket = GameObject.Find ("Rocket");
 		myCollider = transform.GetComponent<SphereCollider>();
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
-//		planetSize=Random.Range(1.8f,2.2f);
-/*		initialPosition=new Vector3
-			(this.transform.position.x ,this.transform.position.y+(this.transform.localScale.y/2)+myCollider.radius,0);
-		rocket.transform.position=initialPosition;
-*/		orbitLevel=3;
+		/* TODO: random planetSize
+		 * it will scale also orbits
+		 * 
+		 * planetSize=Random.Range(1.8f,2.2f);
+		 */
 
-		// TODO: random planetSize
-		// it will scale also orbits
-
-		if(planetType.Equals("count")){
-			//this.transform.localScale= new Vector3 (this.transform.localScale.x/2,this.transform.localScale.y/2,this.transform.localScale.z/2);
-			// graphics
-			Renderer rend = GetComponent<Renderer>();
-			rend.material.shader = Shader.Find("Specular");
-			rend.material.SetColor("_Color", Color.yellow);
-		}
-		else{
-			/*if(planetType.Equals("planet")){
-				// graphics
-			}*/
-//			this.transform.localScale=new Vector3(planetSize,planetSize,2);
-		}
+		SetPlanetType(planetType);
 	}
 
 	void FixedUpdate () {
@@ -90,7 +72,7 @@ public class Planet : MonoBehaviour {
 	void OnCollisionEnter (Collision gravityCollision)
 	{
 		if(planetType.Equals("count")){
-			// starts counter
+			// start counter
 			InvokeRepeating("CountDown",1,1);
 		}
 		collision=true;
@@ -161,19 +143,14 @@ public class Planet : MonoBehaviour {
 //			Debug.Log("Double Clicked");
 			if(collision)
 				shoot=true;
-/*			rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-			rocket.rigidbody.AddForce(rocket.transform.right * acceleration);*/
-//			rocket.rigidbody.velocity=rocket.transform.right * acceleration/10;
-			
 		}else{
 //			Debug.Log("Single Clicked");
 			if(raise){
 				if(rocketManager.Consume(fuelForShoot/2)){
 					// increase orbit size
-					myCollider.radius += 0.15f;
+					myCollider.radius += 0.3f;
+					raise=false;
 					orbitLevel++;
-					if(myCollider.radius>=maxRadius)
-						raise=false;
 				}
 				else{
 					rocketManager.SetInitialPosition();
@@ -183,12 +160,11 @@ public class Planet : MonoBehaviour {
 			else{
 				if(rocketManager.Consume(fuelForShoot/2)){
 					// decrease orbit size
-					myCollider.radius -= 0.15f;
+					myCollider.radius -= 0.3f;
+					raise=true;
 					orbitLevel--;
 					// add force for continue collision
-					rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*100);
-					if(myCollider.radius<=minRadius)
-						raise=true;
+					rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*250);
 				}
 				else{
 					rocketManager.SetInitialPosition();
@@ -276,5 +252,9 @@ public class Planet : MonoBehaviour {
 
 	public void SetText(Text txt){
 		text=txt;
+	}
+
+	public void SetCounter(int cont){
+		counter=cont;
 	}
 }

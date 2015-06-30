@@ -12,7 +12,7 @@ public class Rocket : MonoBehaviour {
 	// now fixed
 	// then there will be checkpoint or something other
 	void Start () {
-		initialPosition=new Vector3(0 ,1.6f,0);
+		initialPosition=new Vector3(0 ,1.4f,0);
 		SetInitialPosition();
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");

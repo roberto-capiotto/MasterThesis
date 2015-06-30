@@ -118,6 +118,11 @@ public class tutorialScript : MonoBehaviour {
 					else{
 						if(counter==2){
 							// two planets and wormholes
+							Destroy(planet);
+							planet = Instantiate(Resources.Load("Planet")) as GameObject;
+							planet.name="Planet";
+							planet.transform.position=new Vector3(8,0,0);
+							planetManager = planet.GetComponent ("Planet") as Planet;
 							rocketManager.SetInitialPosition();
 							rocketManager.FullRefill();
 							planetManager.SetPlanetType("");
