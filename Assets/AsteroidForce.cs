@@ -9,8 +9,8 @@ public class AsteroidForce : MonoBehaviour {
 	bool collision=false;
 	
 	void Start () {
-		// this instruction enable you having asteroid of different dimension
-		//this.transform.localScale=new Vector3(Random.Range(0.6f,0.8f),Random.Range(0.4f,0.6f),1);
+		// each asteroid may have different dimensions
+		// this.transform.localScale=new Vector3(Random.Range(0.4f,0.6f),Random.Range(0.4f,0.6f),1);
 
 		myPos = this.transform.position;
 		this.rigidbody.freezeRotation=true;

@@ -32,7 +32,7 @@ public class AtmosphereScript : MonoBehaviour {
 			gravity=acceleration*(this.transform.localScale.x-1)*
 				(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
 					(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
-			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*2);
+			rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*3);
 	}
 
 	void OnTriggerExit (Collider gravityCollision)
