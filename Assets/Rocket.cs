@@ -52,6 +52,10 @@ public class Rocket : MonoBehaviour {
 		this.transform.position=initialPosition;
 	}
 
+	public void ChangeInitialPosition(Vector3 vec){
+		initialPosition=vec;
+	}
+
 	public Vector3 GetInitialPosition(){
 		return initialPosition;
 	}

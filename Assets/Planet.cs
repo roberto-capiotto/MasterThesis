@@ -8,8 +8,11 @@ public class Planet : MonoBehaviour {
 	GameObject rocket;
 	Rocket rocketManager;
 	int fuelForShoot=50;
+	Vector3 newPosition;
 	// planet vars
-	public string planetType;	/* "count" for exploding planet */
+	public string planetType;	/* "count" for exploding planet
+	                             * "checkpoint" for checkpoint planet
+	                             */
 	public int counter=5;
 	SphereCollider myCollider;
 //	public float planetSize;
@@ -71,6 +74,12 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision gravityCollision)
 	{
+		if(planetType.Equals("checkpoint")){
+			// checkpoint reached!!
+			// change initial position of rocket
+			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.4f,0);
+			rocketManager.ChangeInitialPosition();
+		}
 		if(planetType.Equals("count")){
 			// start counter
 			InvokeRepeating("CountDown",1,1);
@@ -236,9 +245,16 @@ public class Planet : MonoBehaviour {
 			rend.material.SetColor("_Color", Color.yellow);
 		}
 		else{
-			Renderer rend = GetComponent<Renderer>();
-			rend.material.shader = Shader.Find("Specular");
-			rend.material.SetColor("_Color", Color.white);
+			if(type.Equals("checkpoint")){
+				Renderer rend = GetComponent<Renderer>();
+				rend.material.shader = Shader.Find("Specular");
+				rend.material.SetColor("_Color", Color.grey);
+			}
+			else{
+				Renderer rend = GetComponent<Renderer>();
+				rend.material.shader = Shader.Find("Specular");
+				rend.material.SetColor("_Color", Color.white);
+			}
 		}
 	}
 
