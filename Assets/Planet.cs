@@ -78,7 +78,7 @@ public class Planet : MonoBehaviour {
 			// checkpoint reached!!
 			// change initial position of rocket
 			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.4f,0);
-			rocketManager.ChangeInitialPosition();
+			rocketManager.ChangeInitialPosition(newPosition);
 		}
 		if(planetType.Equals("count")){
 			// start counter
