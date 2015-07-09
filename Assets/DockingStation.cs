@@ -12,6 +12,8 @@ public class DockingStation : MonoBehaviour {
 	float rocketVelocity=60f;
 	float newangle;
 	float gravity;
+	float angleCollision;
+	float m;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
 	// mouseClick vars
 	int mouseClicks = 0;
@@ -21,6 +23,11 @@ public class DockingStation : MonoBehaviour {
 	// flags
 	bool shoot=false;
 	bool collision=false;
+	bool up=false;
+	bool down=false;
+	bool left=false;
+	bool right=false;
+	bool clockwise=false;
 
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -36,7 +43,10 @@ public class DockingStation : MonoBehaviour {
 				print("shoot");
 				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 				rocketManager.SetShootPosition(rocket.transform.position);
-				rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+				if(clockwise)
+					rocket.rigidbody.AddForce(rocket.transform.right * acceleration);
+				else
+					rocket.rigidbody.AddForce(-rocket.transform.right * acceleration);
 			}
 			else{
 				shoot=false;
@@ -46,7 +56,92 @@ public class DockingStation : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(){
+	void OnCollisionEnter(Collision gravityCollision){
+		angleCollision=tan(rocket.transform.position - this.transform.position);
+		// find where the rocket will touch the spaceStation
+		if(rocket.transform.position.x>this.transform.position.x)
+			right=true;
+		else
+			left=true;
+		if(rocket.transform.position.y>this.transform.position.y)
+			up=true;
+		else
+			down=true;
+		
+		// calculate the shootingAngle
+		m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+		
+		// 1st quad
+		if(right && up){
+			if(m<90 || m>=270){
+				clockwise=true;
+			}
+			else{
+				if(m>=90 && m<180){
+					clockwise=false;
+				}
+				else{
+					if(angleCollision>45)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+		
+		//2nd quad
+		if(left && up){
+			if(m<90){
+				clockwise=true;
+			}
+			else{
+				if(m>=90 && m<270){
+					clockwise=false;
+				}
+				else{
+					if(angleCollision>135)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+		
+		//3rd quad
+		if(left && down){
+			if(m>180){
+				clockwise=false;
+			}
+			else{
+				if(m>=90){
+					clockwise=true;
+				}
+				else{
+					if(angleCollision>225)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
+		
+		// 4th quad
+		if(right && down){
+			if(m<90){
+				clockwise=false;
+			}
+			else{
+				if(m>=180){
+					clockwise=true;
+				}
+				else{
+					if(angleCollision>315)
+						clockwise=false;
+					else
+						clockwise=true;
+				}
+			}
+		}
 		// refill
 		rocketManager.Refill(fuel);
 		collision=true;
@@ -54,15 +149,19 @@ public class DockingStation : MonoBehaviour {
 
 	void OnCollisionStay(Collision collision){
 		rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-		rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
-		newangle = tan (rocket.transform.position - this.transform.position);
-		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
-		rocket.transform.rotation = rotate;
-		
+
 		gravity=acceleration*(this.transform.localScale.x-1)*
 			(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
 				(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
 		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*3);
+
+		if(clockwise)
+			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
+		else
+			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity));
+		newangle = tan (rocket.transform.position - this.transform.position);
+		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
+		rocket.transform.rotation = rotate;
 	}
 
 	void OnCollisionExit(){
