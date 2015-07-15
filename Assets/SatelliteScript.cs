@@ -3,10 +3,11 @@ using System.Collections;
 
 public class SatelliteScript : MonoBehaviour {
 	
-	GameObject rocket;
+	GameObject rocket,planet;
 	Rocket rocketManager;
 	Vector3 myPos;
 	bool collision=false;
+	bool clockwise=false;
 	
 	void Start () {
 		// each satellite may have different dimensions
@@ -19,21 +20,33 @@ public class SatelliteScript : MonoBehaviour {
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");
 		rend.material.SetColor("_Color", Color.green);
-		
+
+		planet = this.transform.parent.gameObject;
 	}
-	
+
 	void FixedUpdate(){
-		this.transform.position = myPos;
+		//this.transform.position = myPos;
 		if(collision){
 			//	rocket die
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			collision=false;
 		}
+		if(clockwise)
+			transform.RotateAround(planet.transform.position, -Vector3.forward, 10 * Time.deltaTime);
+		else
+			transform.RotateAround(planet.transform.position, Vector3.forward, 10 * Time.deltaTime);
 	}
 	
 	void OnCollisionEnter()
 	{
 		collision=true;
+	}
+
+	/* if rotation=true  --> clockwise
+	 * if rotation=false --> counterclockwise
+	 */
+	public void SetRotation(bool rotation){
+		clockwise=rotation;
 	}
 }

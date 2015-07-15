@@ -19,8 +19,14 @@ public class Planet : MonoBehaviour {
 	int orbitLevel=2;
 	public bool clockWise=false;
 	public Text text;
+	// satellite vars
 	public GameObject inSatellite;
 	public GameObject outSatellite;
+	SatelliteScript inSat;
+	SatelliteScript outSat;
+	float randomPlacement;
+	float inRadius=1.3f;
+	float outRadius=2.05f;
 	// phisics vars
 	float gravity;
 	float acceleration=180f;
@@ -52,6 +58,51 @@ public class Planet : MonoBehaviour {
 		 */
 
 		SetPlanetType(planetType);
+
+		// place inSatellite
+		randomPlacement = Random.Range(0,4);
+		if(randomPlacement<1){
+			inSatellite.transform.position=new Vector3(this.transform.position.x,this.transform.position.y+inRadius,0);
+		}
+		else{
+			if(randomPlacement<2){
+				inSatellite.transform.position=new Vector3(this.transform.position.x-inRadius,this.transform.position.y,0);
+			}
+			else{
+				if(randomPlacement<3){
+					inSatellite.transform.position=new Vector3(this.transform.position.x,this.transform.position.y-inRadius,0);
+				}
+			}
+		}
+
+		// place outSatellite
+		randomPlacement = Random.Range(0,4);
+		if(randomPlacement<1){
+			outSatellite.transform.position=new Vector3(this.transform.position.x,this.transform.position.y+outRadius,0);
+		}
+		else{
+			if(randomPlacement<2){
+				outSatellite.transform.position=new Vector3(this.transform.position.x-outRadius,this.transform.position.y,0);
+			}
+			else{
+				if(randomPlacement<3){
+					outSatellite.transform.position=new Vector3(this.transform.position.x,this.transform.position.y-outRadius,0);
+				}
+			}
+		}
+
+		print ("IN "+inSatellite.transform.position.x);
+		print ("OUT "+outSatellite.transform.position.x);
+		inSat = inSatellite.GetComponent ("SatelliteScript") as SatelliteScript;
+		outSat = outSatellite.GetComponent ("SatelliteScript") as SatelliteScript;
+		if(Random.Range(-1,1)>0){
+			inSat.SetRotation(true);
+			outSat.SetRotation(false);
+		}
+		else{
+			inSat.SetRotation(false);
+			outSat.SetRotation(true);
+		}
 	}
 
 	void FixedUpdate () {
