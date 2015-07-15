@@ -6,11 +6,11 @@ public class tutorialScript : MonoBehaviour {
 
 	int counter=0;
 	float camSize;
-	GameObject rocket,planet,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation;
+	GameObject rocket,planet,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
 	Rocket rocketManager;
 	Planet planetManager;
 	Wormhole wormholeManager,wormhole2Manager;
-	Vector3 initialPosition;
+	Vector3 initialPosition,rocketInitialPosition;
 	public Text text;
 	public Text text2;
 	bool fuel=false;
@@ -20,6 +20,7 @@ public class tutorialScript : MonoBehaviour {
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
+		rocketInitialPosition=rocketManager.GetInitialPosition();
 	}
 
 	void Update () {
@@ -44,6 +45,7 @@ public class tutorialScript : MonoBehaviour {
 			// end of tutorial
 			Destroy(planet);
 			Destroy(dockingStation);
+			rocketManager.ChangeInitialPosition(rocketInitialPosition);
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			initialPosition=new Vector3(0,0,-10);
@@ -94,6 +96,8 @@ public class tutorialScript : MonoBehaviour {
 						planet = Instantiate(Resources.Load("Planet")) as GameObject;
 						planet.name="Planet";
 						planet.transform.position=new Vector3(8,0,0);
+						planetManager = planet.GetComponent ("Planet") as Planet;
+						planetManager.DestroySatellite(0);
 						asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
 						asteroid.name="Asteroid";
 						asteroid.transform.position=new Vector3(4,0,0);
@@ -135,6 +139,7 @@ public class tutorialScript : MonoBehaviour {
 								planet.name="Planet";
 								planet.transform.position=new Vector3(8,0,0);
 								planetManager = planet.GetComponent ("Planet") as Planet;
+								planetManager.DestroySatellite(0);
 								rocketManager.SetInitialPosition();
 								rocketManager.FullRefill();
 								planetManager.SetPlanetType("");
@@ -175,6 +180,8 @@ public class tutorialScript : MonoBehaviour {
 										planet = Instantiate(Resources.Load("Planet")) as GameObject;
 										planet.name="Planet";
 										planet.transform.position=new Vector3(8,0,0);
+										planetManager = planet.GetComponent ("Planet") as Planet;
+										planetManager.DestroySatellite(0);
 										counter++;
 									}
 								}

@@ -19,6 +19,8 @@ public class Planet : MonoBehaviour {
 	int orbitLevel=2;
 	public bool clockWise=false;
 	public Text text;
+	public GameObject inSatellite;
+	public GameObject outSatellite;
 	// phisics vars
 	float gravity;
 	float acceleration=180f;
@@ -272,5 +274,22 @@ public class Planet : MonoBehaviour {
 
 	public void SetCounter(int cont){
 		counter=cont;
+	}
+
+	/* if 0 destroy all
+	 * if 1 destroy inSat
+	 * if 2 destroy outSat
+	 */
+	public void DestroySatellite(int par){
+		if(par==0){
+			Destroy(inSatellite);
+			Destroy(outSatellite);
+		}
+		if(par==1){
+			Destroy(inSatellite);
+		}
+		if(par==2){
+			Destroy(outSatellite);
+		}
 	}
 }

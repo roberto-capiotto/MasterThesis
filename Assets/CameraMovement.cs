@@ -14,18 +14,19 @@ public class CameraMovement : MonoBehaviour {
 	float leftBound;
 	float upBound;
 	float downBound;
+	float delta;
 	// flags
 	bool moving=false;
 	bool right=false;
 	bool left=false;
 	bool up=false;
 	bool down=false;
+	bool setPosition=false;
 
 	/* DONE: define how to move in the level
-	 * Up and down boundaries will be defined after the generation
-	 * Now the boundaries are fixed
-	 * especially up and down
-	 * eventually left
+	 * We have a predefined schema with predifined dimensions;
+	 * startPlanet on left, endPlanet on right
+	 * Up and down boundaries are fixed. We don't want to reach other levels
 	 */
 	void Start () {
 
@@ -34,8 +35,9 @@ public class CameraMovement : MonoBehaviour {
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		position = new Vector3(0,0,0);
+		delta=Camera.main.orthographicSize;
 
-		// define statics bound, now not used
+		// TODO: define NEW statics bound
 		SetBound(-2*camSize,0);
 		SetBound(camSize*2,1);
 		SetBound(-camSize*2,2);
@@ -65,6 +67,7 @@ public class CameraMovement : MonoBehaviour {
 
 		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize){
 			moving=true;
+			setPosition=true;
 			// if moving right
 			if(rocket.transform.position.x-this.transform.position.x>camSize)
 				right=true;
@@ -74,6 +77,7 @@ public class CameraMovement : MonoBehaviour {
 		}
 		if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>camSize){
 			moving=true;
+			setPosition=true;
 			// if moving up
 			if(rocket.transform.position.y-this.transform.position.y>camSize)
 				up=true;
@@ -82,32 +86,48 @@ public class CameraMovement : MonoBehaviour {
 				down=true;
 		}
 		if(moving){
-			// set destination position
-			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+			if(setPosition){
+				// set destination position
+				position=this.transform.position;
+				if(right){
+					position=new Vector3(position.x+delta,position.y,-10);
+				}
+				if(up){
+					position=new Vector3(position.x,position.y+delta,-10);
+				}
+				if(down){
+					position=new Vector3(position.x,position.y-delta,-10);
+				}
+				if(left){
+					position=new Vector3(position.x-delta,position.y,-10);
+				}
+				setPosition=false;
+			}
+//			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+
 			// TODO: optimize. The rocket should always be almost @ center
-			// better controls should became the game better
-			// we are moving the camera 0.2 every update
-			// it seems ok
+			// we are moving the camera 0.35 every update
+			// it seems fluent
 			if(right){
-				this.transform.position = new Vector3(this.transform.position.x+0.2f,this.transform.position.y,-10);
+				this.transform.position = new Vector3(this.transform.position.x+0.35f,this.transform.position.y,-10);
 				if(this.transform.position.x-position.x>0){
 					right=false;
 				}
 			}
 			if(left){
-				this.transform.position = new Vector3(this.transform.position.x-0.2f,this.transform.position.y,-10);
+				this.transform.position = new Vector3(this.transform.position.x-0.35f,this.transform.position.y,-10);
 				if(this.transform.position.x-position.x<0){
 					left=false;
 				}
 			}
 			if(up){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.2f,-10);
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.35f,-10);
 				if(this.transform.position.y-position.y>0){
 					up=false;
 				}
 			}
 			if(down){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.2f,-10);
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.35f,-10);
 				if(this.transform.position.y-position.y<0){
 					down=false;
 				}
