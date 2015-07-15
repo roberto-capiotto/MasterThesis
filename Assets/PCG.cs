@@ -53,7 +53,7 @@ public class PCG : MonoBehaviour {
 		else
 			(planet.GetComponent("Planet") as Planet).SetRotation(false);
 		gen++;
-		print (gen+" "+x+" "+y+" "+(planet.GetComponent("Planet") as Planet).clockWise);
+		print (gen+" "+x+" "+y+" "+(planet.GetComponent("Planet") as Planet).clockwise);
 		if(gen<10){
 			GeneratePlanet(newPosition);
 		}

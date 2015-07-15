@@ -6,7 +6,7 @@ public class tutorialScript : MonoBehaviour {
 
 	int counter=0;
 	float camSize;
-	GameObject rocket,planet,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
+	GameObject rocket,firstPlanet,planet,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
 	Rocket rocketManager;
 	Planet planetManager;
 	Wormhole wormholeManager,wormhole2Manager;
@@ -18,6 +18,9 @@ public class tutorialScript : MonoBehaviour {
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
+		firstPlanet = GameObject.Find ("Planet");
+		planetManager = firstPlanet.GetComponent ("Planet") as Planet;
+		planetManager.DestroySatellite(0);
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		rocketInitialPosition=rocketManager.GetInitialPosition();

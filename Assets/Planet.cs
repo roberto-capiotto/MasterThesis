@@ -17,7 +17,6 @@ public class Planet : MonoBehaviour {
 	SphereCollider myCollider;
 //	public float planetSize;
 	int orbitLevel=2;
-	public bool clockWise=false;
 	public Text text;
 	// satellite vars
 	public GameObject inSatellite;
@@ -33,6 +32,8 @@ public class Planet : MonoBehaviour {
 	float rocketVelocity=60f;
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
+	float angleCollision;
+	float m;
 	// mouseClick vars
 	Vector3 mousePosClick;
 	Vector3 mousePosBefore;
@@ -46,6 +47,12 @@ public class Planet : MonoBehaviour {
 	bool collision=false;
 	bool raise=false;
 	bool counting=false;
+	bool up=false;
+	bool down=false;
+	bool left=false;
+	bool right=false;
+	public bool clockwise=false;
+	bool rotating=false;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -91,8 +98,7 @@ public class Planet : MonoBehaviour {
 			}
 		}
 
-		print ("IN "+inSatellite.transform.position.x);
-		print ("OUT "+outSatellite.transform.position.x);
+		// set rotation of Satellites
 		inSat = inSatellite.GetComponent ("SatelliteScript") as SatelliteScript;
 		outSat = outSatellite.GetComponent ("SatelliteScript") as SatelliteScript;
 		if(Random.Range(-1,1)>0){
@@ -112,7 +118,8 @@ public class Planet : MonoBehaviour {
 				print("shoot");
 				rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
 				rocketManager.SetShootPosition(rocket.transform.position);
-				if(clockWise)
+				rotating=false;
+				if(clockwise)
 					rocket.rigidbody.AddForce(rocket.transform.right *2* acceleration);
 				else
 					rocket.rigidbody.AddForce(-rocket.transform.right *2* acceleration);
@@ -138,39 +145,100 @@ public class Planet : MonoBehaviour {
 			InvokeRepeating("CountDown",1,1);
 		}
 		collision=true;
-		float ang=tan (gravityCollision.transform.position-this.transform.position);
-		float m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
-		/* TODO: all
-		if(ang<45 || ang>315){
-			if(m>180)
-				print ("YES ang: "+ang+" m: "+m);
+		if(!rotating){
+			rotating=true;
+			angleCollision=tan(rocket.transform.position - this.transform.position);
+			// find where the rocket will touch the planet
+			if(rocket.transform.position.x>this.transform.position.x)
+				right=true;
 			else
-				print ("NO ang: "+ang+" m: "+m);
+				left=true;
+			if(rocket.transform.position.y>this.transform.position.y)
+				up=true;
+			else
+				down=true;
+			
+			// calculate the shootingAngle
+			m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+			
+			// 1st quad
+			if(right && up){
+				if(m<90 || m>=270){
+					clockwise=true;
+				}
+				else{
+					if(m>=90 && m<180){
+						clockwise=false;
+					}
+					else{
+						if(angleCollision>45)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+				}
+			}
+			
+			//2nd quad
+			if(left && up){
+				if(m<90){
+					clockwise=true;
+				}
+				else{
+					if(m>=90 && m<270){
+						clockwise=false;
+					}
+					else{
+						if(angleCollision>135)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+				}
+			}
+			
+			//3rd quad
+			if(left && down){
+				if(m>180){
+					clockwise=false;
+				}
+				else{
+					if(m>=90){
+						clockwise=true;
+					}
+					else{
+						if(angleCollision>225)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+				}
+			}
+			
+			// 4th quad
+			if(right && down){
+				if(m<90){
+					clockwise=false;
+				}
+				else{
+					if(m>=180){
+						clockwise=true;
+					}
+					else{
+						if(angleCollision>315)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+				}
+			}
 		}
-		if(ang>45 && ang<135){//TODO: check
-			if(m>270)
-				print ("YES ang: "+ang+" m: "+m);
-			else
-				print ("NO ang: "+ang+" m: "+m);
-		}
-		if(ang>135 && ang<225){//TODO: check
-			if(m<180)
-				print ("YES ang: "+ang+" m: "+m);
-			else
-				print ("NO ang: "+ang+" m: "+m);
-		}
-		if(ang>225 && ang<315){//TODO: check
-			if(m>90)
-				print ("YES ang: "+ang+" m: "+m);
-			else
-				print ("NO ang: "+ang+" m: "+m);
-		}*/
 	}
 	
 	void OnCollisionStay(Collision collision){
 		rocket.rigidbody.velocity = (new Vector3 (0, 0, 0));
-		// check if the planet is rotating clockWise or not
-		if(clockWise)
+		// check if the planet is rotating clockwise or not
+		if(clockwise)
 			rocket.rigidbody.AddForce (-(Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
 		else
 			rocket.rigidbody.AddForce ((Quaternion.Euler (0, 0, 90) * (rocket.transform.position - this.transform.position).normalized * rocketVelocity*2));
@@ -187,6 +255,10 @@ public class Planet : MonoBehaviour {
 	void OnCollisionExit (Collision coll){
 		collision=false;
 		shoot=false;
+		up=false;
+		down=false;
+		left=false;
+		right=false;
 	}
 	
 	public void OnMouseDown(){
@@ -287,7 +359,7 @@ public class Planet : MonoBehaviour {
 	}
 
 	public void SetRotation(bool rotation){
-		clockWise=rotation;
+		clockwise=rotation;
 	}
 
 	public void SetPlanetType(string type){

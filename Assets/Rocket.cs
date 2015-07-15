@@ -8,9 +8,6 @@ public class Rocket : MonoBehaviour {
 	Vector3 initialPosition;
 	Vector3 shootPosition;
 
-	// TODO: define initialPosition
-	// now fixed
-	// then there will be checkpoint or something other
 	void Start () {
 		initialPosition=new Vector3(0 ,1.4f,0);
 		SetInitialPosition();
@@ -52,6 +49,7 @@ public class Rocket : MonoBehaviour {
 		this.transform.position=initialPosition;
 	}
 
+	// use this function with checkpoint
 	public void ChangeInitialPosition(Vector3 vec){
 		initialPosition=vec;
 	}

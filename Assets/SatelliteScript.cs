@@ -5,7 +5,6 @@ public class SatelliteScript : MonoBehaviour {
 	
 	GameObject rocket,planet;
 	Rocket rocketManager;
-	Vector3 myPos;
 	bool collision=false;
 	bool clockwise=false;
 	
@@ -25,7 +24,6 @@ public class SatelliteScript : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		//this.transform.position = myPos;
 		if(collision){
 			//	rocket die
 			rocketManager.SetInitialPosition();
