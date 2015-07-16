@@ -42,7 +42,7 @@ public class tutorialScript : MonoBehaviour {
 
 	public void Change(){
 		if(counter==8){
-			Application.LoadLevel("PCG");
+			Application.LoadLevel("firstCollision");
 		}
 		if(counter==7){
 			// end of tutorial

@@ -48,14 +48,16 @@ public class PCG : MonoBehaviour {
 		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
 
 		deltaLevel = camSize*4;
+<<<<<<< HEAD
 		//myCam.orthographicSize=9;
+=======
+>>>>>>> parent of f776992... Multiple level with growing distance
 	}
 
 	void FixedUpdate () {
 		if(planetManager.levelCompleted){
 			myCamera.transform.position=endPosition;
-			startingCorner=new Vector3(endPosition.x,startingCorner.y-12*(level-1)*camSize/2-deltaLevel,0);
-//			startingCorner=new Vector3(startingCorner.x+12*camSize/2,startingCorner.y-12*(level-1)*camSize/2-deltaLevel,0);
+			startingCorner=new Vector3(startingCorner.x+12*camSize/2,startingCorner.y-12*camSize/2-deltaLevel,0);
 			startPlanet=GenerateLevel(startingCorner);
 			// unlock DownBound and RightBound
 			//TODO: depends on #level
