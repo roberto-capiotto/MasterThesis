@@ -48,7 +48,6 @@ public class PCG : MonoBehaviour {
 		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
 
 		deltaLevel = camSize*4;
-		//myCam.orthographicSize=9;
 	}
 
 	void FixedUpdate () {
@@ -57,6 +56,7 @@ public class PCG : MonoBehaviour {
 			startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
 			startPlanet=GenerateLevel(startingCorner);
 			// unlock DownBound and RightBound
+			//TODO: depends on #level
 			myCamera.SetBound(startingCorner.y-level*camSize*8,2);
 			myCamera.SetBound(startingCorner.x+level*camSize*8,3);
 
