@@ -15,6 +15,7 @@ public class PCG : MonoBehaviour {
 	GameObject startPlanet;
 	SphereCollider myCollider;
 	float deltaLevel;
+	public CameraMovement myCamera;
 	
 	void Start () {
 		// get Camera
@@ -43,11 +44,24 @@ public class PCG : MonoBehaviour {
 		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
 
 		deltaLevel = camSize*4;
-		startingCorner=new Vector3(startingCorner.x+12*camSize/2,startingCorner.y-12*camSize/2-deltaLevel,0);
-		GenerateLevel(startingCorner);
 	}
 
 	void FixedUpdate () {
+		if(planetManager.levelCompleted){
+			startingCorner=new Vector3(startingCorner.x+12*camSize/2,startingCorner.y-12*camSize/2-deltaLevel,0);
+			startPlanet=GenerateLevel(startingCorner);
+			// TODO: unlockBounds and move camera
+			myCamera.SetBound(startingCorner.y-camSize*8,2);
+			myCamera.SetBound(startingCorner.x+camSize*8,3);
+			// place Rocket
+			initialPosition=new Vector3
+				(startPlanet.transform.position.x ,startPlanet.transform.position.y+(startPlanet.transform.localScale.y/2)+myCollider.radius,0);
+			rocketManager.ChangeInitialPosition(initialPosition);
+			rocketManager.SetInitialPosition();
+			myCamera.SetBound(startingCorner.x-2*camSize,0);
+			myCamera.SetBound(startingCorner.y+camSize*2,1);
+			myCam.transform.position=startPlanet.transform.position;
+		}
 	}
 
 	GameObject GenerateLevel(Vector3 pos){
@@ -92,6 +106,8 @@ public class PCG : MonoBehaviour {
 		// generate endPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
+		planetManager = planet.GetComponent ("Planet") as Planet;
+		planetManager.SetPlanetType("end");
 		// place endPlanet
 		rand=Random.Range(0,4);
 		print ("endRAND: "+rand);

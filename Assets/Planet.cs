@@ -12,6 +12,7 @@ public class Planet : MonoBehaviour {
 	// planet vars
 	public string planetType;	/* "count" for exploding planet
 	                             * "checkpoint" for checkpoint planet
+	                             * "end" for endLevel planet
 	                             */
 	public int counter=5;
 	SphereCollider myCollider;
@@ -53,6 +54,7 @@ public class Planet : MonoBehaviour {
 	bool right=false;
 	public bool clockwise=false;
 	bool rotating=false;
+	public bool levelCompleted=false;
 	
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -143,6 +145,9 @@ public class Planet : MonoBehaviour {
 		if(planetType.Equals("count")){
 			// start counter
 			InvokeRepeating("CountDown",1,1);
+		}
+		if(planetType.Equals("end")){
+			levelCompleted=true;
 		}
 		collision=true;
 		if(!rotating){
