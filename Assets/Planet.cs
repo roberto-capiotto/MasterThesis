@@ -152,13 +152,13 @@ public class Planet : MonoBehaviour {
 		collision=true;
 		if(!rotating){
 			rotating=true;
-			angleCollision=tan(rocket.transform.position - this.transform.position);
+			angleCollision=tan(gravityCollision.transform.position - this.transform.position);
 			// find where the rocket will touch the planet
-			if(rocket.transform.position.x>this.transform.position.x)
+			if(gravityCollision.transform.position.x>this.transform.position.x)
 				right=true;
 			else
 				left=true;
-			if(rocket.transform.position.y>this.transform.position.y)
+			if(gravityCollision.transform.position.y>this.transform.position.y)
 				up=true;
 			else
 				down=true;

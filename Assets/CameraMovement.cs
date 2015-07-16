@@ -75,6 +75,15 @@ public class CameraMovement : MonoBehaviour {
 			reset();
 		}
 
+		/* right bound
+		 */
+		if(rocket.transform.position.x>GetBound(3)){
+			rocketManager.SetInitialPosition();
+			rocketManager.FullRefill();
+			this.transform.position=initialPosition;
+			reset();
+		}
+
 		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize){
 			moving=true;
 			setPosition=true;
