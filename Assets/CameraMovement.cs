@@ -8,7 +8,7 @@ public class CameraMovement : MonoBehaviour {
 	Rocket rocketManager;
 	public Text text;
 	// camera vars
-	Vector3 initialPosition;
+	public Vector3 initialPosition;
 	Vector3 position;
 	float camSize;
 	float leftBound;
@@ -38,9 +38,14 @@ public class CameraMovement : MonoBehaviour {
 		delta=Camera.main.orthographicSize;
 
 		// TODO: define NEW statics bound
+		/* Bound values
+		 * 0 is left
+		 * 1 is up
+		 * 2 is down
+		 */
 		SetBound(-2*camSize,0);
 		SetBound(camSize*2,1);
-		SetBound(-camSize*2,2);
+		SetBound(-camSize*4,2);
 	}
 	
 	void FixedUpdate () {
@@ -172,6 +177,10 @@ public class CameraMovement : MonoBehaviour {
 		else{
 			return 0;
 		}
+	}
+
+	public void SetThisAsInitialPosition(){
+		initialPosition=this.transform.position;
 	}
 
 	void reset(){

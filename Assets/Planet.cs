@@ -395,6 +395,10 @@ public class Planet : MonoBehaviour {
 		text=txt;
 	}
 
+	public bool GetCollision(){
+		return collision;
+	}
+
 	public void SetCounter(int cont){
 		counter=cont;
 	}

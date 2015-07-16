@@ -11,8 +11,7 @@ public class SatelliteScript : MonoBehaviour {
 	void Start () {
 		// each satellite may have different dimensions
 		// this.transform.localScale=new Vector3(Random.Range(0.4f,0.6f),Random.Range(0.4f,0.6f),1);
-		
-		myPos = this.transform.position;
+
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		

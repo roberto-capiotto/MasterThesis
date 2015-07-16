@@ -9,8 +9,8 @@ public class Rocket : MonoBehaviour {
 	Vector3 shootPosition;
 
 	void Start () {
-		initialPosition=new Vector3(0 ,1.4f,0);
-		SetInitialPosition();
+		//initialPosition=new Vector3(0 ,1.4f,0);
+		//SetInitialPosition();
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");
 		rend.material.SetColor("_Color", Color.red);
@@ -52,6 +52,7 @@ public class Rocket : MonoBehaviour {
 	// use this function with checkpoint
 	public void ChangeInitialPosition(Vector3 vec){
 		initialPosition=vec;
+		print ("CHANGED! x:"+initialPosition.x+" y: "+initialPosition.y);
 	}
 
 	public Vector3 GetInitialPosition(){
