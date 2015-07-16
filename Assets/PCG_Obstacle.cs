@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PCG : MonoBehaviour {
+public class PCG_Obstacle : MonoBehaviour {
 	
 	bool creation=false;
 	GameObject rocket,planet,cam;
@@ -31,7 +31,7 @@ public class PCG : MonoBehaviour {
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		startingCorner=Vector3.zero;
 		startPlanet=GenerateLevel(startingCorner);
-
+		
 		// place Rocket
 		initialPosition=new Vector3
 			(startPlanet.transform.position.x ,startPlanet.transform.position.y+(startPlanet.transform.localScale.y/2)+myCollider.radius,0);
@@ -41,37 +41,35 @@ public class PCG : MonoBehaviour {
 		// move Camera
 		myCam.transform.position=new Vector3(startPlanet.transform.position.x,startPlanet.transform.position.y,-10);
 		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).Invoke("SetThisAsInitialPosition",1);
-
+		
 		// the rocket and the first level was generated
 		creation=true;
 		// enable the movement of the Camera
 		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
-
+		
 		deltaLevel = camSize*4;
-		//myCam.orthographicSize=9;
+		myCam.orthographicSize=9;
 	}
-
+	
 	void FixedUpdate () {
 		if(planetManager.levelCompleted){
 			myCamera.transform.position=endPosition;
 			startingCorner=new Vector3(endPosition.x,startingCorner.y-12*(level-1)*camSize/2-deltaLevel,0);
-//			startingCorner=new Vector3(startingCorner.x+12*camSize/2,startingCorner.y-12*(level-1)*camSize/2-deltaLevel,0);
 			startPlanet=GenerateLevel(startingCorner);
 			// unlock DownBound and RightBound
-			//TODO: depends on #level
 			myCamera.SetBound(startingCorner.y-level*camSize*8,2);
 			myCamera.SetBound(startingCorner.x+level*camSize*8,3);
-
+			
 			// move Rocket
 			initialPosition=new Vector3
 				(startPlanet.transform.position.x ,startPlanet.transform.position.y+(startPlanet.transform.localScale.y/2)+myCollider.radius,0);
 			rocketManager.ChangeInitialPosition(initialPosition);
 			rocketManager.SetInitialPosition();
-
+			
 			// unlock LeftBound and UpBound
 			myCamera.SetBound(startingCorner.x-2*camSize,0);
 			myCamera.SetBound(startingCorner.y+camSize*2,1);
-
+			
 			// move Camera
 			camPosition= new Vector3(startPlanet.transform.position.x,startPlanet.transform.position.y,-10);
 			scrollCamera=true;
@@ -89,7 +87,7 @@ public class PCG : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	GameObject GenerateLevel(Vector3 pos){
 		// generate startPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
@@ -105,7 +103,7 @@ public class PCG : MonoBehaviour {
 		if(rand==0){
 			planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-rand-camSize/2,0);
 		}
-
+		
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
@@ -131,12 +129,12 @@ public class PCG : MonoBehaviour {
 			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-camSize/2,0);
 		else
 			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-rand*camSize*3/2,0);
-
+		
 		endPosition=planet.transform.position;
 		level++;
 		return retPlan;
 	}
-
+	
 	public bool GetCreation(){
 		return creation;
 	}
