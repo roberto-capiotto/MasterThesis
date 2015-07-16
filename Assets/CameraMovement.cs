@@ -14,7 +14,9 @@ public class CameraMovement : MonoBehaviour {
 	float leftBound;
 	float upBound;
 	float downBound;
-	float delta;
+	float rightBound;
+	float deltaX;
+	float deltaY;
 	// flags
 	bool moving=false;
 	bool right=false;
@@ -35,17 +37,20 @@ public class CameraMovement : MonoBehaviour {
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		position = new Vector3(0,0,0);
-		delta=Camera.main.orthographicSize;
+		deltaX=Camera.main.orthographicSize*3/2;
+		deltaY=Camera.main.orthographicSize;
 
-		// TODO: define NEW statics bound
+		// TODO: define NEW static bound
 		/* Bound values
 		 * 0 is left
 		 * 1 is up
 		 * 2 is down
+		 * 3 is right
 		 */
 		SetBound(-2*camSize,0);
 		SetBound(camSize*2,1);
-		SetBound(-camSize*4,2);
+		SetBound(-camSize*8,2);
+		SetBound(camSize*8,3);
 	}
 	
 	void FixedUpdate () {
@@ -95,16 +100,16 @@ public class CameraMovement : MonoBehaviour {
 				// set destination position
 				position=this.transform.position;
 				if(right){
-					position=new Vector3(position.x+delta,position.y,-10);
+					position=new Vector3(position.x+deltaX,position.y,-10);
 				}
 				if(up){
-					position=new Vector3(position.x,position.y+delta,-10);
+					position=new Vector3(position.x,position.y+deltaY,-10);
 				}
 				if(down){
-					position=new Vector3(position.x,position.y-delta,-10);
+					position=new Vector3(position.x,position.y-deltaY,-10);
 				}
 				if(left){
-					position=new Vector3(position.x-delta,position.y,-10);
+					position=new Vector3(position.x-deltaX,position.y,-10);
 				}
 				setPosition=false;
 			}
@@ -157,6 +162,9 @@ public class CameraMovement : MonoBehaviour {
 		if(type==2){
 			downBound=bound;
 		}
+		if(type==3){
+			rightBound=bound;
+		}
 	}
 
 	/* TYPE values
@@ -173,6 +181,9 @@ public class CameraMovement : MonoBehaviour {
 		}
 		if(type==2){
 			return downBound;
+		}
+		if(type==3){
+			return rightBound;
 		}
 		else{
 			return 0;

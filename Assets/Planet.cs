@@ -418,5 +418,8 @@ public class Planet : MonoBehaviour {
 		if(par==2){
 			Destroy(outSatellite);
 		}
+		if(par==3){
+			;//destroy nothing
+		}
 	}
 }

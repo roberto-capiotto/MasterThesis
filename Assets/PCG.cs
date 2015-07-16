@@ -6,14 +6,15 @@ public class PCG : MonoBehaviour {
 	bool creation=false;
 	GameObject rocket,planet,cam;
 	Rocket rocketManager;
+	Planet planetManager;
 	Camera myCam;
-	public int gen=0;
 	float x,y,rand,camSize=5;
 	Vector3 initialPosition;
-	Vector3 beforePosition;
 	Vector3 newPosition;
 	Vector3 startingCorner;
+	GameObject startPlanet;
 	SphereCollider myCollider;
+	float deltaLevel;
 	
 	void Start () {
 		// get Camera
@@ -22,19 +23,48 @@ public class PCG : MonoBehaviour {
 		// generate Rocket
 		rocket = Instantiate(Resources.Load("Rocket")) as GameObject;
 		rocket.name="Rocket";
-		//rocket.transform.position = new Vector3(-10,-10,0);
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
-		// generate Planet
+		startingCorner=Vector3.zero;
+		startPlanet=GenerateLevel(startingCorner);
+
+		// place Rocket
+		initialPosition=new Vector3
+			(startPlanet.transform.position.x ,startPlanet.transform.position.y+(startPlanet.transform.localScale.y/2)+myCollider.radius,0);
+		rocketManager.ChangeInitialPosition(initialPosition);
+		rocketManager.SetInitialPosition();
+		print ("x: "+initialPosition.x+" y: "+initialPosition.y);
+		// move Camera
+		myCam.transform.position=new Vector3(startPlanet.transform.position.x,startPlanet.transform.position.y,-10);
+		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).Invoke("SetThisAsInitialPosition",1);
+
+		// the rocket and the first level was generated
+		creation=true;
+		// enable the movement of the Camera
+		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
+
+		deltaLevel = camSize*4;
+		startingCorner=new Vector3(startingCorner.x+12*camSize/2,startingCorner.y-12*camSize/2-deltaLevel,0);
+		GenerateLevel(startingCorner);
+	}
+
+	void FixedUpdate () {
+	}
+
+	GameObject GenerateLevel(Vector3 pos){
+		// generate startPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
 		myCollider = planet.transform.GetComponent<SphereCollider>();
-		gen++;
-		// place Planet
+		GameObject retPlan = planet;
+		planetManager = planet.GetComponent ("Planet") as Planet;
+		planetManager.DestroySatellite(Random.Range(0,3));
+		// place startPlanet
 		rand=Random.Range(0,4);
 		print ("RAND: "+rand);
-		planet.transform.position=new Vector3(0,-rand*camSize,0);
+		planet.transform.position=new Vector3(pos.x,pos.y-rand*camSize*3/2,0);
 		// move Camera
-		if(rand==0){
+		/*if(rand==0){
+			planet.transform.position=new Vector3(pos.x,pos.y-camSize/2,0);
 			myCam.transform.position=new Vector3(planet.transform.position.x,planet.transform.position.y-camSize/2,-10);
 		}
 		else{
@@ -45,38 +75,32 @@ public class PCG : MonoBehaviour {
 				myCam.transform.position=new Vector3(planet.transform.position.x,planet.transform.position.y,-10);
 			}
 		}
-		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).Invoke("SetThisAsInitialPosition",1);
-		// place Rocket
-		initialPosition=new Vector3
-			(planet.transform.position.x ,planet.transform.position.y+(planet.transform.localScale.y/2)+myCollider.radius,0);
-		rocketManager.ChangeInitialPosition(initialPosition);
-		rocketManager.SetInitialPosition();
-		print ("x: "+initialPosition.x+" y: "+initialPosition.y);
-		startingCorner=Vector3.zero;
-		beforePosition=Vector3.zero;
-		newPosition=planet.transform.position;
-		// the rocket and the first planet was generated
-		creation=true;
-		// enable the movement of the Camera
-		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
-		GenerateLevel(newPosition);
-	}
-
-	void FixedUpdate () {
-	}
-
-	void GenerateLevel(Vector3 pos){
+		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).Invoke("SetThisAsInitialPosition",1);*/
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
-				x=startingCorner.x+(i+1)*camSize*3/2;
-				y=startingCorner.y-(j+1)*camSize*3/2;
+				x=pos.x+(i+1)*camSize*3/2;
+				y=pos.y-(j+1)*camSize*3/2;
 				newPosition=new Vector3(x,y,0);
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
 				planet.name="Planet";
+				planetManager = planet.GetComponent ("Planet") as Planet;
+				planetManager.DestroySatellite(Random.Range(0,3));
 			}
 		}
+		// generate endPlanet
+		planet = Instantiate(Resources.Load("Planet")) as GameObject;
+		planet.name="Planet";
+		// place endPlanet
+		rand=Random.Range(0,4);
+		print ("endRAND: "+rand);
+		if(rand==0)
+			planet.transform.position=new Vector3(pos.x+(i+1)*camSize*3/2,pos.y-camSize/2,0);
+		else
+			planet.transform.position=new Vector3(pos.x+(i+1)*camSize*3/2,pos.y-rand*camSize*3/2,0);
+
+		return retPlan;
 	}
 
 	public bool GetCreation(){
