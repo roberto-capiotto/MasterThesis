@@ -19,7 +19,7 @@ public class PCG : MonoBehaviour {
 	float deltaLevel;
 	public CameraMovement myCamera;
 	bool scrollCamera=false;
-	public int level=0;
+	public int level=1;
 	
 	void Start () {
 		// get Camera
@@ -48,7 +48,7 @@ public class PCG : MonoBehaviour {
 		(cam.GetComponent( "CameraMovement" ) as MonoBehaviour).enabled = true;
 
 		deltaLevel = camSize*4;
-		//myCam.orthographicSize=9;
+		myCam.orthographicSize=9;
 	}
 
 	void FixedUpdate () {

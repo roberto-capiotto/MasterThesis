@@ -19,7 +19,7 @@ public class PCG_Obstacle : MonoBehaviour {
 	float deltaLevel;
 	public CameraMovement myCamera;
 	bool scrollCamera=false;
-	public int level=0;
+	public int level=1;
 	
 	void Start () {
 		// get Camera
