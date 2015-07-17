@@ -126,7 +126,7 @@ public class PCG_Obstacle : MonoBehaviour {
 		// place endPlanet
 		endRand=Random.Range(0,4);
 		print ("endRAND: "+endRand);
-		if(rand==0)
+		if(endRand==0)
 			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-camSize/2,0);
 		else
 			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-endRand*camSize*3/2,0);

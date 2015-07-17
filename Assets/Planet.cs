@@ -164,7 +164,7 @@ public class Planet : MonoBehaviour {
 				down=true;
 			
 			// calculate the shootingAngle
-			m = tan (gravityCollision.transform.position-rocketManager.GetShootPosition());
+			m = tan (rocket.transform.position-rocketManager.GetShootPosition());
 			
 			// 1st quad
 			if(right && up){
