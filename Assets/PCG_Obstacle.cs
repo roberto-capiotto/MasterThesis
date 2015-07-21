@@ -96,9 +96,9 @@ public class PCG_Obstacle : MonoBehaviour {
 		myCollider = planet.transform.GetComponent<SphereCollider>();
 		GameObject retPlan = planet;
 		planetManager = planet.GetComponent ("Planet") as Planet;
-		planetManager.DestroySatellite(Random.Range(0,3));
+		planetManager.DestroySatellite(Random.Range(0,4));
 		// place startPlanet
-		rand=Random.Range(0,4);
+		rand=Random.Range(0,5);
 		print ("RAND: "+rand);
 		planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-rand*camSize*3/2,0);
 		if(rand==0){
@@ -115,7 +115,7 @@ public class PCG_Obstacle : MonoBehaviour {
 				planet.transform.position= newPosition;
 				planet.name="Planet";
 				planetManager = planet.GetComponent ("Planet") as Planet;
-				planetManager.DestroySatellite(Random.Range(0,3));
+				planetManager.DestroySatellite(Random.Range(0,4));
 			}
 		}
 		// generate endPlanet
@@ -124,7 +124,7 @@ public class PCG_Obstacle : MonoBehaviour {
 		planetManager = planet.GetComponent ("Planet") as Planet;
 		planetManager.SetPlanetType("end");
 		// place endPlanet
-		endRand=Random.Range(0,4);
+		endRand=Random.Range(0,5);
 		print ("endRAND: "+endRand);
 		if(endRand==0)
 			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-camSize/2,0);

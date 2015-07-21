@@ -41,10 +41,10 @@ public class tutorialScript : MonoBehaviour {
 	}
 
 	public void Change(){
-		if(counter==8){
+		if(counter==9){
 			Application.LoadLevel("PCG");
 		}
-		if(counter==7){
+		if(counter==8){
 			// end of tutorial
 			Destroy(planet);
 			Destroy(dockingStation);
@@ -58,7 +58,7 @@ public class tutorialScript : MonoBehaviour {
 			counter++;
 		}
 		else{
-			if(counter==6){
+			if(counter==7){
 				// two planets, right one is checkpoint
 				fuel=false;
 				Destroy(dockingStation);
@@ -71,7 +71,7 @@ public class tutorialScript : MonoBehaviour {
 				counter++;
 			}
 			else{
-				if(counter==5){
+				if(counter==6){
 					// two planets and docking station
 					Destroy(asteroid);
 					Destroy(asteroid2);
@@ -89,7 +89,7 @@ public class tutorialScript : MonoBehaviour {
 					counter++;
 				}
 				else{
-					if(counter==4){
+					if(counter==5){
 						// two planets and obstacles
 						Destroy(swing);
 						rocketManager.SetInitialPosition();
@@ -120,7 +120,7 @@ public class tutorialScript : MonoBehaviour {
 						counter++;
 					}
 					else{
-						if(counter==3){
+						if(counter==4){
 							// planet and swing
 							Destroy(wormhole);
 							Destroy(wormhole2);
@@ -135,7 +135,7 @@ public class tutorialScript : MonoBehaviour {
 							counter++;
 						}
 						else{
-							if(counter==2){
+							if(counter==3){
 								// two planets and wormholes
 								Destroy(planet);
 								planet = Instantiate(Resources.Load("Planet")) as GameObject;
@@ -146,7 +146,7 @@ public class tutorialScript : MonoBehaviour {
 								rocketManager.SetInitialPosition();
 								rocketManager.FullRefill();
 								planetManager.SetPlanetType("");
-								text.text="Wormhole move the rocket from a point to another";
+								text.text="Wormhole moves the rocket from a point to another";
 								text2.text="and shoots it only right";
 								wormhole = Instantiate(Resources.Load("Wormhole")) as GameObject;
 								wormhole.name="Wormhole";
@@ -161,7 +161,7 @@ public class tutorialScript : MonoBehaviour {
 								counter++;
 							}
 							else{
-								if(counter==1){
+								if(counter==2){
 									// planet and exploding planet
 									rocketManager.SetInitialPosition();
 									rocketManager.FullRefill();
@@ -169,23 +169,40 @@ public class tutorialScript : MonoBehaviour {
 									planetManager = planet.GetComponent ("Planet") as Planet;
 									planetManager.SetPlanetType("count");
 									planetManager.SetText(text2);
+									planetManager.DestroySatellite(0);
 									counter++;
 								}
 								else{
-									if(counter==0){
-										// two planets
-										rocketManager.SetInitialPosition();
-										rocketManager.FullRefill();
-										text.text="Try to shoot the rocket from a planet to another";
-										text2.text="";
-										initialPosition=new Vector3(4,0,-10);
-										Camera.main.transform.position=initialPosition;
+									if(counter==1){
+										// two planets, right one with asteroids
+										Destroy(planet);
 										planet = Instantiate(Resources.Load("Planet")) as GameObject;
 										planet.name="Planet";
 										planet.transform.position=new Vector3(8,0,0);
 										planetManager = planet.GetComponent ("Planet") as Planet;
-										planetManager.DestroySatellite(0);
+										rocketManager.SetInitialPosition();
+										rocketManager.FullRefill();
+										planetManager.SetPlanetType("");
+										text.text="A planet may have satellites in its orbits";
+										text2.text="If you hit one of them, you lose";
 										counter++;
+									}
+									else{
+										if(counter==0){
+											// two planets
+											rocketManager.SetInitialPosition();
+											rocketManager.FullRefill();
+											text.text="Try to shoot the rocket from a planet to another";
+											text2.text="";
+											initialPosition=new Vector3(4,0,-10);
+											Camera.main.transform.position=initialPosition;
+											planet = Instantiate(Resources.Load("Planet")) as GameObject;
+											planet.name="Planet";
+											planet.transform.position=new Vector3(8,0,0);
+											planetManager = planet.GetComponent ("Planet") as Planet;
+											planetManager.DestroySatellite(0);
+											counter++;
+										}
 									}
 								}
 							}

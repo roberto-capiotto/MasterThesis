@@ -103,7 +103,7 @@ public class Planet : MonoBehaviour {
 		// set rotation of Satellites
 		inSat = inSatellite.GetComponent ("SatelliteScript") as SatelliteScript;
 		outSat = outSatellite.GetComponent ("SatelliteScript") as SatelliteScript;
-		if(Random.Range(-1,1)>0){
+		if(Random.Range(0,2)==0){
 			inSat.SetRotation(true);
 			outSat.SetRotation(false);
 		}

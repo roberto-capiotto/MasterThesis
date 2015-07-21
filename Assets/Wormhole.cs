@@ -18,12 +18,12 @@ public class Wormhole : MonoBehaviour {
 	void FixedUpdate () {
 		if(collision){
 			// The rocket loses all its characteristics of direction and velocity
-			// the wormhole shots it right with an its own velocity
+			// the wormhole shots it right with a smaller velocity
 			rocket.rigidbody.velocity=new Vector3(0,0,0);
 			rocket.transform.position=new Vector3 (exit.transform.position.x+this.transform.localScale.x/2+rocket.transform.localScale.x/2+0.5f,
 			                                         exit.transform.position.y,
 			                                         exit.transform.position.z);
-			rocket.rigidbody.AddForce(acceleration,0f,0f);
+			rocket.rigidbody.AddForce(acceleration/2,0f,0f);
 			collision=false;
 		}
 	}

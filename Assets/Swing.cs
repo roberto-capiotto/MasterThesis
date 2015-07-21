@@ -109,6 +109,7 @@ public class Swing : MonoBehaviour {
 					clockwise=false;
 				}
 				else{
+					print ("angle: "+angleCollision+" m: "+m);
 					if(angleCollision>135)
 						clockwise=false;
 					else
