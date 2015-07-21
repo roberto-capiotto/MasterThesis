@@ -47,10 +47,10 @@ public class CameraMovement : MonoBehaviour {
 		 * 2 is down
 		 * 3 is right
 		 */
-		SetBound(-2*camSize,0);
-		SetBound(camSize*2,1);
-		SetBound(-camSize*8,2);
-		SetBound(camSize*8,3);
+		SetBound(-camSize,0);
+		SetBound(camSize,1);
+		SetBound(-camSize*5,2);
+		SetBound(camSize*5,3);
 	}
 	
 	void FixedUpdate () {

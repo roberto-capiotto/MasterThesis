@@ -8,7 +8,7 @@ public class PCG_Obstacle : MonoBehaviour {
 	Rocket rocketManager;
 	Planet planetManager;
 	Camera myCam;
-	float x,y,rand,endRand,camSize=5;
+	float x,y,rand,randX,randY,endRand,camSize=5;
 	Vector3 initialPosition;
 	Vector3 newPosition;
 	Vector3 endPosition;
@@ -100,16 +100,24 @@ public class PCG_Obstacle : MonoBehaviour {
 		// place startPlanet
 		rand=Random.Range(0,5);
 		print ("RAND: "+rand);
-		planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-rand*camSize*3/2,0);
 		if(rand==0){
-			planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-rand-camSize/2,0);
+			planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-camSize/2,0);
+		}else{
+			if(rand==4){
+				planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
+			}
+			else{
+				planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+			}
 		}
 
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
-				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2;
-				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2;
+				randX=Random.Range(-1.5f,1.5f);
+				randY=Random.Range(-1.5f,1.5f);
+				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
+				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
@@ -126,10 +134,17 @@ public class PCG_Obstacle : MonoBehaviour {
 		// place endPlanet
 		endRand=Random.Range(0,5);
 		print ("endRAND: "+endRand);
-		if(endRand==0)
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-camSize/2,0);
-		else
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-endRand*camSize*3/2,0);
+		if(rand==0){
+			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-camSize/2,0);
+		}
+		else{
+			if(rand==4){
+				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
+			}
+			else{
+				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+			}
+		}
 		
 		endPosition=planet.transform.position;
 		BuildPath();

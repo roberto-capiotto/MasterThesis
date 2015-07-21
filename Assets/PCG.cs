@@ -8,7 +8,7 @@ public class PCG : MonoBehaviour {
 	Rocket rocketManager;
 	Planet planetManager;
 	Camera myCam;
-	float x,y,rand,camSize=5;
+	float x,y,rand,randX,randY,camSize=5;
 	Vector3 initialPosition;
 	Vector3 newPosition;
 	Vector3 endPosition;
@@ -57,8 +57,8 @@ public class PCG : MonoBehaviour {
 			startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
 			startPlanet=GenerateLevel(startingCorner);
 			// unlock DownBound and RightBound
-			myCamera.SetBound(startingCorner.y-level*camSize*8,2);
-			myCamera.SetBound(startingCorner.x+level*camSize*8,3);
+			myCamera.SetBound(startingCorner.y-level*camSize*5,2);
+			myCamera.SetBound(startingCorner.x+level*camSize*5,3);
 
 			// move Rocket
 			initialPosition=new Vector3
@@ -67,8 +67,8 @@ public class PCG : MonoBehaviour {
 			rocketManager.SetInitialPosition();
 
 			// unlock LeftBound and UpBound
-			myCamera.SetBound(startingCorner.x-2*camSize,0);
-			myCamera.SetBound(startingCorner.y+camSize*2,1);
+			myCamera.SetBound(startingCorner.x-camSize,0);
+			myCamera.SetBound(startingCorner.y+camSize,1);
 
 			// move Camera
 			camPosition= new Vector3(startPlanet.transform.position.x,startPlanet.transform.position.y,-10);
@@ -116,8 +116,10 @@ public class PCG : MonoBehaviour {
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
-				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2;
-				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2;
+				randX=Random.Range(-1.5f,1.5f);
+				randY=Random.Range(-1.5f,1.5f);
+				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
+				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
