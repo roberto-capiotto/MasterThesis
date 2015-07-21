@@ -147,7 +147,8 @@ public class Planet : MonoBehaviour {
 			InvokeRepeating("CountDown",1,1);
 		}
 		if(planetType.Equals("end")){
-			levelCompleted=true;
+			// start counter: check collision is ok
+			InvokeRepeating("CountEnd",1,1);
 		}
 		collision=true;
 		if(!rotating){
@@ -335,6 +336,22 @@ public class Planet : MonoBehaviour {
 			// TODO: add some animation
 			Destroy(this.gameObject);
 			text.text="";
+		}
+	}
+
+	void CountEnd()
+	{
+		if(collision){
+			counting=true;
+			counter--;
+		}
+		else{
+			counting=false;
+			counter=5;
+		}
+		if(counter < 1){
+			CancelInvoke("CountEnd");
+			levelCompleted=true;
 		}
 	}
 

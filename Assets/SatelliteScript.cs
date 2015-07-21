@@ -46,4 +46,28 @@ public class SatelliteScript : MonoBehaviour {
 	public void SetRotation(bool rotation){
 		clockwise=rotation;
 	}
+
+	public bool IsUp(){
+		if(this.transform.position.y>planet.transform.position.y+planet.transform.localScale.y/4)
+			return true;
+		return false;
+	}
+
+	public bool IsDown(){
+		if(this.transform.position.y<planet.transform.position.y-planet.transform.localScale.y/4)
+			return true;
+		return false;
+	}
+
+	public bool IsRight(){
+		if(this.transform.position.x>planet.transform.position.x+planet.transform.localScale.x/4)
+			return true;
+		return false;
+	}
+	
+	public bool IsLeft(){
+		if(this.transform.position.x<planet.transform.position.x-planet.transform.localScale.x/4)
+			return true;
+		return false;
+	}
 }
