@@ -53,7 +53,7 @@ public class PCG : MonoBehaviour {
 
 	void FixedUpdate () {
 		if(planetManager.levelCompleted){
-			myCamera.transform.position=endPosition;
+			//myCamera.transform.position=endPosition;
 			startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
 			startPlanet=GenerateLevel(startingCorner);
 			// unlock DownBound and RightBound
@@ -78,6 +78,9 @@ public class PCG : MonoBehaviour {
 		if(scrollCamera){
 			if(myCamera.transform.position.y>camPosition.y){
 				myCamera.transform.position = new Vector3(myCamera.transform.position.x,myCamera.transform.position.y-0.2f,-10);
+				if(myCamera.transform.position.x<camPosition.x){
+					myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.1f,myCamera.transform.position.y,-10);
+				}
 			}
 			else{
 				scrollCamera=false;
@@ -99,9 +102,15 @@ public class PCG : MonoBehaviour {
 		// place startPlanet
 		rand=Random.Range(0,5);
 		print ("RAND: "+rand);
-		planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-rand*camSize*3/2,0);
 		if(rand==0){
-			planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-rand-camSize/2,0);
+			planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4-camSize/2,0);
+		}else{
+			if(rand==4){
+				planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
+			}
+			else{
+				planet.transform.position=new Vector3(pos.x,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+			}
 		}
 
 		int i=0,j=0;
@@ -126,10 +135,17 @@ public class PCG : MonoBehaviour {
 		// place endPlanet
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
-		if(rand==0)
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-camSize/2,0);
-		else
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(j+1)-rand*camSize*3/2,0);
+		if(rand==0){
+			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-camSize/2,0);
+		}
+		else{
+			if(rand==4){
+				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
+			}
+			else{
+				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+			}
+		}
 
 		endPosition=planet.transform.position;
 		level++;
