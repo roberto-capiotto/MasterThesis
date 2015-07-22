@@ -12,6 +12,7 @@ public class Planet : MonoBehaviour {
 	// planet vars
 	public string planetType;	/* "count" for exploding planet
 	                             * "checkpoint" for checkpoint planet
+	                             * "first" for firstLevel planet
 	                             * "end" for endLevel planet
 	                             */
 	public int counter=5;
@@ -149,6 +150,9 @@ public class Planet : MonoBehaviour {
 		if(planetType.Equals("end")){
 			// start counter: check collision is ok
 			InvokeRepeating("CountEnd",1,1);
+		}
+		if(planetType.Equals("first")){
+			// set camera position
 		}
 		collision=true;
 		if(!rotating){
@@ -403,6 +407,10 @@ public class Planet : MonoBehaviour {
 				rend.material.SetColor("_Color", Color.white);
 			}
 		}
+	}
+
+	public void MoveText(Vector3 p){
+		text.transform.position=p;
 	}
 
 	public bool GetIfCounting(){

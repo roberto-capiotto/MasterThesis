@@ -154,6 +154,8 @@ public class Swing : MonoBehaviour {
 			}
 		}
 
+		print ("m: "+m+" angle: "+angleCollision+" ck: "+clockwise);
+
 		/* calculate angleDestination
 		 * if clockwise, sub 90
 		 * if !clockwise, add 90

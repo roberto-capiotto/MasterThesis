@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class CameraMovement : MonoBehaviour {
+public class CameraContinue : MonoBehaviour {
 	
 	GameObject rocket;
 	Rocket rocketManager;
@@ -24,14 +24,14 @@ public class CameraMovement : MonoBehaviour {
 	bool up=false;
 	bool down=false;
 	bool setPosition=false;
-
+	
 	/* DONE: define how to move in the level
 	 * We have a predefined schema with predefined dimensions;
 	 * startPlanet on left, endPlanet on right
 	 * Up and down boundaries are fixed. We don't want to reach other levels
 	 */
 	void Start () {
-
+		
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.main.orthographicSize;
@@ -39,7 +39,7 @@ public class CameraMovement : MonoBehaviour {
 		position = new Vector3(0,0,0);
 		deltaX=4+Camera.main.orthographicSize*3/2;
 		deltaY=4+Camera.main.orthographicSize*3/2;
-
+		
 		// TODO: define NEW static bound
 		/* Bound values
 		 * 0 is left
@@ -54,9 +54,9 @@ public class CameraMovement : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-
+		
 		text.text="Fuel: "+rocketManager.GetFuel();
-
+		
 		// upper bound and lower bound
 		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2)){
 			rocketManager.SetInitialPosition();
@@ -64,7 +64,7 @@ public class CameraMovement : MonoBehaviour {
 			this.transform.position=initialPosition;
 			reset();
 		}
-
+		
 		/* left bound
 		 * Once generated the first (starting) planet, the others will be all on right side
 		 */
@@ -74,7 +74,7 @@ public class CameraMovement : MonoBehaviour {
 			this.transform.position=initialPosition;
 			reset();
 		}
-
+		
 		/* right bound
 		 */
 		if(rocket.transform.position.x>GetBound(3)){
@@ -83,12 +83,12 @@ public class CameraMovement : MonoBehaviour {
 			this.transform.position=initialPosition;
 			reset();
 		}
-
-		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize){
+		
+		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*2){
 			moving=true;
 			setPosition=true;
 			// if moving right
-			if(rocket.transform.position.x-this.transform.position.x>camSize)
+			if(rocket.transform.position.x-this.transform.position.x>camSize*2)
 				right=true;
 			// if moving left
 			else
@@ -122,7 +122,7 @@ public class CameraMovement : MonoBehaviour {
 				}
 				setPosition=false;
 			}
-
+			
 			// TODO: optimize. The rocket should always be almost @ center
 			// we are moving the camera 0.35 every update
 			// it seems fluent
@@ -158,7 +158,7 @@ public class CameraMovement : MonoBehaviour {
 				moving=false;
 		}
 	}
-
+	
 	/* TYPE values
 	 * 0 is left
 	 * 1 is up
@@ -178,7 +178,7 @@ public class CameraMovement : MonoBehaviour {
 			rightBound=bound;
 		}
 	}
-
+	
 	/* TYPE values
 	 * 0 is left
 	 * 1 is up
@@ -201,30 +201,30 @@ public class CameraMovement : MonoBehaviour {
 			return 0;
 		}
 	}
-
+	
 	public void SetInitialPosition(Vector3 pos){
 		initialPosition=pos;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
 	}
-
+	
 	public void SetThisAsInitialPosition(){
 		initialPosition=this.transform.position;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
 	}
-
+	
 	public void SetDeltas(float x,float y){
 		deltaX=x;
 		deltaY=y;
 	}
-
+	
 	public float GetDeltaX(){
 		return deltaX;
 	}
-
+	
 	public float GetDeltaY(){
 		return deltaY;
 	}
-
+	
 	void reset(){
 		moving=false;
 		right=false;

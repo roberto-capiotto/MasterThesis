@@ -96,6 +96,7 @@ public class PCG_Obstacle : MonoBehaviour {
 		myCollider = planet.transform.GetComponent<SphereCollider>();
 		GameObject retPlan = planet;
 		planetManager = planet.GetComponent ("Planet") as Planet;
+		planetManager.SetPlanetType("first");
 		planetManager.DestroySatellite(Random.Range(0,4));
 		// place startPlanet
 		rand=Random.Range(0,5);

@@ -166,9 +166,10 @@ public class tutorialScript : MonoBehaviour {
 									rocketManager.SetInitialPosition();
 									rocketManager.FullRefill();
 									text.text="The planet on the right is an exploding planet";
+									text2.text="";
 									planetManager = planet.GetComponent ("Planet") as Planet;
-									planetManager.SetPlanetType("count");
 									planetManager.SetText(text2);
+									planetManager.SetPlanetType("count");
 									planetManager.DestroySatellite(0);
 									counter++;
 								}
