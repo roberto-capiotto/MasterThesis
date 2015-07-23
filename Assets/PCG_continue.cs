@@ -36,7 +36,7 @@ public class PCG_continue : MonoBehaviour {
 		myCollider = planet.transform.GetComponent<SphereCollider>();
 		planetManager = planet.GetComponent ("Planet") as Planet;
 		planetManager.SetPlanetType("first");
-		planetManager.DestroySatellite(Random.Range(0,4));
+		planetManager.DestroySatellite(Random.Range(0,3));
 
 		// place startPlanet and move Camera
 		rand=Random.Range(0,5);
@@ -175,7 +175,7 @@ public class PCG_continue : MonoBehaviour {
 		planet.name="Planet";
 		planetManager = planet.GetComponent ("Planet") as Planet;
 		planetManager.SetPlanetType("end");
-		planetManager.DestroySatellite(Random.Range(0,4));
+		planetManager.DestroySatellite(Random.Range(0,3));
 		// place endPlanet
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
