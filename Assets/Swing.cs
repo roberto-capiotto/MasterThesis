@@ -60,6 +60,7 @@ public class Swing : MonoBehaviour {
 	void OnCollisionEnter (Collision gravityCollision)
 	{
 		colliding = true;
+		rocketManager.onStart=false;
 		angleCollision=tan(rocket.transform.position - this.transform.position);
 		print ("angleCollision: "+angleCollision);
 		if(myCollider.radius>=1f){

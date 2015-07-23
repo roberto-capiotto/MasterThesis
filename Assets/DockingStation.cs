@@ -57,6 +57,7 @@ public class DockingStation : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision gravityCollision){
+		rocketManager.onStart=false;
 		angleCollision=tan(rocket.transform.position - this.transform.position);
 		// find where the rocket will touch the spaceStation
 		if(rocket.transform.position.x>this.transform.position.x)

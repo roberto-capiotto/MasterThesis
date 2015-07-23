@@ -142,17 +142,29 @@ public class Planet : MonoBehaviour {
 			// change initial position of rocket
 			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.4f,0);
 			rocketManager.ChangeInitialPosition(newPosition);
+			rocketManager.onStart=true;
 		}
-		if(planetType.Equals("count")){
-			// start counter
-			InvokeRepeating("CountDown",1,1);
-		}
-		if(planetType.Equals("end")){
-			// start counter: check collision is ok
-			InvokeRepeating("CountEnd",1,1);
-		}
-		if(planetType.Equals("first")){
-			// set camera position
+		else{
+			if(planetType.Equals("count")){
+				// start counter
+				InvokeRepeating("CountDown",1,1);
+				rocketManager.onStart=false;
+			}
+			else{
+				if(planetType.Equals("end")){
+					// start counter: check collision is ok
+					InvokeRepeating("CountEnd",1,1);
+				}
+				else{
+					if(planetType.Equals("first")){
+						// set camera position
+						rocketManager.onStart=true;
+					}
+					else{
+						rocketManager.onStart=false;
+					}
+				}
+			}
 		}
 		collision=true;
 		if(!rotating){

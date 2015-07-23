@@ -15,8 +15,8 @@ public class CameraContinue : MonoBehaviour {
 	float upBound;
 	float downBound;
 	float rightBound;
-	float deltaX;
-	float deltaY;
+	public float deltaX;
+	public float deltaY;
 	// flags
 	bool moving=false;
 	bool right=false;
@@ -37,8 +37,10 @@ public class CameraContinue : MonoBehaviour {
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		position = new Vector3(0,0,0);
-		deltaX=4+Camera.main.orthographicSize*3/2;
-		deltaY=4+Camera.main.orthographicSize*3/2;
+		//deltaX=4+Camera.main.orthographicSize*3/2;
+		//deltaY=4+Camera.main.orthographicSize*3/2;
+		deltaX=5*3/2.0f;
+		deltaY=5*3/2.0f;
 		
 		// TODO: define NEW static bound
 		/* Bound values
@@ -83,12 +85,37 @@ public class CameraContinue : MonoBehaviour {
 			this.transform.position=initialPosition;
 			reset();
 		}
-		
-		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*2){
+
+		/* CONTINUE MOVING */
+		if(!rocketManager.onStart){
+			if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>deltaX/2){
+				moving=true;
+				setPosition=true;
+				// if moving right
+				if(rocket.transform.position.x-this.transform.position.x>deltaX/2)
+					right=true;
+				// if moving left
+				else
+					left=true;
+			}
+			if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>deltaY/2){
+				moving=true;
+				setPosition=true;
+				// if moving up
+				if(rocket.transform.position.y-this.transform.position.y>deltaY/2)
+					up=true;
+				// if moving down
+				else
+					down=true;
+			}
+		}
+
+		/* OUT OF SCREEN*/
+		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*16/10){
 			moving=true;
 			setPosition=true;
 			// if moving right
-			if(rocket.transform.position.x-this.transform.position.x>camSize*2)
+			if(rocket.transform.position.x-this.transform.position.x>camSize*16/10)
 				right=true;
 			// if moving left
 			else

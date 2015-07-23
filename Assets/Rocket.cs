@@ -7,6 +7,7 @@ public class Rocket : MonoBehaviour {
 	public int maxFuel=2000;
 	Vector3 initialPosition;
 	Vector3 shootPosition;
+	public bool onStart=true;
 
 	void Start () {
 		//initialPosition=new Vector3(0 ,1.4f,0);
@@ -47,6 +48,7 @@ public class Rocket : MonoBehaviour {
 	public void SetInitialPosition(){
 		this.rigidbody.velocity = (new Vector3 (0, 0, 0));
 		this.transform.position=initialPosition;
+		onStart=true;
 	}
 
 	// use this function with checkpoint
@@ -65,5 +67,9 @@ public class Rocket : MonoBehaviour {
 	
 	public Vector3 GetShootPosition(){
 		return shootPosition;
+	}
+
+	public void SetOnStart(bool start){
+		onStart=start;
 	}
 }
