@@ -61,6 +61,7 @@ public class Swing : MonoBehaviour {
 	{
 		colliding = true;
 		rocketManager.onStart=false;
+		rocketManager.SetColliding(true);
 		angleCollision=tan(rocket.transform.position - this.transform.position);
 		print ("angleCollision: "+angleCollision);
 		if(myCollider.radius>=1f){
@@ -190,6 +191,7 @@ public class Swing : MonoBehaviour {
 
 	void OnCollisionExit (Collision gravityCollision)
 	{
+		rocketManager.SetColliding(false);
 		// reset all flags
 		colliding=false;
 		up=false;

@@ -20,6 +20,7 @@ public class PCG_continue : MonoBehaviour {
 	public CameraContinue myCamera;
 	bool scrollCamera=false;
 	public int level=1;
+	float maxFlyTime=10;
 	
 	void Start () {
 		// get Camera
@@ -55,7 +56,8 @@ public class PCG_continue : MonoBehaviour {
 			}
 		}*/
 		planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
-		if(rand==0){
+		camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
+		/*if(rand==0){
 			camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y-7.5f,-10);
 		}else{
 			if(rand==4){
@@ -64,7 +66,7 @@ public class PCG_continue : MonoBehaviour {
 			else{
 				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
 			}
-		}
+		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
 
@@ -89,6 +91,13 @@ public class PCG_continue : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
+		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>maxFlyTime){
+			print ("reset due to flying");
+			rocketManager.SetInitialPosition();
+			rocketManager.FullRefill();
+			myCamera.ResetPosition();
+		}
+
 		if(planetManager.levelCompleted){
 
 			planetManager.levelCompleted=false;
@@ -102,16 +111,17 @@ public class PCG_continue : MonoBehaviour {
 			myCamera.SetBound(startingCorner.x+level*camSize*5,3);
 			
 			// unlock LeftBound and UpBound
-			myCamera.SetBound(startingCorner.x-camSize,0);
+//			myCamera.SetBound(startingCorner.x-camSize,0);
 			myCamera.SetBound(startingCorner.y+camSize,1);
 
 			// modify Deltas
-			myCam.orthographicSize+=2;
+			myCam.orthographicSize=myCam.orthographicSize+4;
 			myCamera.SetDeltas(myCamera.GetDeltaX()+4,myCamera.GetDeltaY()+4);
 			
 			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
-			if(rand==0){
+			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+			/*if(rand==0){
 				camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y-myCamera.GetDeltaY(),-10);
 			}else{
 				if(rand==4){
@@ -120,7 +130,7 @@ public class PCG_continue : MonoBehaviour {
 				else{
 					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
 				}
-			}
+			}*/
 			myCamera.SetInitialPosition(camPosition);
 			//myCamera.transform.position=camPosition;
 			//camPosition= new Vector3(endPlanet.transform.position.x,endPlanet.transform.position.y,-10);

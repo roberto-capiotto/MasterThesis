@@ -8,6 +8,8 @@ public class Rocket : MonoBehaviour {
 	Vector3 initialPosition;
 	Vector3 shootPosition;
 	public bool onStart=true;
+	public float timer;
+	public bool colliding=true;
 
 	void Start () {
 		//initialPosition=new Vector3(0 ,1.4f,0);
@@ -72,4 +74,21 @@ public class Rocket : MonoBehaviour {
 	public void SetOnStart(bool start){
 		onStart=start;
 	}
+
+	public void SetTimer(float t){
+		timer=t;
+	}
+
+	public float GetTimer(){
+		return timer;
+	}
+
+	public void SetColliding(bool coll){
+		colliding=coll;
+	}
+	
+	public bool GetColliding(){
+		return colliding;
+	}
+
 }

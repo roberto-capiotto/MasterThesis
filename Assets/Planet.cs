@@ -167,6 +167,7 @@ public class Planet : MonoBehaviour {
 			}
 		}
 		collision=true;
+		rocketManager.SetColliding(true);
 		if(!rotating){
 			rotating=true;
 			angleCollision=tan(gravityCollision.transform.position - this.transform.position);
@@ -281,6 +282,8 @@ public class Planet : MonoBehaviour {
 		down=false;
 		left=false;
 		right=false;
+		rocketManager.SetTimer(Time.time);
+		rocketManager.SetColliding(false);
 	}
 	
 	public void OnMouseDown(){

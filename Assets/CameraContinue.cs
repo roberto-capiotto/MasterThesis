@@ -58,7 +58,8 @@ public class CameraContinue : MonoBehaviour {
 	void FixedUpdate () {
 		
 		text.text="Fuel: "+rocketManager.GetFuel();
-		
+
+		camSize = Camera.main.orthographicSize;
 		// upper bound and lower bound
 		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2)){
 			rocketManager.SetInitialPosition();
