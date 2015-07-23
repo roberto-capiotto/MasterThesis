@@ -89,8 +89,9 @@ public class CameraContinue : MonoBehaviour {
 		/* CONTINUE MOVING */
 		if(!rocketManager.onStart){
 			if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>deltaX/2){
+				if(!moving)
+					setPosition=true;
 				moving=true;
-				setPosition=true;
 				// if moving right
 				if(rocket.transform.position.x-this.transform.position.x>deltaX/2)
 					right=true;
@@ -99,8 +100,9 @@ public class CameraContinue : MonoBehaviour {
 					left=true;
 			}
 			if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>deltaY/2){
+				if(!moving)
+					setPosition=true;
 				moving=true;
-				setPosition=true;
 				// if moving up
 				if(rocket.transform.position.y-this.transform.position.y>deltaY/2)
 					up=true;
@@ -112,8 +114,9 @@ public class CameraContinue : MonoBehaviour {
 
 		/* OUT OF SCREEN*/
 		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*16/10){
+			if(!moving)
+				setPosition=true;
 			moving=true;
-			setPosition=true;
 			// if moving right
 			if(rocket.transform.position.x-this.transform.position.x>camSize*16/10)
 				right=true;
@@ -122,8 +125,9 @@ public class CameraContinue : MonoBehaviour {
 				left=true;
 		}
 		if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>camSize){
+			if(!moving)
+				setPosition=true;
 			moving=true;
-			setPosition=true;
 			// if moving up
 			if(rocket.transform.position.y-this.transform.position.y>camSize)
 				up=true;
@@ -135,48 +139,53 @@ public class CameraContinue : MonoBehaviour {
 			if(setPosition){
 				// set destination position
 				position=this.transform.position;
+				print ("BEFORE: x: "+position.x+" y: "+position.y);
 				if(right){
 					position=new Vector3(position.x+deltaX,position.y,-10);
+					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
 				}
 				if(up){
 					position=new Vector3(position.x,position.y+deltaY,-10);
+					print ("UP: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
 				if(down){
 					position=new Vector3(position.x,position.y-deltaY,-10);
+					print ("DOWN: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
 				if(left){
 					position=new Vector3(position.x-deltaX,position.y,-10);
+					print ("LEFT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
 				}
 				setPosition=false;
 			}
 			
 			// TODO: optimize. The rocket should always be almost @ center
-			// we are moving the camera 0.35 every update
+			// we are moving the camera 0.3 every update
 			// it seems fluent
 			if(right){
-				this.transform.position = new Vector3(this.transform.position.x+0.35f,this.transform.position.y,-10);
-				if(this.transform.position.x-position.x>0){
+				this.transform.position = new Vector3(this.transform.position.x+0.3f,this.transform.position.y,-10);
+				if(this.transform.position.x-position.x>=0){
 					right=false;
 					this.transform.position=new Vector3(position.x,this.transform.position.y,-10);
 				}
 			}
 			if(left){
-				this.transform.position = new Vector3(this.transform.position.x-0.35f,this.transform.position.y,-10);
-				if(this.transform.position.x-position.x<0){
+				this.transform.position = new Vector3(this.transform.position.x-0.3f,this.transform.position.y,-10);
+				if(this.transform.position.x-position.x<=0){
 					left=false;
 					this.transform.position=new Vector3(position.x,this.transform.position.y,-10);
 				}
 			}
 			if(up){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.35f,-10);
-				if(this.transform.position.y-position.y>0){
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.3f,-10);
+				if(this.transform.position.y-position.y>=0){
 					up=false;
 					this.transform.position=new Vector3(this.transform.position.x,position.y,-10);
 				}
 			}
 			if(down){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.35f,-10);
-				if(this.transform.position.y-position.y<0){
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.3f,-10);
+				if(this.transform.position.y-position.y<=0){
 					down=false;
 					this.transform.position=new Vector3(this.transform.position.x,position.y,-10);
 				}
@@ -237,6 +246,10 @@ public class CameraContinue : MonoBehaviour {
 	public void SetThisAsInitialPosition(){
 		initialPosition=this.transform.position;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
+	}
+
+	public void ResetPosition(){
+		this.transform.position=initialPosition;
 	}
 	
 	public void SetDeltas(float x,float y){
