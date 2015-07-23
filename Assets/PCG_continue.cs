@@ -166,10 +166,10 @@ public class PCG_continue : MonoBehaviour {
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
-				randX=0;
-				randY=0;
-				//randX=Random.Range(-1.5f,1.5f);
-				//randY=Random.Range(-1.5f,1.5f);
+				//randX=0;
+				//randY=0;
+				randX=Random.Range(-1.5f,1.5f);
+				randY=Random.Range(-1.5f,1.5f);
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
