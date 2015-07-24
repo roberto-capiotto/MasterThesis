@@ -38,6 +38,7 @@ public class PCG_tutorial : MonoBehaviour {
 		firstPlanet = GameObject.Find ("Planet");
 		planetManager = firstPlanet.GetComponent ("Planet") as Planet;
 		planetManager.DestroySatellite(0);
+		myCollider = firstPlanet.transform.GetComponent<SphereCollider>();
 		//camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		myCamera.SetInitialPosition(initialPosition);
@@ -63,6 +64,9 @@ public class PCG_tutorial : MonoBehaviour {
 			text2.text="Fuel remaining: "+rocketManager.GetFuel();
 		}
 
+		/************************************************************************
+		 *  TUTORIAL WITHOUT SATELLITES
+		 ************************************************************************/
 		if(counter==1 && !exe){
 			if(planetManager.GetCollision()){
 				exe=true;
@@ -129,6 +133,94 @@ public class PCG_tutorial : MonoBehaviour {
 					
 					// Generate New Level
 					endPlanet=GenerateLevel(startingCorner,"free");
+				}
+				// horizontal scroll to New Level
+				if(scrollCamera){
+					if(myCamera.transform.position.x<camPosition.x){
+						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.2f,myCamera.transform.position.y,-10);
+						/*if(myCamera.transform.position.x<camPosition.x){
+						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.1f,myCamera.transform.position.y,-10);
+					}*/
+					}
+					else{
+						scrollCamera=false;
+						myCamera.transform.position=camPosition;
+						myCamera.SetThisAsInitialPosition();
+					}
+				}
+			}
+		}
+
+		/************************************************************************
+		 *  TUTORIAL WITH SATELLITES
+		 ************************************************************************/
+		if(counter==2 && !exe){
+			if(planetManager.GetCollision()){
+				exe=true;
+				planet = Instantiate(Resources.Load("Planet")) as GameObject;
+				planet.name="Planet";
+				planet.transform.position=new Vector3(16,0,0);
+				planetManager2 = planet.GetComponent ("Planet") as Planet;
+				planetManager2.SetPlanetType("first");
+				planetManager2.DestroySatellite(0);
+				list[cont++]=planet;
+				scroll=true;
+				camPosition=new Vector3(12,0,-10);
+			}
+		}
+		else{
+			if(counter==2){
+				if(planetManager.GetCollision() && !gen){
+					scroll=true;
+					camPosition=new Vector3(12,0,-10);
+				}
+				if(planetManager2.GetCollision() && !gen){
+					gen=true;
+					rocketManager.ChangeInitialPosition(new Vector3(planet.transform.position.x,planet.transform.position.y+planet.transform.localScale.y/2+myCollider.radius,0));
+					startPosition=planet.transform.position;
+					endPlanet=GenerateLevel(startPosition,"with");
+					(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = true;
+					Camera.main.orthographicSize=9;
+					myCamera.transform.position=new Vector3(startPosition.x+myCamera.deltaX,startPosition.y-myCamera.deltaY,-10);
+					myCamera.SetInitialPosition(myCamera.transform.position);
+					initialPosition=myCamera.transform.position;
+					myCamera.SetBound(camSize*20,3);
+					text.text="Play a level";
+					text2.text="";
+				}
+				if(planetManager.levelCompleted){
+					print ("COMPLETE");
+					planetManager.levelCompleted=false;
+					
+					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2-randY*level,0);
+					
+					// unlock DownBound and RightBound
+					myCamera.SetBound(startingCorner.y-level*camSize*5,2);
+					myCamera.SetBound(startingCorner.x+level*camSize*5,3);
+					
+					// unlock LeftBound and UpBound
+					//			myCamera.SetBound(startingCorner.x-camSize,0);
+					myCamera.SetBound(startingCorner.y+camSize,1);
+					
+					// modify Deltas
+					myCam.orthographicSize=myCam.orthographicSize+4;
+					myCamera.SetDeltas(myCamera.GetDeltaX()+4,myCamera.GetDeltaY()+4);
+					
+					// move Camera
+					print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
+					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+					
+					myCamera.SetInitialPosition(camPosition);
+					scrollCamera=true;
+					
+					// set new rocket initialPosition
+					rocketInitialPosition=new Vector3
+						(endPlanet.transform.position.x ,endPlanet.transform.position.y+(endPlanet.transform.localScale.y/2)+myCollider.radius,0);
+					rocketManager.ChangeInitialPosition(rocketInitialPosition);
+					rocketManager.onStart=true;
+					
+					// Generate New Level
+					endPlanet=GenerateLevel(startingCorner,"with");
 				}
 				// horizontal scroll to New Level
 				if(scrollCamera){
@@ -334,6 +426,15 @@ public class PCG_tutorial : MonoBehaviour {
 							else{
 								if(counter==2){
 									// planet and exploding planet
+									print ("PLANET: "+cont);
+									for(int i=0;i<cont;i++){
+										Destroy(list[i]);
+									}
+									for(int i=0;i<cont;i++){
+										list[i]=null;
+									}
+									exe=false;
+									gen=false;
 									rocketManager.SetInitialPosition();
 									rocketManager.FullRefill();
 									text.text="The planet on the right is an exploding planet";
@@ -354,6 +455,8 @@ public class PCG_tutorial : MonoBehaviour {
 										for(int i=0;i<cont;i++){
 											list[i]=null;
 										}
+										exe=false;
+										gen=false;
 										planet = Instantiate(Resources.Load("Planet")) as GameObject;
 										planet.name="Planet";
 										planet.transform.position=new Vector3(8,0,0);
@@ -365,6 +468,7 @@ public class PCG_tutorial : MonoBehaviour {
 										text.text="A planet may have satellites in its orbits";
 										text2.text="If you hit one of them, you lose";
 										initialPosition=new Vector3(4,0,-10);
+										myCamera.SetInitialPosition(initialPosition);
 										(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = false;
 										Camera.main.transform.position=initialPosition;
 										Camera.main.orthographicSize=5;
@@ -382,7 +486,6 @@ public class PCG_tutorial : MonoBehaviour {
 											myCamera.SetInitialPosition(initialPosition);
 											planet = Instantiate(Resources.Load("Planet")) as GameObject;
 											planet.name="Planet";
-											myCollider = planet.transform.GetComponent<SphereCollider>();
 											planet.transform.position=new Vector3(8,0,0);
 											list[cont++]=planet;
 											planetManager = planet.GetComponent ("Planet") as Planet;
