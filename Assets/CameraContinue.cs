@@ -51,8 +51,8 @@ public class CameraContinue : MonoBehaviour {
 		 */
 		SetBound(-camSize*2,0);
 		SetBound(camSize*2,1);
-		SetBound(-camSize*5,2);
-		SetBound(camSize*6,3);
+		SetBound(-camSize*7,2);
+		SetBound(camSize*7,3);
 	}
 	
 	void FixedUpdate () {

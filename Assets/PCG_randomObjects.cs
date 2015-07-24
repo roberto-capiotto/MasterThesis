@@ -192,17 +192,17 @@ public class PCG_randomObjects : MonoBehaviour {
 						swing.name="Swing";
 					}
 					else{
-						if(randomObject<0.85f){
+						if(randomObject<0.9f){
 							dockingStation = Instantiate(Resources.Load("DockingStation")) as GameObject;
 							dockingStation.transform.position=newPosition;
 							dockingStation.name="DockingStation";
 						}
 						else{
-							if(randomObject<0.95f){
+//							if(randomObject<0.95f){
 								blackHole = Instantiate(Resources.Load("BlackHole")) as GameObject;
 								blackHole.transform.position=newPosition;
 								blackHole.name="DockingStation";
-							}
+/*							}
 							else{
 								wormhole = Instantiate(Resources.Load("Wormhole")) as GameObject;
 								wormhole.transform.position=newPosition;
@@ -214,7 +214,7 @@ public class PCG_randomObjects : MonoBehaviour {
 								wormhole2Manager = wormhole2.GetComponent ("Wormhole") as Wormhole;
 								wormholeManager.SetExit(wormhole2);
 								wormhole2Manager.SetExit(wormhole);
-							}
+							}*/
 						}
 					}
 				}

@@ -83,10 +83,18 @@ public class DockingStation : MonoBehaviour {
 					clockwise=false;
 				}
 				else{
-					if(angleCollision>45)
-						clockwise=false;
-					else
-						clockwise=true;
+					if(m<225){
+						if(angleCollision>35)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+					else{
+						if(angleCollision>55)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
 				}
 			}
 		}
@@ -101,10 +109,18 @@ public class DockingStation : MonoBehaviour {
 					clockwise=false;
 				}
 				else{
-					if(angleCollision>135)
-						clockwise=false;
-					else
-						clockwise=true;
+					if(m<315){
+						if(angleCollision>145)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+					else{
+						if(angleCollision>125)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
 				}
 			}
 		}
@@ -119,10 +135,18 @@ public class DockingStation : MonoBehaviour {
 					clockwise=true;
 				}
 				else{
-					if(angleCollision>225)
-						clockwise=false;
-					else
-						clockwise=true;
+					if(m<45){
+						if(angleCollision>235)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+					else{
+						if(angleCollision>215)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
 				}
 			}
 		}
@@ -137,10 +161,18 @@ public class DockingStation : MonoBehaviour {
 					clockwise=true;
 				}
 				else{
-					if(angleCollision>315)
-						clockwise=false;
-					else
-						clockwise=true;
+					if(m<135){
+						if(angleCollision>305)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
+					else{
+						if(angleCollision>325)
+							clockwise=false;
+						else
+							clockwise=true;
+					}
 				}
 			}
 		}
