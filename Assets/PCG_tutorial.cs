@@ -29,6 +29,8 @@ public class PCG_tutorial : MonoBehaviour {
 	SphereCollider myCollider;
 	GameObject[] list;
 	int cont=0;
+	float maxFlyTime=10;
+	bool locked=true;
 	
 	void Start () {
 		cam=GameObject.Find("Main Camera");
@@ -49,15 +51,28 @@ public class PCG_tutorial : MonoBehaviour {
 	
 	void FixedUpdate () {
 
-		camSize = Camera.main.orthographicSize;
-
-		/* OUT OF SCREEN*/
-		if(Mathf.Abs(rocket.transform.position.x-Camera.main.transform.position.x)>camSize*16/10 ||
-		   Mathf.Abs(rocket.transform.position.y-Camera.main.transform.position.y)>camSize){
+		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>maxFlyTime){
+			print ("reset due to flying");
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
+			rocketManager.SetColliding(true);
 			myCamera.ResetPosition();
-			//Camera.main.transform.position=initialPosition;
+		}
+
+		camSize = Camera.main.orthographicSize;
+		if(locked){
+			/* OUT OF SCREEN*/
+			if(Mathf.Abs(rocket.transform.position.x-Camera.main.transform.position.x)>camSize*16/10 ||
+			   Mathf.Abs(rocket.transform.position.y-Camera.main.transform.position.y)>camSize){
+				rocketManager.SetInitialPosition();
+				rocketManager.FullRefill();
+				myCamera.ResetPosition();
+				scroll=false;
+				if(counter==1 && !gen){
+					text2.text="";
+				}
+				//Camera.main.transform.position=initialPosition;
+			}
 		}
 		
 		if(fuel){
@@ -79,6 +94,7 @@ public class PCG_tutorial : MonoBehaviour {
 				list[cont++]=planet;
 				scroll=true;
 				camPosition=new Vector3(12,0,-10);
+				text2.text="Again!";
 			}
 		}
 		else{
@@ -86,19 +102,22 @@ public class PCG_tutorial : MonoBehaviour {
 				if(planetManager.GetCollision() && !gen){
 					scroll=true;
 					camPosition=new Vector3(12,0,-10);
+					text2.text="Again!";
 				}
 				if(planetManager2.GetCollision() && !gen){
 					gen=true;
+					locked=false;
 					rocketManager.ChangeInitialPosition(new Vector3(planet.transform.position.x,planet.transform.position.y+planet.transform.localScale.y/2+myCollider.radius,0));
 					startPosition=planet.transform.position;
 					endPlanet=GenerateLevel(startPosition,"free");
 					(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = true;
 					Camera.main.orthographicSize=9;
-					myCamera.transform.position=new Vector3(startPosition.x+myCamera.deltaX,startPosition.y-myCamera.deltaY,-10);
+					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
 					myCamera.SetInitialPosition(myCamera.transform.position);
 					initialPosition=myCamera.transform.position;
 					myCamera.SetBound(camSize*20,3);
 					text.text="Play a level";
+					text2.text="";
 				}
 				if(planetManager.levelCompleted){
 					print ("COMPLETE");
@@ -176,12 +195,16 @@ public class PCG_tutorial : MonoBehaviour {
 				}
 				if(planetManager2.GetCollision() && !gen){
 					gen=true;
+					locked=false;
 					rocketManager.ChangeInitialPosition(new Vector3(planet.transform.position.x,planet.transform.position.y+planet.transform.localScale.y/2+myCollider.radius,0));
 					startPosition=planet.transform.position;
 					endPlanet=GenerateLevel(startPosition,"with");
 					(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = true;
 					Camera.main.orthographicSize=9;
-					myCamera.transform.position=new Vector3(startPosition.x+myCamera.deltaX,startPosition.y-myCamera.deltaY,-10);
+
+					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
+
+					//myCamera.transform.position=new Vector3(startPosition.x+myCamera.deltaX,startPosition.y-myCamera.deltaY,-10);
 					myCamera.SetInitialPosition(myCamera.transform.position);
 					initialPosition=myCamera.transform.position;
 					myCamera.SetBound(camSize*20,3);
@@ -236,6 +259,11 @@ public class PCG_tutorial : MonoBehaviour {
 						myCamera.SetThisAsInitialPosition();
 					}
 				}
+			}
+		}
+		if(counter==3){
+			if(planetManager.counter==0){
+				text2.text="EXPLODED!!";
 			}
 		}
 
@@ -305,7 +333,7 @@ public class PCG_tutorial : MonoBehaviour {
 	
 	public void Change(){
 		if(counter==9){
-			Application.LoadLevel("PCG");
+			Application.LoadLevel("PCG-continue");
 		}
 		if(counter==8){
 			// end of tutorial
@@ -433,16 +461,26 @@ public class PCG_tutorial : MonoBehaviour {
 									for(int i=0;i<cont;i++){
 										list[i]=null;
 									}
-									exe=false;
-									gen=false;
-									rocketManager.SetInitialPosition();
-									rocketManager.FullRefill();
-									text.text="The planet on the right is an exploding planet";
-									text2.text="";
+									planet = Instantiate(Resources.Load("Planet")) as GameObject;
+									planet.name="Planet";
+									planet.transform.position=new Vector3(8,0,0);
 									planetManager = planet.GetComponent ("Planet") as Planet;
 									planetManager.SetText(text2);
 									planetManager.SetPlanetType("count");
 									planetManager.DestroySatellite(0);
+									exe=false;
+									gen=false;
+									locked=true;
+									rocketManager.ChangeInitialPosition(absoluteInitialPosition);
+									rocketManager.SetInitialPosition();
+									rocketManager.FullRefill();
+									text.text="The planet on the right is an exploding planet";
+									text2.text="";
+									initialPosition=new Vector3(4,0,-10);
+									myCamera.SetInitialPosition(initialPosition);
+									(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = false;
+									Camera.main.transform.position=initialPosition;
+									Camera.main.orthographicSize=5;
 									counter++;
 								}
 								else{
@@ -457,14 +495,16 @@ public class PCG_tutorial : MonoBehaviour {
 										}
 										exe=false;
 										gen=false;
+										locked=true;
 										planet = Instantiate(Resources.Load("Planet")) as GameObject;
 										planet.name="Planet";
 										planet.transform.position=new Vector3(8,0,0);
 										planetManager = planet.GetComponent ("Planet") as Planet;
+										planetManager.SetPlanetType("");
+										list[cont++]=planet;
 										rocketManager.ChangeInitialPosition(absoluteInitialPosition);
 										rocketManager.SetInitialPosition();
 										rocketManager.FullRefill();
-										planetManager.SetPlanetType("");
 										text.text="A planet may have satellites in its orbits";
 										text2.text="If you hit one of them, you lose";
 										initialPosition=new Vector3(4,0,-10);

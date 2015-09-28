@@ -133,6 +133,13 @@ public class Planet : MonoBehaviour {
 				rocketManager.FullRefill();
 			}
 		}
+		if(collision==false && Time.time-rocketManager.GetTimer()>1){
+			if(orbitLevel==1){
+				orbitLevel=2;
+				myCollider.radius += 0.3f;
+				raise=false;
+			}
+		}
 	}
 	
 	void OnCollisionEnter (Collision gravityCollision)
@@ -140,7 +147,7 @@ public class Planet : MonoBehaviour {
 		if(planetType.Equals("checkpoint")){
 			// checkpoint reached!!
 			// change initial position of rocket
-			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.4f,0);
+			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.3f,0);
 			rocketManager.ChangeInitialPosition(newPosition);
 			rocketManager.onStart=true;
 		}
@@ -305,6 +312,22 @@ public class Planet : MonoBehaviour {
 			(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
 				(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
 		rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*2);
+
+		// color the current orbit
+		if(orbitLevel==1){
+			Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Specular");
+			rend.material.SetColor("_Color", Color.yellow);
+		}
+		else{
+			Renderer rend = this.transform.GetChild(1).GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+			rend.material.SetColor("_Color", Color.yellow);
+			Color32 color = new Color32(215, 95, 95, 27);
+			rend = this.transform.GetChild(0).GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+			rend.material.SetColor("_Color", Color.blue);
+		}
 	}
 	
 	void OnCollisionExit (Collision coll){
@@ -316,6 +339,16 @@ public class Planet : MonoBehaviour {
 		right=false;
 		rocketManager.SetTimer(Time.time);
 		rocketManager.SetColliding(false);
+
+		Color32 color = new Color32(215, 95, 95, 27);
+
+		// decolor everything
+		Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+		rend.material.SetColor("_Color", color);
+		rend = this.transform.GetChild(1).GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+		rend.material.SetColor("_Color", color);
 	}
 	
 	public void OnMouseDown(){

@@ -97,7 +97,10 @@ public class PCG_Obstacle : MonoBehaviour {
 		GameObject retPlan = planet;
 		planetManager = planet.GetComponent ("Planet") as Planet;
 		planetManager.SetPlanetType("first");
-		planetManager.DestroySatellite(Random.Range(0,3));
+		if(Random.Range(0,2)==0)
+			planetManager.DestroySatellite(0);
+		else
+			planetManager.DestroySatellite(2);
 		// place startPlanet
 		rand=Random.Range(0,5);
 		print ("RAND: "+rand);
@@ -131,7 +134,10 @@ public class PCG_Obstacle : MonoBehaviour {
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
 		planetManager = planet.GetComponent ("Planet") as Planet;
-		planetManager.DestroySatellite(Random.Range(0,3));
+		if(Random.Range(0,2)==0)
+			planetManager.DestroySatellite(0);
+		else
+			planetManager.DestroySatellite(2);
 		planetManager.SetPlanetType("end");
 		// place endPlanet
 		endRand=Random.Range(0,5);

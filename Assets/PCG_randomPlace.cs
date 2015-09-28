@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PCG_continue : MonoBehaviour {
+public class PCG_randomPlace : MonoBehaviour {
 	
 	bool creation=false;
 	GameObject rocket,planet,cam;
+	GameObject wormhole,wormhole2,swing,blackHole,dockingStation;
+	Wormhole wormholeManager,wormhole2Manager;
 	Rocket rocketManager;
 	Planet planetManager;
 	Camera myCam;
@@ -21,6 +23,7 @@ public class PCG_continue : MonoBehaviour {
 	bool scrollCamera=false;
 	public int level=1;
 	float maxFlyTime=10;
+	float randomObject;
 	
 	void Start () {
 		// get Camera
@@ -30,7 +33,7 @@ public class PCG_continue : MonoBehaviour {
 		rocket = Instantiate(Resources.Load("Rocket")) as GameObject;
 		rocket.name="Rocket";
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
-
+		
 		// generate startPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
@@ -41,9 +44,10 @@ public class PCG_continue : MonoBehaviour {
 			planetManager.DestroySatellite(0);
 		else
 			planetManager.DestroySatellite(2);
-
+		
 		// place startPlanet and move Camera
 		rand=Random.Range(0,5);
+		rand=2;
 		print ("RAND: "+rand);
 		/*if(rand==0){
 			planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4-camSize/2,0);
@@ -72,7 +76,7 @@ public class PCG_continue : MonoBehaviour {
 		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
-
+		
 		// place Rocket
 		initialPosition=new Vector3
 			(planet.transform.position.x ,planet.transform.position.y+(planet.transform.localScale.y/2)+myCollider.radius,0);
@@ -84,10 +88,10 @@ public class PCG_continue : MonoBehaviour {
 		creation=true;
 		// enable the movement of the Camera
 		myCamera.enabled=true;
-
+		
 		startingCorner=Vector3.zero;
 		//startPlanet=GenerateLevel(startingCorner);
-		endPlanet=GenerateLevel(startingCorner);
+		endPlanet=GenerateLevel(planet.transform.position);
 		
 		//deltaLevel = camSize*4;
 		myCam.orthographicSize=9;
@@ -101,23 +105,23 @@ public class PCG_continue : MonoBehaviour {
 			rocketManager.SetColliding(true);
 			myCamera.ResetPosition();
 		}
-
+		
 		if(planetManager.levelCompleted){
-
+			
 			planetManager.levelCompleted=false;
-
+			
 			//myCamera.transform.position=endPosition;
 			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2-randY*level,0);
 			//startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
-
+			
 			// unlock DownBound and RightBound
 			myCamera.SetBound(startingCorner.y-level*camSize*5,2);
 			myCamera.SetBound(startingCorner.x+level*camSize*5,3);
 			
 			// unlock LeftBound and UpBound
-//			myCamera.SetBound(startingCorner.x-camSize,0);
+			//			myCamera.SetBound(startingCorner.x-camSize,0);
 			myCamera.SetBound(startingCorner.y+camSize,1);
-
+			
 			// modify Deltas
 			myCam.orthographicSize=myCam.orthographicSize+4;
 			myCamera.SetDeltas(myCamera.GetDeltaX()+4,myCamera.GetDeltaY()+4);
@@ -139,15 +143,15 @@ public class PCG_continue : MonoBehaviour {
 			//myCamera.transform.position=camPosition;
 			//camPosition= new Vector3(endPlanet.transform.position.x,endPlanet.transform.position.y,-10);
 			scrollCamera=true;
-
+			
 			// set new rocket initialPosition
 			initialPosition=new Vector3
 				(endPlanet.transform.position.x ,endPlanet.transform.position.y+(endPlanet.transform.localScale.y/2)+myCollider.radius,0);
 			rocketManager.ChangeInitialPosition(initialPosition);
 			rocketManager.onStart=true;
-
+			
 			// Generate New Level
-			endPlanet=GenerateLevel(startingCorner);
+			endPlanet=GenerateLevel(endPlanet.transform.position);
 		}
 		// horizontal scroll to New Level
 		if(scrollCamera){
@@ -167,22 +171,51 @@ public class PCG_continue : MonoBehaviour {
 	
 	GameObject GenerateLevel(Vector3 pos){
 
-		int i=0,j=0;
-		for(;i<3;i++){
-			for(j=0;j<3;j++){
+		float left,up,down,right;
+		left=myCamera.GetBound(0);
+		up=myCamera.GetBound(1);
+		down=myCamera.GetBound(2);
+		right=myCamera.GetBound(3);
+
+		Vector3[] planets = new Vector3[10];
+		bool recreate=false;
+
+		int i=3,j=0,k=0,l=0,cont=0;
+		for(;l<9;l++){
+			//for(j=0;j<2;j++){
 				//randX=0;
 				//randY=0;
-				randX=Random.Range(-1.5f,1.5f);
-				randY=Random.Range(-1.5f,1.5f);
-				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
-				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
+				//do{
+					randX=Random.Range(5f,30f);
+					randY=Random.Range(-1.0f,1.0f);
+					x=pos.x+randX*Mathf.Cos(randY);
+					y=pos.y+randX*Mathf.Sin(randY);
+					//x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
+					//y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
+					cont++;
+					print("TRY: x="+x+" y="+y+" randX="+randX+" randY="+randY+" Cos:"+Mathf.Cos(randY)+" Sin: "+Mathf.Sin(randY));
+				//}while((y<down || y>up || x<left || x>right) && cont<2);
+			j=0;
+			recreate=false;
+			while(j<planets.Length){
+				if(x-planets[j].x<5 && Mathf.Abs(y-planets[j].y)<5){
+					j=planets.Length;
+					recreate=true;
+					print ("ERROR - OVERLAP");
+				}
+				j++;
+			}
+			if(!recreate){
 				newPosition=new Vector3(x,y,0);
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
 				planet.name="Planet";
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				planetManager.DestroySatellite(Random.Range(0,4));
+				planets[k] = newPosition;
+				k++;
 			}
+			//}
 		}
 		// generate endPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
@@ -195,6 +228,7 @@ public class PCG_continue : MonoBehaviour {
 			planetManager.DestroySatellite(2);
 		// place endPlanet
 		rand=Random.Range(0,5);
+		rand=rand-2;
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
 		/*if(rand==0){

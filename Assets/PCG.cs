@@ -99,7 +99,10 @@ public class PCG : MonoBehaviour {
 		GameObject retPlan = planet;
 		planetManager = planet.GetComponent ("Planet") as Planet;
 		planetManager.SetPlanetType("first");
-		planetManager.DestroySatellite(Random.Range(0,3));
+		if(Random.Range(0,2)==0)
+			planetManager.DestroySatellite(0);
+		else
+			planetManager.DestroySatellite(2);
 		// place startPlanet
 		rand=Random.Range(0,5);
 		print ("RAND: "+rand);
@@ -134,7 +137,10 @@ public class PCG : MonoBehaviour {
 		planet.name="Planet";
 		planetManager = planet.GetComponent ("Planet") as Planet;
 		planetManager.SetPlanetType("end");
-		planetManager.DestroySatellite(Random.Range(0,3));
+		if(Random.Range(0,2)==0)
+			planetManager.DestroySatellite(0);
+		else
+			planetManager.DestroySatellite(2);
 		// place endPlanet
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
