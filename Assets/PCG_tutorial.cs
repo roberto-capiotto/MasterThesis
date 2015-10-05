@@ -338,7 +338,7 @@ public class PCG_tutorial : MonoBehaviour {
 	
 	public void Change(){
 		if(counter==9){
-			Application.LoadLevel("PCG-continue");
+			Application.LoadLevel("mainMenu");
 		}
 		if(counter==8){
 			// end of tutorial
