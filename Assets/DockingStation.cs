@@ -201,6 +201,7 @@ public class DockingStation : MonoBehaviour {
 	void OnCollisionExit(){
 		shoot=false;
 		collision=false;
+		rocketManager.SetTimer(Time.time);
 		rocketManager.SetColliding(false);
 	}
 

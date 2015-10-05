@@ -223,6 +223,7 @@ public class Swing : MonoBehaviour {
 	void OnCollisionExit (Collision gravityCollision)
 	{
 		rocketManager.SetColliding(false);
+		rocketManager.SetTimer(Time.time);
 		// reset all flags
 		colliding=false;
 		up=false;

@@ -123,7 +123,7 @@ public class PCG_tutorial : MonoBehaviour {
 					print ("COMPLETE");
 					planetManager.levelCompleted=false;
 
-					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2-randY*level,0);
+					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2,0);
 					
 					// unlock DownBound and RightBound
 					myCamera.SetBound(startingCorner.y-level*camSize*5,2);
@@ -215,7 +215,7 @@ public class PCG_tutorial : MonoBehaviour {
 					print ("COMPLETE");
 					planetManager.levelCompleted=false;
 					
-					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2-randY*level,0);
+					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2,0);
 					
 					// unlock DownBound and RightBound
 					myCamera.SetBound(startingCorner.y-level*camSize*5,2);

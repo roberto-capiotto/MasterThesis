@@ -171,12 +171,6 @@ public class PCG_randomPlace : MonoBehaviour {
 	
 	GameObject GenerateLevel(Vector3 pos){
 
-		float left,up,down,right;
-		left=myCamera.GetBound(0);
-		up=myCamera.GetBound(1);
-		down=myCamera.GetBound(2);
-		right=myCamera.GetBound(3);
-
 		Vector3[] planets = new Vector3[10];
 		bool recreate=false;
 

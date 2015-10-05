@@ -107,7 +107,8 @@ public class PCG_continue : MonoBehaviour {
 			planetManager.levelCompleted=false;
 
 			//myCamera.transform.position=endPosition;
-			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2-randY*level,0);
+			//startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2-randY*level,0);
+			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2,0);
 			//startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
 
 			// unlock DownBound and RightBound
@@ -136,8 +137,6 @@ public class PCG_continue : MonoBehaviour {
 				}
 			}*/
 			myCamera.SetInitialPosition(camPosition);
-			//myCamera.transform.position=camPosition;
-			//camPosition= new Vector3(endPlanet.transform.position.x,endPlanet.transform.position.y,-10);
 			scrollCamera=true;
 
 			// set new rocket initialPosition

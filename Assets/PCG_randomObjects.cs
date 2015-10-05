@@ -110,7 +110,7 @@ public class PCG_randomObjects : MonoBehaviour {
 			planetManager.levelCompleted=false;
 			
 			//myCamera.transform.position=endPosition;
-			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2-randY*level,0);
+			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2,0);
 			//startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
 			
 			// unlock DownBound and RightBound

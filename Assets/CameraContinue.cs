@@ -251,6 +251,7 @@ public class CameraContinue : MonoBehaviour {
 
 	public void ResetPosition(){
 		this.transform.position=initialPosition;
+		reset();
 	}
 	
 	public void SetDeltas(float x,float y){
