@@ -104,6 +104,11 @@ public class PCG_randomObjects : MonoBehaviour {
 			rocketManager.SetColliding(true);
 			myCamera.ResetPosition();
 		}
+
+		if(rocketManager.GetReplace()){
+			myCamera.ResetPosition();
+			rocketManager.SetReplace(false);
+		}
 		
 		if(planetManager.levelCompleted){
 			

@@ -150,6 +150,7 @@ public class Planet : MonoBehaviour {
 			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.3f,0);
 			rocketManager.ChangeInitialPosition(newPosition);
 			rocketManager.onStart=true;
+			rocketManager.SetCollPlanet(this);
 		}
 		else{
 			if(planetType.Equals("count")){
@@ -166,6 +167,7 @@ public class Planet : MonoBehaviour {
 					if(planetType.Equals("first")){
 						// set camera position
 						rocketManager.onStart=true;
+						rocketManager.SetCollPlanet(this);
 					}
 					else{
 						rocketManager.onStart=false;
@@ -436,6 +438,8 @@ public class Planet : MonoBehaviour {
 		if(counter < 1){
 			CancelInvoke("CountEnd");
 			levelCompleted=true;
+			rocketManager.onStart=true;
+			rocketManager.SetCollPlanet(this);
 		}
 	}
 
@@ -511,6 +515,14 @@ public class Planet : MonoBehaviour {
 
 	public void SetCounter(int cont){
 		counter=cont;
+	}
+
+	public void SetMaxLevel(){
+		if(orbitLevel==1){
+			myCollider.radius += 0.3f;
+			raise=false;
+			orbitLevel=2;
+		}
 	}
 
 	/* if 0 destroy all

@@ -10,6 +10,8 @@ public class Rocket : MonoBehaviour {
 	public bool onStart=true;
 	public float timer;
 	public bool colliding=true;
+	Planet collPlanet;
+	bool replace;
 
 	void Start () {
 		//initialPosition=new Vector3(0 ,1.4f,0);
@@ -86,9 +88,25 @@ public class Rocket : MonoBehaviour {
 	public void SetColliding(bool coll){
 		colliding=coll;
 	}
-	
+
 	public bool GetColliding(){
 		return colliding;
+	}
+
+	public void SetCollPlanet(Planet p){
+		collPlanet=p;
+	}
+
+	public Planet GetCollPlanet(){
+		return collPlanet;
+	}
+
+	public void SetReplace(bool flag){
+		replace=flag;
+	}
+
+	public bool GetReplace(){
+		return replace;
 	}
 
 }

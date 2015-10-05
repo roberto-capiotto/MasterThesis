@@ -243,6 +243,10 @@ public class CameraContinue : MonoBehaviour {
 		initialPosition=pos;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
 	}
+
+	public Vector3 GetInitialPosition(){
+		return initialPosition;
+	}
 	
 	public void SetThisAsInitialPosition(){
 		initialPosition=this.transform.position;

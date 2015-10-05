@@ -39,6 +39,7 @@ public class PCG_tutorial : MonoBehaviour {
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		firstPlanet = GameObject.Find ("Planet");
 		planetManager = firstPlanet.GetComponent ("Planet") as Planet;
+		planetManager.SetPlanetType("first");
 		planetManager.DestroySatellite(0);
 		myCollider = firstPlanet.transform.GetComponent<SphereCollider>();
 		//camSize = Camera.main.orthographicSize;
@@ -50,13 +51,17 @@ public class PCG_tutorial : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-
 		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>maxFlyTime){
 			print ("reset due to flying");
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			rocketManager.SetColliding(true);
 			myCamera.ResetPosition();
+		}
+
+		if(rocketManager.GetReplace()){
+			myCamera.ResetPosition();
+			rocketManager.SetReplace(false);
 		}
 
 		camSize = Camera.main.orthographicSize;
@@ -284,8 +289,8 @@ public class PCG_tutorial : MonoBehaviour {
 			for(j=0;j<3;j++){
 				//randX=0;
 				//randY=0;
-				randX=Random.Range(-1.5f,1.5f);
-				randY=Random.Range(-1.5f,1.5f);
+				randX=Random.Range(-1.4f,1.4f);
+				randY=Random.Range(-1.4f,1.4f);
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*5*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*5*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);

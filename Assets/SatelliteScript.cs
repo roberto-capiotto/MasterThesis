@@ -24,6 +24,13 @@ public class SatelliteScript : MonoBehaviour {
 
 	void FixedUpdate(){
 		if(collision){
+			if(rocketManager.onStart){
+				rocketManager.GetCollPlanet().SetMaxLevel();
+			}
+			// if rocket dies left
+			if(rocket.transform.position.x<rocketManager.GetInitialPosition().x){
+				rocketManager.SetReplace(true);
+			}
 			//	rocket die
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();

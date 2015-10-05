@@ -52,6 +52,7 @@ public class PCG : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
+
 		if(planetManager.levelCompleted){
 			//myCamera.transform.position=endPosition;
 			startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);

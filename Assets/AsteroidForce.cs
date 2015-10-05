@@ -30,6 +30,10 @@ public class AsteroidForce : MonoBehaviour {
 	void FixedUpdate(){
 		this.transform.position = myPos;
 		if(collision){
+			// if rocket dies left
+			if(rocket.transform.position.x<rocketManager.GetInitialPosition().x){
+				rocketManager.SetReplace(true);
+			}
 			//	rocket die
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();

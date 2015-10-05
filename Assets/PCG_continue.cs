@@ -102,6 +102,11 @@ public class PCG_continue : MonoBehaviour {
 			myCamera.ResetPosition();
 		}
 
+		if(rocketManager.GetReplace()){
+			myCamera.ResetPosition();
+			rocketManager.SetReplace(false);
+		}
+
 		if(planetManager.levelCompleted){
 
 			planetManager.levelCompleted=false;
