@@ -2,8 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class CameraContinue : MonoBehaviour {
-	
+public class CameraScript : MonoBehaviour {
+
 	GameObject rocket;
 	Rocket rocketManager;
 	public Text text;
@@ -11,36 +11,20 @@ public class CameraContinue : MonoBehaviour {
 	public Vector3 initialPosition;
 	Vector3 position;
 	Vector3 limit;
-	float post;
 	public float camSize;
 	float leftBound;
 	float upBound;
 	float downBound;
 	float rightBound;
-	public float deltaX;
-	public float deltaY;
-	// flags
-	bool moving=false;
-	bool right=false;
-	bool left=false;
-	bool up=false;
-	bool down=false;
-	bool setPosition=false;
-	
-	/* DONE: define how to move in the level
-	 * We have a predefined schema with predefined dimensions;
-	 * startPlanet on left, endPlanet on right
-	 * Up and down boundaries are fixed. We don't want to reach other levels
-	 */
+	float deltaX;
+	float deltaY;
+
 	void Start () {
-		
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		position = new Vector3(0,0,0);
-		//deltaX=4+Camera.main.orthographicSize*3/2;
-		//deltaY=4+Camera.main.orthographicSize*3/2;
 		deltaX=5*3/2.0f;
 		deltaY=5*3/2.0f;
 		
@@ -53,21 +37,32 @@ public class CameraContinue : MonoBehaviour {
 		 */
 		SetBound(-camSize*2,0);
 		SetBound(camSize*2,1);
-		SetBound(-camSize*7,2);
-		SetBound(camSize*7,3);
+		SetBound(-camSize*5,2);
+		SetBound(camSize*5,3);
 	}
 	
 	void FixedUpdate () {
 		
 		text.text="Fuel: "+rocketManager.GetFuel();
 
-		camSize = Camera.main.orthographicSize;
+		/* OUT OF SCREEN*/
+		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*16/10){
+			ResetPosition();
+		}
+		if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>camSize){
+			ResetPosition();
+		}
+
+		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>0.5f){
+			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+			this.transform.position = position;
+		}
+
 		// upper bound and lower bound
 		if(rocket.transform.position.y>GetBound(1) || rocket.transform.position.y<GetBound(2)){
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			this.transform.position=initialPosition;
-			reset();
 		}
 		
 		/* left bound
@@ -77,7 +72,6 @@ public class CameraContinue : MonoBehaviour {
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			this.transform.position=initialPosition;
-			reset();
 		}
 		
 		/* right bound
@@ -86,51 +80,26 @@ public class CameraContinue : MonoBehaviour {
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
 			this.transform.position=initialPosition;
-			reset();
 		}
 
-		/* CONTINUE MOVING */
-		if(!rocketManager.onStart){
-			if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>deltaX/2){
-				if(!moving)
-					setPosition=true;
-				moving=true;
-				// if moving right
-				if(rocket.transform.position.x-this.transform.position.x>deltaX/2)
-					right=true;
-				// if moving left
-				else
-					left=true;
-			}
-			if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>deltaY/2){
-				if(!moving)
-					setPosition=true;
-				moving=true;
-				// if moving up
-				if(rocket.transform.position.y-this.transform.position.y>deltaY/2)
-					up=true;
-				// if moving down
-				else
-					down=true;
-			}
-		}
-
-		/* OUT OF SCREEN*/
-		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*16/10){
-			if(!moving)
-				setPosition=true;
+		/*if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize || Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
+			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+			this.transform.position = position;
+		}*/
+		/*
+		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize){
 			moving=true;
+			setPosition=true;
 			// if moving right
-			if(rocket.transform.position.x-this.transform.position.x>camSize*16/10)
+			if(rocket.transform.position.x-this.transform.position.x>camSize)
 				right=true;
 			// if moving left
 			else
 				left=true;
 		}
 		if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>camSize){
-			if(!moving)
-				setPosition=true;
 			moving=true;
+			setPosition=true;
 			// if moving up
 			if(rocket.transform.position.y-this.transform.position.y>camSize)
 				up=true;
@@ -142,73 +111,55 @@ public class CameraContinue : MonoBehaviour {
 			if(setPosition){
 				// set destination position
 				position=this.transform.position;
-				print ("BEFORE: x: "+position.x+" y: "+position.y);
 				if(right){
-					if(position.x==initialPosition.x && camSize!=9){
-						position=new Vector3(GetPost(),position.y,-10);
-						print ("GETPOST: "+GetPost());
-					}
-					else
-						position=new Vector3(position.x+deltaX,position.y,-10);
-					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
+					position=new Vector3(position.x+deltaX,position.y,-10);
 				}
 				if(up){
 					position=new Vector3(position.x,position.y+deltaY,-10);
-					print ("UP: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
 				if(down){
 					position=new Vector3(position.x,position.y-deltaY,-10);
-					print ("DOWN: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
 				if(left){
-					if(position.x==initialPosition.x && camSize!=9)
-						position=new Vector3(position.x-deltaX+(camSize-9),position.y,-10);
-					else
-						position=new Vector3(position.x-deltaX,position.y,-10);
-
-					// TODO: check if we are staying in the same level
-					if(position.x<GetLimit().x){
-						position=initialPosition;
-					}
-					print ("LEFT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
+					position=new Vector3(position.x-deltaX,position.y,-10);
 				}
 				setPosition=false;
 			}
 			
 			// TODO: optimize. The rocket should always be almost @ center
-			// we are moving the camera 0.3 every update
+			// we are moving the camera 0.35 every update
 			// it seems fluent
 			if(right){
-				this.transform.position = new Vector3(this.transform.position.x+0.3f,this.transform.position.y,-10);
-				if(this.transform.position.x-position.x>=0){
+				this.transform.position = new Vector3(this.transform.position.x+0.35f,this.transform.position.y,-10);
+				if(this.transform.position.x-position.x>0){
 					right=false;
 					this.transform.position=new Vector3(position.x,this.transform.position.y,-10);
 				}
 			}
 			if(left){
-				this.transform.position = new Vector3(this.transform.position.x-0.3f,this.transform.position.y,-10);
-				if(this.transform.position.x-position.x<=0){
+				this.transform.position = new Vector3(this.transform.position.x-0.35f,this.transform.position.y,-10);
+				if(this.transform.position.x-position.x<0){
 					left=false;
 					this.transform.position=new Vector3(position.x,this.transform.position.y,-10);
 				}
 			}
 			if(up){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.3f,-10);
-				if(this.transform.position.y-position.y>=0){
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.35f,-10);
+				if(this.transform.position.y-position.y>0){
 					up=false;
 					this.transform.position=new Vector3(this.transform.position.x,position.y,-10);
 				}
 			}
 			if(down){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.3f,-10);
-				if(this.transform.position.y-position.y<=0){
+				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.35f,-10);
+				if(this.transform.position.y-position.y<0){
 					down=false;
 					this.transform.position=new Vector3(this.transform.position.x,position.y,-10);
 				}
 			}
 			if(!up && !down && !left && !right )
 				moving=false;
-		}
+		}*/
 	}
 	
 	/* TYPE values
@@ -230,7 +181,7 @@ public class CameraContinue : MonoBehaviour {
 			rightBound=bound;
 		}
 	}
-	
+
 	/* TYPE values
 	 * 0 is left
 	 * 1 is up
@@ -253,35 +204,30 @@ public class CameraContinue : MonoBehaviour {
 			return 0;
 		}
 	}
-	
+
+	public void ResetPosition(){
+		this.transform.position=initialPosition;
+	}
+
 	public void SetInitialPosition(Vector3 pos){
 		initialPosition=pos;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
 	}
 
-	public Vector3 GetInitialPosition(){
-		return initialPosition;
-	}
-	
 	public void SetThisAsInitialPosition(){
 		initialPosition=this.transform.position;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
 	}
 
-	public void ResetPosition(){
-		this.transform.position=initialPosition;
-		reset();
-	}
-	
 	public void SetDeltas(float x,float y){
 		deltaX=x;
 		deltaY=y;
 	}
-	
+
 	public float GetDeltaX(){
 		return deltaX;
 	}
-	
+
 	public float GetDeltaY(){
 		return deltaY;
 	}
@@ -289,24 +235,8 @@ public class CameraContinue : MonoBehaviour {
 	public void SetLimit(Vector3 l){
 		limit=l;
 	}
-
+	
 	public Vector3 GetLimit(){
 		return limit;
-	}
-
-	public void SetPost(float p){
-		post=p;
-	}
-	
-	public float GetPost(){
-		return post;
-	}
-
-	void reset(){
-		moving=false;
-		right=false;
-		left=false;
-		up=false;
-		down=false;
 	}
 }

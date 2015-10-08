@@ -22,7 +22,9 @@ public class PCG_tutorial : MonoBehaviour {
 	Vector3 startPosition,startingCorner;
 	Vector3 newPosition;
 	Vector3 endPosition;
+	Vector3 lastPosition;
 	float x,y,rand,randX,randY,camSize=5;
+	float postX;
 	public int level=1;
 	public CameraContinue myCamera;
 	Camera myCam;
@@ -145,6 +147,13 @@ public class PCG_tutorial : MonoBehaviour {
 					// move Camera
 					print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+					postX=camPosition.x+myCamera.GetDeltaX();
+					print ("PostX: "+postX);
+					myCamera.SetPost(postX);
+					// THIS IS THE LIMIT OF THIS LEVEL
+					camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
+					myCamera.SetLimit(camPosition);
+					print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
 
 					myCamera.SetInitialPosition(camPosition);
 					scrollCamera=true;
@@ -237,6 +246,13 @@ public class PCG_tutorial : MonoBehaviour {
 					// move Camera
 					print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+					postX=camPosition.x+myCamera.GetDeltaX();
+					print ("PostX: "+postX);
+					myCamera.SetPost(postX);
+					// THIS IS THE LIMIT OF THIS LEVEL
+					camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
+					myCamera.SetLimit(camPosition);
+					print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
 					
 					myCamera.SetInitialPosition(camPosition);
 					scrollCamera=true;
@@ -283,7 +299,9 @@ public class PCG_tutorial : MonoBehaviour {
 	}
 
 	GameObject GenerateLevel(Vector3 pos,string s){
-		
+
+		lastPosition=new Vector3(0,0,0);
+
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
@@ -299,6 +317,10 @@ public class PCG_tutorial : MonoBehaviour {
 				planet.name="Planet";
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				list[cont++]=planet;
+				if(i==2){
+					if(planet.transform.position.x>lastPosition.x)
+						lastPosition=planet.transform.position;
+				}
 				if(s.Equals("free"))
 					planetManager.DestroySatellite(0);
 				else

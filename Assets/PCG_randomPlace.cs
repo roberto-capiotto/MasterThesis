@@ -15,11 +15,12 @@ public class PCG_randomPlace : MonoBehaviour {
 	Vector3 newPosition;
 	Vector3 endPosition;
 	Vector3 camPosition;
+	Vector3 lastPosition;
 	public Vector3 startingCorner;
 	GameObject endPlanet;
 	SphereCollider myCollider;
 	float deltaLevel;
-	public CameraContinue myCamera;
+	public CameraScript myCamera;
 	bool scrollCamera=false;
 	public int level=1;
 	float maxFlyTime=10;
@@ -134,6 +135,10 @@ public class PCG_randomPlace : MonoBehaviour {
 			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+			// THIS IS THE LIMIT OF THIS LEVEL
+			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
+			myCamera.SetLimit(camPosition);
+			print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
 			/*if(rand==0){
 				camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y-myCamera.GetDeltaY(),-10);
 			}else{
@@ -176,6 +181,8 @@ public class PCG_randomPlace : MonoBehaviour {
 	
 	GameObject GenerateLevel(Vector3 pos){
 
+		lastPosition=new Vector3(0,0,0);
+
 		Vector3[] planets = new Vector3[10];
 		bool recreate=false;
 
@@ -213,6 +220,8 @@ public class PCG_randomPlace : MonoBehaviour {
 				planetManager.DestroySatellite(Random.Range(0,4));
 				planets[k] = newPosition;
 				k++;
+				if(planet.transform.position.x>lastPosition.x)
+					lastPosition=planet.transform.position;
 			}
 			//}
 		}

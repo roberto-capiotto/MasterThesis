@@ -13,6 +13,7 @@ public class PCG_continue : MonoBehaviour {
 	Vector3 newPosition;
 	Vector3 endPosition;
 	Vector3 camPosition;
+	Vector3 lastPosition;
 	public Vector3 startingCorner;
 	GameObject endPlanet;
 	SphereCollider myCollider;
@@ -131,6 +132,11 @@ public class PCG_continue : MonoBehaviour {
 			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+			// THIS IS THE LIMIT OF THIS LEVEL
+			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
+			myCamera.SetLimit(camPosition);
+			print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
+
 			/*if(rand==0){
 				camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y-myCamera.GetDeltaY(),-10);
 			}else{
@@ -171,6 +177,8 @@ public class PCG_continue : MonoBehaviour {
 	
 	GameObject GenerateLevel(Vector3 pos){
 
+		lastPosition=new Vector3(0,0,0);
+
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
@@ -186,6 +194,10 @@ public class PCG_continue : MonoBehaviour {
 				planet.name="Planet";
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				planetManager.DestroySatellite(Random.Range(0,4));
+				if(i==2){
+					if(planet.transform.position.x>lastPosition.x)
+						lastPosition=planet.transform.position;
+				}
 			}
 		}
 		// generate endPlanet

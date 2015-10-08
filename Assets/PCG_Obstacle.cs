@@ -13,6 +13,7 @@ public class PCG_Obstacle : MonoBehaviour {
 	Vector3 newPosition;
 	Vector3 endPosition;
 	Vector3 camPosition;
+	Vector3 lastPosition;
 	Vector3 startingCorner;
 	GameObject startPlanet,endPlanet;
 	SphereCollider myCollider;
@@ -162,6 +163,10 @@ public class PCG_Obstacle : MonoBehaviour {
 			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+			// THIS IS THE LIMIT OF THIS LEVEL
+			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
+			myCamera.SetLimit(camPosition);
+			print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
 			/*if(rand==0){
 				camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y-myCamera.GetDeltaY(),-10);
 			}else{
@@ -308,6 +313,8 @@ public class PCG_Obstacle : MonoBehaviour {
 
 	GameObject GenerateLevel(Vector3 pos){
 
+		lastPosition=new Vector3(0,0,0);
+
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
@@ -321,6 +328,10 @@ public class PCG_Obstacle : MonoBehaviour {
 				planet.name="Planet";
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				planetManager.DestroySatellite(Random.Range(0,4));
+				if(i==2){
+					if(planet.transform.position.x>lastPosition.x)
+						lastPosition=planet.transform.position;
+				}
 			}
 		}
 		// generate endPlanet
@@ -391,21 +402,40 @@ public class PCG_Obstacle : MonoBehaviour {
 			path[8]=true;
 		}
 
-		// connect
+		// straight connection
 		if(path[0] && path[6])
 			path[3]=true;
-		if(path[0] && path[7])
-			path[3]=true;
-		if(path[1] && path[6])
-			path[4]=true;
 		if(path[1] && path[7])
-			path[4]=true;
-		if(path[1] && path[8])
-			path[5]=true;
-		if(path[2] && path[7])
 			path[4]=true;
 		if(path[2] && path[8])
 			path[5]=true;
+		// multiple connection
+		if(path[0] && path[7]){
+			path[3]=true;
+			path[4]=true;
+		}
+		if(path[1] && path[6]){
+			path[3]=true;
+			path[4]=true;
+		}
+		if(path[1] && path[8]){
+			path[4]=true;
+			path[5]=true;
+		}
+		if(path[2] && path[7]){
+			path[4]=true;
+			path[5]=true;
+		}
+		if(path[0] && path[8]){
+			path[3]=true;
+			path[4]=true;
+			path[5]=true;
+		}
+		if(path[2] && path[6]){
+			path[3]=true;
+			path[4]=true;
+			path[5]=true;
+		}
 
 		// up couple
 		if(!(path[0] && path[1])){
