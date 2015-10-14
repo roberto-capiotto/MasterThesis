@@ -141,6 +141,7 @@ public class PCG_randomObjects : MonoBehaviour {
 			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+			myCamera.SetPost(camPosition.x+myCamera.GetDeltaX());
 			// THIS IS THE LIMIT OF THIS LEVEL
 			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
 			myCamera.SetLimit(camPosition);
@@ -199,6 +200,10 @@ public class PCG_randomObjects : MonoBehaviour {
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
+				if(i==2){
+					if(planet.transform.position.x>lastPosition.x)
+						lastPosition=planet.transform.position;
+				}
 				randomObject=Random.Range(0,1.0f);
 				if(randomObject<0.65f){
 					planet = Instantiate(Resources.Load("Planet")) as GameObject;
@@ -206,40 +211,24 @@ public class PCG_randomObjects : MonoBehaviour {
 					planet.name="Planet";
 					planetManager = planet.GetComponent ("Planet") as Planet;
 					planetManager.DestroySatellite(Random.Range(0,4));
-					if(i==2){
-						if(planet.transform.position.x>lastPosition.x)
-							lastPosition=planet.transform.position;
-					}
 				}
 				else{
 					if(randomObject<0.75f){
 						swing = Instantiate(Resources.Load("Swing")) as GameObject;
 						swing.transform.position=newPosition;
 						swing.name="Swing";
-						if(i==2){
-							if(swing.transform.position.x>lastPosition.x)
-								lastPosition=swing.transform.position;
-						}
 					}
 					else{
 						if(randomObject<0.9f){
 							dockingStation = Instantiate(Resources.Load("DockingStation")) as GameObject;
 							dockingStation.transform.position=newPosition;
 							dockingStation.name="DockingStation";
-							if(i==2){
-								if(dockingStation.transform.position.x>lastPosition.x)
-									lastPosition=dockingStation.transform.position;
-							}
 						}
 						else{
 //							if(randomObject<0.95f){
 								blackHole = Instantiate(Resources.Load("BlackHole")) as GameObject;
 								blackHole.transform.position=newPosition;
 								blackHole.name="BlackHole";
-								if(i==2){
-									if(blackHole.transform.position.x>lastPosition.x)
-										lastPosition=blackHole.transform.position;
-								}
 /*							}
 							else{
 								wormhole = Instantiate(Resources.Load("Wormhole")) as GameObject;

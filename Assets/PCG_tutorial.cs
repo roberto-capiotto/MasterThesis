@@ -280,7 +280,6 @@ public class PCG_tutorial : MonoBehaviour {
 					print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
 					postX=camPosition.x+myCamera.GetDeltaX();
-					print ("PostX: "+postX);
 					myCamera.SetPost(postX);
 					// THIS IS THE LIMIT OF THIS LEVEL
 					camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);

@@ -170,6 +170,7 @@ public class PCG_Obstacle : MonoBehaviour {
 			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
+			myCamera.SetPost(camPosition.x+myCamera.GetDeltaX());
 			// THIS IS THE LIMIT OF THIS LEVEL
 			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
 			myCamera.SetLimit(camPosition);
