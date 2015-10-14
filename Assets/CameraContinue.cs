@@ -55,6 +55,11 @@ public class CameraContinue : MonoBehaviour {
 		SetBound(camSize*2,1);
 		SetBound(-camSize*7,2);
 		SetBound(camSize*7,3);
+
+		Vector3 coord = Vector3.zero;
+		coord.x = this.transform.position.x+Screen.width/2-50;
+		coord.y = this.transform.position.y+Screen.height/2-50;
+		text.rectTransform.localPosition = coord;
 	}
 	
 	void FixedUpdate () {
@@ -300,6 +305,10 @@ public class CameraContinue : MonoBehaviour {
 	
 	public float GetPost(){
 		return post;
+	}
+
+	public void SetOrthographicSize(float size){
+		Camera.main.orthographicSize=size;
 	}
 
 	void reset(){

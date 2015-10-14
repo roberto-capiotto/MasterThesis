@@ -33,6 +33,10 @@ public class PCG_tutorial : MonoBehaviour {
 	int cont=0;
 	float maxFlyTime=10;
 	bool locked=true;
+	// level boundaries vars
+	//float left,up,right,down;
+	public Button continueButton;
+	public Button closeButton;
 	
 	void Start () {
 		cam=GameObject.Find("Main Camera");
@@ -50,9 +54,36 @@ public class PCG_tutorial : MonoBehaviour {
 		rocketInitialPosition=rocketManager.GetInitialPosition();
 		absoluteInitialPosition=rocketInitialPosition;
 		list = new GameObject[100];
+		/* TODO: BOUNDARY IS A HELL
+		left=firstPlanet.transform.position.x-camSize*16/10;
+		up=firstPlanet.transform.position.x-camSize;
+		right=firstPlanet.transform.position.x+camSize*16/10;
+		down=firstPlanet.transform.position.x+camSize;*/
+		Vector3 coord = Vector3.zero;
+		coord.x = -Screen.width/2+80;
+		coord.y = -Screen.height/2+15;
+		continueButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = this.transform.position.x;
+		coord.y = this.transform.position.y+Screen.height/3;
+		text.rectTransform.localPosition = coord;
+
+		coord.y = this.transform.position.y-Screen.height/3;
+		text2.rectTransform.localPosition = coord;
+
+		coord.x = Screen.width/2-80;
+		coord.y = -Screen.height/2+15;
+		closeButton.GetComponent<RectTransform>().localPosition = coord;
+	}
+
+	Vector3 WorldCoordinate (Vector3 mouseCoordinates)
+	{
+		Camera.main.ScreenToWorldPoint (mouseCoordinates);
+		return Camera.main.ScreenToWorldPoint (mouseCoordinates);
 	}
 	
 	void FixedUpdate () {
+
 		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>maxFlyTime){
 			print ("reset due to flying");
 			rocketManager.SetInitialPosition();
@@ -215,6 +246,8 @@ public class PCG_tutorial : MonoBehaviour {
 					endPlanet=GenerateLevel(startPosition,"with");
 					(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = true;
 					Camera.main.orthographicSize=9;
+					// RESET DELTAS
+					myCamera.SetDeltas(5*3/2.0f,5*3/2.0f);
 
 					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
 
@@ -307,8 +340,9 @@ public class PCG_tutorial : MonoBehaviour {
 			for(j=0;j<3;j++){
 				//randX=0;
 				//randY=0;
-				randX=Random.Range(-1.4f,1.4f);
-				randY=Random.Range(-1.4f,1.4f);
+				randX=Random.Range(-1.3f,1.3f);
+				randY=Random.Range(-1.3f,1.3f);
+				print("randX: "+randX+" randY: "+randY);
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*5*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*5*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
@@ -357,7 +391,11 @@ public class PCG_tutorial : MonoBehaviour {
 		level++;
 		return planet;
 	}
-	
+
+	public void Close(){
+		Application.LoadLevel("mainMenu");
+	}
+
 	public void Change(){
 		if(counter==9){
 			Application.LoadLevel("mainMenu");
@@ -374,6 +412,11 @@ public class PCG_tutorial : MonoBehaviour {
 			text.text="This is the end of the tutorial";
 			text2.text="Now you are ready for playing the game";
 			counter++;
+			// place button out of bound
+			Vector3 coord = Vector3.zero;
+			coord.x = myCamera.transform.position.x-Screen.width;
+			coord.y = myCamera.transform.position.y-Screen.height;
+			continueButton.GetComponent<RectTransform>().localPosition = coord;
 		}
 		else{
 			if(counter==7){
@@ -523,6 +566,8 @@ public class PCG_tutorial : MonoBehaviour {
 										exe=false;
 										gen=false;
 										locked=true;
+										level=1;
+										// TODO: RESET INITIAL POSITION ABSOLUTE
 										planet = Instantiate(Resources.Load("Planet")) as GameObject;
 										planet.name="Planet";
 										planet.transform.position=new Vector3(8,0,0);

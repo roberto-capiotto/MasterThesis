@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PCG_Obstacle : MonoBehaviour {
@@ -23,6 +24,7 @@ public class PCG_Obstacle : MonoBehaviour {
 	public int level=1;
 	public bool[] path;
 	float maxFlyTime=10;
+	public Button closeButton;
 
 	void Start () {
 		// get Camera
@@ -93,6 +95,11 @@ public class PCG_Obstacle : MonoBehaviour {
 		
 		//deltaLevel = camSize*4;
 		myCam.orthographicSize=9;
+
+		Vector3 coord = Vector3.zero;
+		coord.x = -Screen.width/2+80;
+		coord.y = -Screen.height/2+15;
+		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 
 	/*void Start () {
@@ -529,6 +536,10 @@ public class PCG_Obstacle : MonoBehaviour {
 			asteroid.transform.position=new Vector3(x,y,0);
 		}
 		
+	}
+
+	public void Close(){
+		Application.LoadLevel("mainMenu");
 	}
 	
 	public bool GetCreation(){

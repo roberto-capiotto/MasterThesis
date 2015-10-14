@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PCG_continue : MonoBehaviour {
@@ -22,6 +23,7 @@ public class PCG_continue : MonoBehaviour {
 	bool scrollCamera=false;
 	public int level=1;
 	float maxFlyTime=10;
+	public Button closeButton;
 	
 	void Start () {
 		// get Camera
@@ -92,6 +94,11 @@ public class PCG_continue : MonoBehaviour {
 		
 		//deltaLevel = camSize*4;
 		myCam.orthographicSize=9;
+
+		Vector3 coord = Vector3.zero;
+		coord.x = -Screen.width/2+80;
+		coord.y = -Screen.height/2+15;
+		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
 	void FixedUpdate () {
@@ -229,7 +236,11 @@ public class PCG_continue : MonoBehaviour {
 		level++;
 		return planet;
 	}
-	
+
+	public void Close(){
+		Application.LoadLevel("mainMenu");
+	}
+
 	public bool GetCreation(){
 		return creation;
 	}
