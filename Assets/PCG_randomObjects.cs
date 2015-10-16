@@ -27,6 +27,7 @@ public class PCG_randomObjects : MonoBehaviour {
 	float maxFlyTime=10;
 	float randomObject;
 	public Button closeButton;
+	public Text texplode;
 	
 	void Start () {
 		// get Camera
@@ -102,6 +103,11 @@ public class PCG_randomObjects : MonoBehaviour {
 		coord.x = -Screen.width/2+80;
 		coord.y = -Screen.height/2+15;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = this.transform.position.x;
+		coord.y = this.transform.position.y-Screen.height/3;
+		texplode.rectTransform.localPosition = coord;
+		texplode.color = Color.red;
 	}
 	
 	void FixedUpdate () {
@@ -205,15 +211,21 @@ public class PCG_randomObjects : MonoBehaviour {
 						lastPosition=planet.transform.position;
 				}
 				randomObject=Random.Range(0,1.0f);
-				if(randomObject<0.65f){
+				if(randomObject<0.7f){
 					planet = Instantiate(Resources.Load("Planet")) as GameObject;
 					planet.transform.position= newPosition;
 					planet.name="Planet";
 					planetManager = planet.GetComponent ("Planet") as Planet;
 					planetManager.DestroySatellite(Random.Range(0,4));
+					if(randomObject<0.1f)
+						planetManager.SetPlanetType("checkpoint");
+					if(randomObject>0.6f){
+						planetManager.SetPlanetType("count");
+						planetManager.SetText(texplode);
+					}
 				}
 				else{
-					if(randomObject<0.75f){
+					if(randomObject<0.8f){
 						swing = Instantiate(Resources.Load("Swing")) as GameObject;
 						swing.transform.position=newPosition;
 						swing.name="Swing";

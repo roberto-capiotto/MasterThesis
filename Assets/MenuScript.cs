@@ -1,15 +1,49 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class MenuScript : MonoBehaviour {
 
-	/**
-	 * 1: PCG_tutorial
-	 * 2: PCG_continue
-	 * 3: PCG_randomObject
-	 * 4: PCG_obstacle
-	 * 5: PCG_randomPlace
-	 */
+	public Button tutorialButton;
+	public Button continueButton;
+	public Button obstacleButton;
+	public Button randomObjectButton;
+	public Button randomPlaceButton;
+	public Button quitButton;
+
+	public Text title;
+	public Text subtitle;
+
+	void Start(){
+		Vector3 coord = Vector3.zero;
+		coord.x = -Screen.width/2+80;
+		coord.y = Screen.height/6+15;
+		tutorialButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = 0;
+		continueButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = Screen.width/2-80;
+		obstacleButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = -Screen.width/3+80;
+		coord.y = -Screen.height/6+15;
+		randomObjectButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = Screen.width/3-80;
+		randomPlaceButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = 0;
+		coord.y = -Screen.height/2+15;
+		quitButton.GetComponent<RectTransform>().localPosition = coord;
+		
+		coord.x = 0;
+		coord.y = Screen.height/3+15;
+		title.rectTransform.localPosition = coord;
+		
+		coord.y = -Screen.height/3+15;
+		subtitle.rectTransform.localPosition = coord;
+	}
 
 	public void Select(int value){
 		switch(value){
@@ -27,6 +61,9 @@ public class MenuScript : MonoBehaviour {
 			break;
 		case 5:
 			Application.LoadLevel("PCG-random-place");
+			break;
+		case 6:
+			Application.Quit();
 			break;
 		}
 	}

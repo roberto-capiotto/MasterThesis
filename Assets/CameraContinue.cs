@@ -10,7 +10,7 @@ public class CameraContinue : MonoBehaviour {
 	// camera vars
 	public Vector3 initialPosition;
 	Vector3 position;
-	Vector3 limit;
+	public Vector3 limit = new Vector3(-10,0,0);
 	float post;
 	public float camSize;
 	float leftBound;
@@ -19,6 +19,9 @@ public class CameraContinue : MonoBehaviour {
 	float rightBound;
 	public float deltaX;
 	public float deltaY;
+	public int level=1;
+	public int curLevel=1;
+	public Vector3[] cameraStep = new Vector3[20];
 	// flags
 	bool moving=false;
 	bool right=false;
@@ -33,7 +36,7 @@ public class CameraContinue : MonoBehaviour {
 	 * Up and down boundaries are fixed. We don't want to reach other levels
 	 */
 	void Start () {
-		
+
 		rocket = GameObject.Find ("Rocket");
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
 		camSize = Camera.main.orthographicSize;
@@ -94,29 +97,31 @@ public class CameraContinue : MonoBehaviour {
 			reset();
 		}
 
-		/* CONTINUE MOVING */
-		if(!rocketManager.onStart){
-			if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>deltaX/2){
-				if(!moving)
-					setPosition=true;
-				moving=true;
-				// if moving right
-				if(rocket.transform.position.x-this.transform.position.x>deltaX/2)
-					right=true;
-				// if moving left
-				else
-					left=true;
-			}
-			if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>deltaY/2){
-				if(!moving)
-					setPosition=true;
-				moving=true;
-				// if moving up
-				if(rocket.transform.position.y-this.transform.position.y>deltaY/2)
-					up=true;
-				// if moving down
-				else
-					down=true;
+		if(curLevel==level){
+			/* CONTINUE MOVING */
+			if(!rocketManager.onStart){
+				if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>deltaX/2){
+					if(!moving)
+						setPosition=true;
+					moving=true;
+					// if moving right
+					if(rocket.transform.position.x-this.transform.position.x>deltaX/2)
+						right=true;
+					// if moving left
+					else
+						left=true;
+				}
+				if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>deltaY/2){
+					if(!moving)
+						setPosition=true;
+					moving=true;
+					// if moving up
+					if(rocket.transform.position.y-this.transform.position.y>deltaY/2)
+						up=true;
+					// if moving down
+					else
+						down=true;
+				}
 			}
 		}
 
@@ -148,15 +153,6 @@ public class CameraContinue : MonoBehaviour {
 				// set destination position
 				position=this.transform.position;
 				print ("BEFORE: x: "+position.x+" y: "+position.y);
-				if(right){
-					if(position.x==initialPosition.x && camSize!=9){
-						position=new Vector3(GetPost(),position.y,-10);
-						print ("GETPOST: "+GetPost());
-					}
-					else
-						position=new Vector3(position.x+deltaX,position.y,-10);
-					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
-				}
 				if(up){
 					position=new Vector3(position.x,position.y+deltaY,-10);
 					print ("UP: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
@@ -165,15 +161,76 @@ public class CameraContinue : MonoBehaviour {
 					position=new Vector3(position.x,position.y-deltaY,-10);
 					print ("DOWN: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
+				if(right){
+					if(curLevel!=level){
+						if(curLevel==level-2){
+							curLevel=level;
+							position.x=initialPosition.x;
+							if(Mathf.Abs (initialPosition.y-this.transform.position.y)<deltaY/2)
+								position.y = initialPosition.y;
+							else{
+								if(this.transform.position.y>initialPosition.y){
+									if(Mathf.Abs (initialPosition.y+deltaY-this.transform.position.y)<deltaY/2){
+										position.y = initialPosition.y;
+									}
+									// CHECK x2
+								}
+								else{
+									if(Mathf.Abs (initialPosition.y-deltaY-this.transform.position.y)<deltaY/2){
+										position.y = initialPosition.y;
+									}
+									// CHECK x2
+								}
+							}
+							print ("special move right");
+							if(position.y>this.transform.position.y)
+								up=true;
+							else
+								if(position.y<this.transform.position.y)
+									down=true;
+						}
+						else{
+							curLevel++;
+							// CHECK INDEX
+							position=cameraStep[curLevel-1];
+							if(position.y>this.transform.position.y)
+								up=true;
+							else
+								if(position.y<this.transform.position.y)
+									down=true;
+						}
+					}
+					else{
+						if(position.x==initialPosition.x && camSize!=9){
+							position=new Vector3(GetPost(),position.y,-10);
+							print ("GETPOST: "+GetPost());
+						}
+						else
+							position=new Vector3(position.x+deltaX,position.y,-10);
+					}
+					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
+				}
 				if(left){
-					if(position.x==initialPosition.x && camSize!=9)
-						position=new Vector3(position.x-deltaX+(camSize-9),position.y,-10);
-					else
-						position=new Vector3(position.x-deltaX,position.y,-10);
-
-					// TODO: check if we are staying in the same level
-					if(position.x<GetLimit().x){
-						position=initialPosition;
+					if(rocket.transform.position.x<GetLimit().x-deltaX){
+						if(curLevel==level)
+							curLevel=level-2;
+						position=cameraStep[curLevel-1];
+						print ("special move left");
+						if(position.y>this.transform.position.y)
+							up=true;
+						else
+							if(position.y<this.transform.position.y)
+								down=true;
+					}
+					else{
+						if(position.x==initialPosition.x && camSize!=9)
+							//position=new Vector3(position.x-deltaX+(camSize-9),position.y,-10);
+							left=false;
+						else{
+							position=new Vector3(position.x-deltaX,position.y,-10);
+							if(position.x<GetPost())
+								position.x=initialPosition.x;
+						}
 					}
 					print ("LEFT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
 				}
@@ -311,11 +368,25 @@ public class CameraContinue : MonoBehaviour {
 		Camera.main.orthographicSize=size;
 	}
 
+	public void SetLevel(int lvl){
+		level=lvl;
+		curLevel=lvl;
+	}
+
+	public int GetLevel(){
+		return level;
+	}
+
+	public void AddCameraStep(Vector3 step){
+		cameraStep[level-1] = step;
+	}
+
 	void reset(){
 		moving=false;
 		right=false;
 		left=false;
 		up=false;
 		down=false;
+		curLevel=level;
 	}
 }

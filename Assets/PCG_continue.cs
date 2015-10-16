@@ -192,8 +192,8 @@ public class PCG_continue : MonoBehaviour {
 			for(j=0;j<3;j++){
 				//randX=0;
 				//randY=0;
-				randX=Random.Range(-1.5f,1.5f);
-				randY=Random.Range(-1.5f,1.5f);
+				randX=Random.Range(-1.3f,1.3f);
+				randY=Random.Range(-1.3f,1.3f);
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
@@ -221,20 +221,15 @@ public class PCG_continue : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
-		/*if(rand==0){
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-camSize/2,0);
-		}
-		else{
-			if(rand==4){
-				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
-			}
-			else{
-				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
-			}
-		}*/
+
+		Vector3 step = Vector3.zero;
+		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*camSize*3/2;
+		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*camSize*3/2;
+		myCamera.AddCameraStep(step);
 		
 		endPosition=planet.transform.position;
 		level++;
+		myCamera.SetLevel(level);
 		return planet;
 	}
 
