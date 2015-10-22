@@ -12,6 +12,7 @@ public class Rocket : MonoBehaviour {
 	public bool colliding=true;
 	Planet collPlanet;
 	bool replace;
+	bool check=false;
 
 	void Start () {
 		//initialPosition=new Vector3(0 ,1.4f,0);
@@ -107,6 +108,14 @@ public class Rocket : MonoBehaviour {
 
 	public bool GetReplace(){
 		return replace;
+	}
+
+	public bool GetCheck(){
+		return check;
+	}
+
+	public void SetCheck(bool checkFlag){
+		check=checkFlag;
 	}
 
 }

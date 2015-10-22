@@ -33,10 +33,11 @@ public class PCG_tutorial : MonoBehaviour {
 	int cont=0;
 	float maxFlyTime=10;
 	bool locked=true;
-	// level boundaries vars
-	//float left,up,right,down;
 	public Button continueButton;
 	public Button closeButton;
+	float upBound;
+	float downBound;
+	float rightBound;
 	
 	void Start () {
 		cam=GameObject.Find("Main Camera");
@@ -152,24 +153,20 @@ public class PCG_tutorial : MonoBehaviour {
 					Camera.main.orthographicSize=9;
 					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
 					myCamera.SetInitialPosition(myCamera.transform.position);
+					myCamera.ShowFuelText();
+					rocketManager.FullRefill();
 					initialPosition=myCamera.transform.position;
-					myCamera.SetBound(camSize*20,3);
+					myCamera.SetBound(camSize*2,1);
+					myCamera.SetBound(-camSize*5,2);
+					myCamera.SetBound(camSize*7,3);
 					text.text="Play a level";
 					text2.text="";
 				}
 				if(planetManager.levelCompleted){
 					print ("COMPLETE");
+					text.text="";
 					planetManager.levelCompleted=false;
-
 					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2,0);
-					
-					// unlock DownBound and RightBound
-					myCamera.SetBound(startingCorner.y-level*camSize*5,2);
-					myCamera.SetBound(startingCorner.x+level*camSize*5,3);
-					
-					// unlock LeftBound and UpBound
-					//			myCamera.SetBound(startingCorner.x-camSize,0);
-					myCamera.SetBound(startingCorner.y+camSize,1);
 					
 					// modify Deltas
 					myCam.orthographicSize=myCam.orthographicSize+4;
@@ -230,6 +227,9 @@ public class PCG_tutorial : MonoBehaviour {
 				list[cont++]=planet;
 				scroll=true;
 				camPosition=new Vector3(12,0,-10);
+				myCamera.SetBound(camSize*2,1);
+				myCamera.SetBound(-camSize*5,2);
+				myCamera.SetBound(camSize*7,3);
 			}
 		}
 		else{
@@ -248,29 +248,19 @@ public class PCG_tutorial : MonoBehaviour {
 					Camera.main.orthographicSize=9;
 					// RESET DELTAS
 					myCamera.SetDeltas(5*3/2.0f,5*3/2.0f);
-
 					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
-
-					//myCamera.transform.position=new Vector3(startPosition.x+myCamera.deltaX,startPosition.y-myCamera.deltaY,-10);
 					myCamera.SetInitialPosition(myCamera.transform.position);
+					myCamera.ShowFuelText();
+					rocketManager.FullRefill();
 					initialPosition=myCamera.transform.position;
-					myCamera.SetBound(camSize*20,3);
 					text.text="Play a level";
 					text2.text="";
 				}
 				if(planetManager.levelCompleted){
 					print ("COMPLETE");
+					text.text="";
 					planetManager.levelCompleted=false;
-					
 					startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*5*3/2,0);
-					
-					// unlock DownBound and RightBound
-					myCamera.SetBound(startingCorner.y-level*camSize*5,2);
-					myCamera.SetBound(startingCorner.x+level*camSize*5,3);
-					
-					// unlock LeftBound and UpBound
-					//			myCamera.SetBound(startingCorner.x-camSize,0);
-					myCamera.SetBound(startingCorner.y+camSize,1);
 					
 					// modify Deltas
 					myCam.orthographicSize=myCam.orthographicSize+4;
@@ -354,12 +344,24 @@ public class PCG_tutorial : MonoBehaviour {
 					if(planet.transform.position.x>lastPosition.x)
 						lastPosition=planet.transform.position;
 				}
+				// searching for downBound
+				if(j==2){
+					if(planet.transform.position.y<downBound)
+						downBound=planet.transform.position.y;
+				}
+				// searching for upBound
+				if(j==0){
+					if(planet.transform.position.y>upBound)
+						upBound=planet.transform.position.y;
+				}
 				if(s.Equals("free"))
 					planetManager.DestroySatellite(0);
 				else
 					planetManager.DestroySatellite(Random.Range(0,4));
 			}
 		}
+		//lastPosition = new Vector3(lastPosition.x+5,lastPosition.y,0);
+
 		// generate endPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
@@ -373,21 +375,32 @@ public class PCG_tutorial : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*5*3/2,pos.y-(level-1)*4*rand-rand*5*3/2,0);
-		/*if(rand==0){
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-camSize/2,0);
-		}
-		else{
-			if(rand==4){
-				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
-			}
-			else{
-				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
-			}
-		}*/
+
+		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
+		upBound = upBound + myCamera.GetDeltaY();
+		downBound = downBound - myCamera.GetDeltaY();
+		if(rand==4)
+			downBound = planet.transform.position.y-myCamera.GetDeltaY();
+		if(rand==0)
+			upBound = planet.transform.position.y+myCamera.GetDeltaY();
+		
+		if(myCamera.GetBound(1)<upBound)
+			myCamera.SetBound(upBound,1);
+		
+		if(myCamera.GetBound(2)>downBound)
+			myCamera.SetBound(downBound,2);
+		
+		myCamera.SetBound(rightBound,3);
+
+		Vector3 step = Vector3.zero;
+		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*camSize*3/2;
+		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*camSize*3/2;
+		myCamera.AddCameraStep(step);
 
 		list[cont++]=planet;
 		endPosition=planet.transform.position;
 		level++;
+		myCamera.SetLevel(level);
 		return planet;
 	}
 
@@ -550,6 +563,7 @@ public class PCG_tutorial : MonoBehaviour {
 									(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = false;
 									Camera.main.transform.position=initialPosition;
 									Camera.main.orthographicSize=5;
+									myCamera.NotShowFuelText();
 									counter++;
 								}
 								else{
@@ -566,7 +580,8 @@ public class PCG_tutorial : MonoBehaviour {
 										gen=false;
 										locked=true;
 										level=1;
-										// TODO: RESET INITIAL POSITION ABSOLUTE
+										myCamera.SetLevel(level);
+										myCamera.RemoveCameraStep();
 										planet = Instantiate(Resources.Load("Planet")) as GameObject;
 										planet.name="Planet";
 										planet.transform.position=new Vector3(8,0,0);
@@ -583,6 +598,7 @@ public class PCG_tutorial : MonoBehaviour {
 										(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = false;
 										Camera.main.transform.position=initialPosition;
 										Camera.main.orthographicSize=5;
+										myCamera.NotShowFuelText();
 										counter++;
 									}
 									else{
@@ -595,6 +611,7 @@ public class PCG_tutorial : MonoBehaviour {
 											initialPosition=new Vector3(4,0,-10);
 											Camera.main.transform.position=initialPosition;
 											myCamera.SetInitialPosition(initialPosition);
+											myCamera.NotShowFuelText();
 											planet = Instantiate(Resources.Load("Planet")) as GameObject;
 											planet.name="Planet";
 											planet.transform.position=new Vector3(8,0,0);

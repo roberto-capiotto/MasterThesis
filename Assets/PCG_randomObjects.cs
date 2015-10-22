@@ -28,6 +28,9 @@ public class PCG_randomObjects : MonoBehaviour {
 	float randomObject;
 	public Button closeButton;
 	public Text texplode;
+	float upBound;
+	float downBound;
+	float rightBound;
 	
 	void Start () {
 		// get Camera
@@ -79,6 +82,7 @@ public class PCG_randomObjects : MonoBehaviour {
 		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
+		myCamera.ShowFuelText();
 		
 		// place Rocket
 		initialPosition=new Vector3
@@ -123,22 +127,16 @@ public class PCG_randomObjects : MonoBehaviour {
 			myCamera.ResetPosition();
 			rocketManager.SetReplace(false);
 		}
+
+		if(rocketManager.GetCheck()){
+			myCamera.SetThisAsInitialPosition();
+			rocketManager.SetCheck(false);
+		}
 		
 		if(planetManager.levelCompleted){
 			
 			planetManager.levelCompleted=false;
-			
-			//myCamera.transform.position=endPosition;
 			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2,0);
-			//startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
-			
-			// unlock DownBound and RightBound
-			myCamera.SetBound(startingCorner.y-level*camSize*5,2);
-			myCamera.SetBound(startingCorner.x+level*camSize*5,3);
-			
-			// unlock LeftBound and UpBound
-			//			myCamera.SetBound(startingCorner.x-camSize,0);
-			myCamera.SetBound(startingCorner.y+camSize,1);
 			
 			// modify Deltas
 			myCam.orthographicSize=myCam.orthographicSize+4;
@@ -206,23 +204,27 @@ public class PCG_randomObjects : MonoBehaviour {
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
-				if(i==2){
-					if(planet.transform.position.x>lastPosition.x)
-						lastPosition=planet.transform.position;
-				}
 				randomObject=Random.Range(0,1.0f);
 				if(randomObject<0.7f){
 					planet = Instantiate(Resources.Load("Planet")) as GameObject;
 					planet.transform.position= newPosition;
 					planet.name="Planet";
 					planetManager = planet.GetComponent ("Planet") as Planet;
-					planetManager.DestroySatellite(Random.Range(0,4));
-					if(randomObject<0.1f)
+					if(randomObject<0.1f){
 						planetManager.SetPlanetType("checkpoint");
+						if(Random.Range(0,2)==0)
+							planetManager.DestroySatellite(0);
+						else
+							planetManager.DestroySatellite(2);
+					}
+					else
+						planetManager.DestroySatellite(Random.Range(0,4));
+
 					if(randomObject>0.6f){
 						planetManager.SetPlanetType("count");
 						planetManager.SetText(texplode);
 					}
+
 				}
 				else{
 					if(randomObject<0.8f){
@@ -257,8 +259,24 @@ public class PCG_randomObjects : MonoBehaviour {
 						}
 					}
 				}
+				if(i==2){
+					if(newPosition.x>lastPosition.x)
+						lastPosition=newPosition;
+				}
+				// searching for downBound
+				if(j==2){
+					if(newPosition.y<downBound)
+						downBound=newPosition.y;
+				}
+				// searching for upBound
+				if(j==0){
+					if(newPosition.y>upBound)
+						upBound=newPosition.y;
+				}
 			}
 		}
+		//lastPosition = new Vector3(lastPosition.x+5,lastPosition.y,0);
+
 		// generate endPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
@@ -272,20 +290,31 @@ public class PCG_randomObjects : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
-		/*if(rand==0){
-			planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-camSize/2,0);
-		}
-		else{
-			if(rand==4){
-				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
-			}
-			else{
-				planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
-			}
-		}*/
+
+		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
+		upBound = upBound + myCamera.GetDeltaY();
+		downBound = downBound - myCamera.GetDeltaY();
+		if(rand==4)
+			downBound = planet.transform.position.y-myCamera.GetDeltaY();
+		if(rand==0)
+			upBound = planet.transform.position.y+myCamera.GetDeltaY();
+		
+		if(myCamera.GetBound(1)<upBound)
+			myCamera.SetBound(upBound,1);
+		
+		if(myCamera.GetBound(2)>downBound)
+			myCamera.SetBound(downBound,2);
+		
+		myCamera.SetBound(rightBound,3);
+
+		Vector3 step = Vector3.zero;
+		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*camSize*3/2;
+		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*camSize*3/2;
+		myCamera.AddCameraStep(step);
 		
 		endPosition=planet.transform.position;
 		level++;
+		myCamera.SetLevel(level);
 		return planet;
 	}
 

@@ -16,32 +16,32 @@ public class MenuScript : MonoBehaviour {
 
 	void Start(){
 		Vector3 coord = Vector3.zero;
-		coord.x = -Screen.width/2+80;
+		coord.x = -Screen.width/3+80;
 		coord.y = Screen.height/6+15;
 		tutorialButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = 0;
 		continueButton.GetComponent<RectTransform>().localPosition = coord;
 
-		coord.x = Screen.width/2-80;
+		coord.x = Screen.width/3-80;
 		obstacleButton.GetComponent<RectTransform>().localPosition = coord;
 
-		coord.x = -Screen.width/3+80;
+		coord.x = -Screen.width/4+80;
 		coord.y = -Screen.height/6+15;
 		randomObjectButton.GetComponent<RectTransform>().localPosition = coord;
 
-		coord.x = Screen.width/3-80;
+		coord.x = Screen.width/4-80;
 		randomPlaceButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = 0;
-		coord.y = -Screen.height/2+15;
+		coord.y = -Screen.height/3+15;
 		quitButton.GetComponent<RectTransform>().localPosition = coord;
 		
 		coord.x = 0;
-		coord.y = Screen.height/3+15;
+		coord.y = Screen.height/4+15;
 		title.rectTransform.localPosition = coord;
 		
-		coord.y = -Screen.height/3+15;
+		coord.y = -Screen.height/4+15;
 		subtitle.rectTransform.localPosition = coord;
 	}
 

@@ -24,6 +24,9 @@ public class PCG_continue : MonoBehaviour {
 	public int level=1;
 	float maxFlyTime=10;
 	public Button closeButton;
+	float upBound;
+	float downBound;
+	float rightBound;
 	
 	void Start () {
 		// get Camera
@@ -75,6 +78,7 @@ public class PCG_continue : MonoBehaviour {
 		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
+		myCamera.ShowFuelText();
 
 		// place Rocket
 		initialPosition=new Vector3
@@ -118,19 +122,7 @@ public class PCG_continue : MonoBehaviour {
 		if(planetManager.levelCompleted){
 
 			planetManager.levelCompleted=false;
-
-			//myCamera.transform.position=endPosition;
-			//startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2-randY*level,0);
 			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2,0);
-			//startingCorner=new Vector3(endPosition.x,startingCorner.y-12*camSize/2-deltaLevel,0);
-
-			// unlock DownBound and RightBound
-			myCamera.SetBound(startingCorner.y-level*camSize*5,2);
-			myCamera.SetBound(startingCorner.x+level*camSize*5,3);
-			
-			// unlock LeftBound and UpBound
-//			myCamera.SetBound(startingCorner.x-camSize,0);
-			myCamera.SetBound(startingCorner.y+camSize,1);
 
 			// modify Deltas
 			myCam.orthographicSize=myCam.orthographicSize+4;
@@ -145,16 +137,6 @@ public class PCG_continue : MonoBehaviour {
 			myCamera.SetLimit(camPosition);
 			print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
 
-			/*if(rand==0){
-				camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y-myCamera.GetDeltaY(),-10);
-			}else{
-				if(rand==4){
-					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y+myCamera.GetDeltaY(),-10);
-				}
-				else{
-					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
-				}
-			}*/
 			myCamera.SetInitialPosition(camPosition);
 			scrollCamera=true;
 
@@ -204,10 +186,22 @@ public class PCG_continue : MonoBehaviour {
 				planetManager.DestroySatellite(Random.Range(0,4));
 				if(i==2){
 					if(planet.transform.position.x>lastPosition.x)
-						lastPosition=planet.transform.position;
+						lastPosition=new Vector3(planet.transform.position.x+myCollider.radius+rocket.transform.localScale.x,planet.transform.position.y,0);
+				}
+				// searching for downBound
+				if(j==2){
+					if(planet.transform.position.y<downBound)
+						downBound=planet.transform.position.y;
+				}
+				// searching for upBound
+				if(j==0){
+					if(planet.transform.position.y>upBound)
+						upBound=planet.transform.position.y;
 				}
 			}
 		}
+		//lastPosition = new Vector3(lastPosition.x+5,lastPosition.y,0);
+
 		// generate endPlanet
 		planet = Instantiate(Resources.Load("Planet")) as GameObject;
 		planet.name="Planet";
@@ -221,6 +215,22 @@ public class PCG_continue : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+
+		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
+		upBound = upBound + myCamera.GetDeltaY();
+		downBound = downBound - myCamera.GetDeltaY();
+		if(rand==4)
+			downBound = planet.transform.position.y-myCamera.GetDeltaY();
+		if(rand==0)
+			upBound = planet.transform.position.y+myCamera.GetDeltaY();
+
+		if(myCamera.GetBound(1)<upBound)
+			myCamera.SetBound(upBound,1);
+
+		if(myCamera.GetBound(2)>downBound)
+			myCamera.SetBound(downBound,2);
+		
+		myCamera.SetBound(rightBound,3);
 
 		Vector3 step = Vector3.zero;
 		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*camSize*3/2;

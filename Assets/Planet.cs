@@ -16,7 +16,7 @@ public class Planet : MonoBehaviour {
 	                             * "end" for endLevel planet
 	                             */
 	public int counter=5;
-	SphereCollider myCollider;
+	public SphereCollider myCollider;
 //	public float planetSize;
 	int orbitLevel=2;
 	public Text text;
@@ -147,10 +147,12 @@ public class Planet : MonoBehaviour {
 		if(planetType.Equals("checkpoint")){
 			// checkpoint reached!!
 			// change initial position of rocket
+			// change initial position of camera
 			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.3f,0);
 			rocketManager.ChangeInitialPosition(newPosition);
 			rocketManager.onStart=true;
 			rocketManager.SetCollPlanet(this);
+			rocketManager.SetCheck(true);
 		}
 		else{
 			if(planetType.Equals("count")){
@@ -486,13 +488,20 @@ public class Planet : MonoBehaviour {
 				rend.material.SetColor("_Color", Color.grey);
 			}
 			else{
-				Renderer rend = GetComponent<Renderer>();
-				rend.material.shader = Shader.Find("Specular");
-				rend.material.SetColor("_Color", Color.white);
+				if(type.Equals("end")){
+					Renderer rend = GetComponent<Renderer>();
+					rend.material.shader = Shader.Find("Specular");
+					rend.material.SetColor("_Color", Color.magenta);
+				}
+				else{
+					Renderer rend = GetComponent<Renderer>();
+					rend.material.shader = Shader.Find("Specular");
+					rend.material.SetColor("_Color", Color.white);
+				}
 			}
 		}
 	}
-
+	
 	public void MoveText(Vector3 p){
 		text.transform.position=p;
 	}

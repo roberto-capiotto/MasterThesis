@@ -13,10 +13,10 @@ public class CameraContinue : MonoBehaviour {
 	public Vector3 limit = new Vector3(-10,0,0);
 	float post;
 	public float camSize;
-	float leftBound;
-	float upBound;
-	float downBound;
-	float rightBound;
+	public float leftBound;
+	public float upBound;
+	public float downBound;
+	public float rightBound;
 	public float deltaX;
 	public float deltaY;
 	public int level=1;
@@ -29,6 +29,7 @@ public class CameraContinue : MonoBehaviour {
 	bool up=false;
 	bool down=false;
 	bool setPosition=false;
+	bool showFuel=false;
 	
 	/* DONE: define how to move in the level
 	 * We have a predefined schema with predefined dimensions;
@@ -56,7 +57,7 @@ public class CameraContinue : MonoBehaviour {
 		 */
 		SetBound(-camSize*2,0);
 		SetBound(camSize*2,1);
-		SetBound(-camSize*7,2);
+		SetBound(-camSize*5,2);
 		SetBound(camSize*7,3);
 
 		Vector3 coord = Vector3.zero;
@@ -66,8 +67,9 @@ public class CameraContinue : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-		
-		text.text="Fuel: "+rocketManager.GetFuel();
+
+		if(showFuel)
+			text.text="Fuel: "+rocketManager.GetFuel();
 
 		camSize = Camera.main.orthographicSize;
 		// upper bound and lower bound
@@ -326,7 +328,12 @@ public class CameraContinue : MonoBehaviour {
 	}
 	
 	public void SetThisAsInitialPosition(){
-		initialPosition=this.transform.position;
+		if(moving){
+			initialPosition=position;
+		}
+		else{
+			initialPosition=this.transform.position;
+		}
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
 	}
 
@@ -379,6 +386,20 @@ public class CameraContinue : MonoBehaviour {
 
 	public void AddCameraStep(Vector3 step){
 		cameraStep[level-1] = step;
+	}
+
+	public void RemoveCameraStep(){
+		for(int i=0;i<20;i++)
+			cameraStep[i]=Vector3.zero;
+	}
+
+	public void NotShowFuelText(){
+		showFuel=false;
+		text.text="";
+	}
+
+	public void ShowFuelText(){
+		showFuel=true;
 	}
 
 	void reset(){
