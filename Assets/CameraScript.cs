@@ -53,9 +53,16 @@ public class CameraScript : MonoBehaviour {
 			ResetPosition();
 		}
 
-		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>0.5f){
-			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
-			this.transform.position = position;
+		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>0.2f){
+
+			if(rocket.transform.position.x>this.transform.position.x){
+				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+				this.transform.position = position;
+			}
+			if(rocket.rigidbody.velocity.x<0){
+				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
+				this.transform.position = position;
+			}
 		}
 
 		// upper bound and lower bound

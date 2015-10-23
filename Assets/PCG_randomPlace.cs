@@ -175,53 +175,47 @@ public class PCG_randomPlace : MonoBehaviour {
 		lastPosition=new Vector3(0,0,0);
 
 		Vector3[] planets = new Vector3[10];
-		bool recreate=false;
+		bool recreate,retry=false;
 
-		int i=3,j=0,k=0,l=0,cont=0;
+		int i=3,j=0,k=0,l=0;
 		for(;l<9;l++){
-			//for(j=0;j<2;j++){
-				//randX=0;
-				//randY=0;
-				//do{
-					randX=Random.Range(5f,30f);
-					randY=Random.Range(-1.0f,1.0f);
-					x=pos.x+randX*Mathf.Cos(randY);
-					y=pos.y+randX*Mathf.Sin(randY);
-					//x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
-					//y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
-					cont++;
-					print("TRY: x="+x+" y="+y+" randX="+randX+" randY="+randY+" Cos:"+Mathf.Cos(randY)+" Sin: "+Mathf.Sin(randY));
-				//}while((y<down || y>up || x<left || x>right) && cont<2);
-			j=0;
-			recreate=false;
-			while(j<planets.Length){
-				if(x-planets[j].x<5 && Mathf.Abs(y-planets[j].y)<5){
-					j=planets.Length;
-					recreate=true;
-					print ("ERROR - OVERLAP");
+			recreate=true;
+			while(recreate){
+				randX=Random.Range(8f,25f+(level-1)*16f);
+				randY=Random.Range(-1.0f,1.0f);
+				// TODO: x & y depending of level
+				x=pos.x+randX*Mathf.Cos(randY);
+				y=pos.y+randX*Mathf.Sin(randY);
+				print("TRY: x="+x+" y="+y+" randX="+randX+" randY="+randY+" Cos:"+Mathf.Cos(randY)+" Sin: "+Mathf.Sin(randY));
+				for(j=0;j<planets.Length;j++){
+					if(Mathf.Abs(x-planets[j].x)<5 && Mathf.Abs(y-planets[j].y)<5){
+						j=10;
+						retry=true;
+						print ("ERROR - OVERLAP "+l);
+					}
 				}
-				j++;
+				if(!retry){
+					recreate=false;
+				}
+				retry=false;
 			}
-			if(!recreate){
-				newPosition=new Vector3(x,y,0);
-				planet = Instantiate(Resources.Load("Planet")) as GameObject;
-				planet.transform.position= newPosition;
-				planet.name="Planet";
-				planetManager = planet.GetComponent ("Planet") as Planet;
-				planetManager.DestroySatellite(Random.Range(0,4));
-				planets[k] = newPosition;
-				k++;
-				if(planet.transform.position.x>lastPosition.x)
-					lastPosition=planet.transform.position;
-			}
+			newPosition=new Vector3(x,y,0);
+			planet = Instantiate(Resources.Load("Planet")) as GameObject;
+			planet.transform.position= newPosition;
+			planet.name="Planet";
+			planetManager = planet.GetComponent ("Planet") as Planet;
+			planetManager.DestroySatellite(Random.Range(0,4));
+			planets[k] = newPosition;
+			k++;
+			print("CREATE "+l);
+			if(planet.transform.position.x>lastPosition.x)
+				lastPosition=planet.transform.position;
 			// searching for downBound
 			if(planet.transform.position.y<downBound)
 				downBound=planet.transform.position.y;
 			// searching for upBound
 			if(planet.transform.position.y>upBound)
 				upBound=planet.transform.position.y;
-
-			//}
 		}
 		//lastPosition = new Vector3(lastPosition.x+5,lastPosition.y,0);
 
@@ -236,10 +230,11 @@ public class PCG_randomPlace : MonoBehaviour {
 			planetManager.DestroySatellite(2);
 		// place endPlanet
 		rand=Random.Range(0,5);
-		//rand=rand-2;
+		rand=rand-2;
 		print ("endRAND: "+rand);
-		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+		planet.transform.position=new Vector3(pos.x+(level-1)*16+4*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
 
+		print ("pos.X: "+pos.x+" planetPos: "+planet.transform.position.x);
 		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
 		upBound = upBound + myCamera.GetDeltaY();
 		downBound = downBound - myCamera.GetDeltaY();
