@@ -63,7 +63,7 @@ public class PCG_tutorial : MonoBehaviour {
 		down=firstPlanet.transform.position.x+camSize;*/
 		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+15;
+		coord.y = -Screen.height/2+30;
 		continueButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = this.transform.position.x;
@@ -74,7 +74,7 @@ public class PCG_tutorial : MonoBehaviour {
 		text2.rectTransform.localPosition = coord;
 
 		coord.x = Screen.width/2-80;
-		coord.y = -Screen.height/2+15;
+		coord.y = -Screen.height/2+30;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 
@@ -434,8 +434,9 @@ public class PCG_tutorial : MonoBehaviour {
 			rocketManager.FullRefill();
 			initialPosition=new Vector3(0,0,-10);
 			Camera.main.transform.position=initialPosition;
+			myCamera.SetThisAsInitialPosition();
 			text.text="This is the end of the tutorial";
-			text2.text="Now you are ready for playing the game";
+			text2.text="Now you are ready to play";
 			counter++;
 			// place button out of bound
 			Vector3 coord = Vector3.zero;

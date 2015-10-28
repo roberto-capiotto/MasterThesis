@@ -108,7 +108,7 @@ public class PCG_continue : MonoBehaviour {
 		retryButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = -Screen.width/2+80;
-		coord.y = Screen.height/2-15;
+		coord.y = Screen.height/2-30;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	

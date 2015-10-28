@@ -38,10 +38,10 @@ public class MenuScript : MonoBehaviour {
 		quitButton.GetComponent<RectTransform>().localPosition = coord;
 		
 		coord.x = 0;
-		coord.y = Screen.height/4+15;
+		coord.y = Screen.height/3+20;
 		title.rectTransform.localPosition = coord;
 		
-		coord.y = -Screen.height/4+15;
+		coord.y = -Screen.height/10*4.5f+15;
 		subtitle.rectTransform.localPosition = coord;
 	}
 

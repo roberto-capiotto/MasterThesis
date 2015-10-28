@@ -55,31 +55,8 @@ public class PCG_randomPlace : MonoBehaviour {
 		rand=Random.Range(0,5);
 		rand=2;
 		print ("RAND: "+rand);
-		/*if(rand==0){
-			planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4-camSize/2,0);
-			camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y-5,-10);
-		}else{
-			if(rand==4){
-				planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y+4,-10);
-			}
-			else{
-				planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-			}
-		}*/
 		planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
 		camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-		/*if(rand==0){
-			camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y-7.5f,-10);
-		}else{
-			if(rand==4){
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y+7.5f,-10);
-			}
-			else{
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-			}
-		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
 		myCamera.ShowFuelText();
@@ -105,7 +82,7 @@ public class PCG_randomPlace : MonoBehaviour {
 
 		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+15;
+		coord.y = -Screen.height/2+30;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
