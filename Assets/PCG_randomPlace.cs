@@ -82,7 +82,7 @@ public class PCG_randomPlace : MonoBehaviour {
 		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
-		//myCamera.ShowFuelText();
+		myCamera.ShowFuelText();
 		
 		// place Rocket
 		initialPosition=new Vector3
@@ -177,13 +177,12 @@ public class PCG_randomPlace : MonoBehaviour {
 		Vector3[] planets = new Vector3[10];
 		bool recreate,retry=false;
 
-		int i=3,j=0,k=0,l=0;
+		int j=0,k=0,l=0;
 		for(;l<9;l++){
 			recreate=true;
 			while(recreate){
 				randX=Random.Range(8f,25f+(level-1)*16f);
 				randY=Random.Range(-1.0f,1.0f);
-				// TODO: x & y depending of level
 				x=pos.x+randX*Mathf.Cos(randY);
 				y=pos.y+randX*Mathf.Sin(randY);
 				print("TRY: x="+x+" y="+y+" randX="+randX+" randY="+randY+" Cos:"+Mathf.Cos(randY)+" Sin: "+Mathf.Sin(randY));

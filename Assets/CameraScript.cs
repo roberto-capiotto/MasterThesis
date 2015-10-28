@@ -18,6 +18,7 @@ public class CameraScript : MonoBehaviour {
 	float rightBound;
 	float deltaX;
 	float deltaY;
+	bool showFuel=false;
 
 	void Start () {
 		rocket = GameObject.Find ("Rocket");
@@ -39,11 +40,17 @@ public class CameraScript : MonoBehaviour {
 		SetBound(camSize*2,1);
 		SetBound(-camSize*5,2);
 		SetBound(camSize*5,3);
+
+		Vector3 coord = Vector3.zero;
+		coord.x = this.transform.position.x+Screen.width/2-50;
+		coord.y = this.transform.position.y+Screen.height/2-50;
+		text.rectTransform.localPosition = coord;
 	}
 	
 	void FixedUpdate () {
 		
-		text.text="Fuel: "+rocketManager.GetFuel();
+		if(showFuel)
+			text.text="Fuel: "+rocketManager.GetFuel();
 
 		/* OUT OF SCREEN*/
 		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize*16/10){
@@ -245,5 +252,14 @@ public class CameraScript : MonoBehaviour {
 	
 	public Vector3 GetLimit(){
 		return limit;
+	}
+
+	public void NotShowFuelText(){
+		showFuel=false;
+		text.text="";
+	}
+	
+	public void ShowFuelText(){
+		showFuel=true;
 	}
 }

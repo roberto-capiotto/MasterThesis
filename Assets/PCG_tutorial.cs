@@ -5,7 +5,7 @@ using System.Collections;
 public class PCG_tutorial : MonoBehaviour {
 	
 	int counter=0;
-	GameObject rocket,firstPlanet,planet,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
+	GameObject rocket,firstPlanet,planet,planet2,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
 	GameObject endPlanet,cam;
 	Rocket rocketManager;
 	Planet planetManager,planetManager2;
@@ -446,6 +446,8 @@ public class PCG_tutorial : MonoBehaviour {
 			else{
 				if(counter==6){
 					// two planets and docking station
+					planet.transform.position=new Vector3(8,0,0);
+					Destroy(planet2);
 					Destroy(asteroid);
 					Destroy(asteroid2);
 					Destroy(asteroid3);
@@ -471,24 +473,28 @@ public class PCG_tutorial : MonoBehaviour {
 						text2.text="";
 						planet = Instantiate(Resources.Load("Planet")) as GameObject;
 						planet.name="Planet";
-						planet.transform.position=new Vector3(8,0,0);
+						planet.transform.position=new Vector3(9.5f,2,0);
 						planetManager = planet.GetComponent ("Planet") as Planet;
 						planetManager.DestroySatellite(0);
+						planet2 = Instantiate(Resources.Load("Planet")) as GameObject;
+						planet2.transform.position=new Vector3(6,-2.5f,0);
+						planetManager2 = planet2.GetComponent ("Planet") as Planet;
+						planetManager2.DestroySatellite(0);
 						asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
 						asteroid.name="Asteroid";
-						asteroid.transform.position=new Vector3(4,0,0);
+						asteroid.transform.position=new Vector3(3,0,0);
 						asteroid2 = Instantiate(Resources.Load("Asteroid")) as GameObject;
 						asteroid2.name="Asteroid";
-						asteroid2.transform.position=new Vector3(5,2.5f,0);
+						asteroid2.transform.position=new Vector3(2,-3,0);
 						asteroid3 = Instantiate(Resources.Load("Asteroid")) as GameObject;
 						asteroid3.name="Asteroid";
-						asteroid3.transform.position=new Vector3(9,-4,0);
+						asteroid3.transform.position=new Vector3(9,-1,0);
 						asteroid4 = Instantiate(Resources.Load("Asteroid")) as GameObject;
 						asteroid4.name="Asteroid";
 						asteroid4.transform.position=new Vector3(-3,-3,0);
 						blackHole = Instantiate(Resources.Load("BlackHole")) as GameObject;
 						blackHole.name="BlackHole";
-						blackHole.transform.position=new Vector3(4,-2,0);
+						blackHole.transform.position=new Vector3(5,2,0);
 						blackHole.transform.localScale=new Vector3(0.35f,0.35f,0.35f);
 						counter++;
 					}

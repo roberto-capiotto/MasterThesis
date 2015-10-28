@@ -17,7 +17,7 @@ public class MenuScript : MonoBehaviour {
 	void Start(){
 		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/3+80;
-		coord.y = Screen.height/6+15;
+		coord.y = Screen.height/6+30;
 		tutorialButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = 0;
@@ -27,14 +27,14 @@ public class MenuScript : MonoBehaviour {
 		obstacleButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = -Screen.width/4+80;
-		coord.y = -Screen.height/6+15;
+		coord.y = -Screen.height/6+30;
 		randomObjectButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = Screen.width/4-80;
 		randomPlaceButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = 0;
-		coord.y = -Screen.height/3+15;
+		coord.y = -Screen.height/3+30;
 		quitButton.GetComponent<RectTransform>().localPosition = coord;
 		
 		coord.x = 0;

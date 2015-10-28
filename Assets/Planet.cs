@@ -144,6 +144,8 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision gravityCollision)
 	{
+		//TODO: check if using always SetCollPlanet might go something wrong
+		rocketManager.SetCollPlanet(this);
 		if(planetType.Equals("checkpoint")){
 			// checkpoint reached!!
 			// change initial position of rocket

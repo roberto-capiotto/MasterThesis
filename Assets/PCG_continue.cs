@@ -24,10 +24,13 @@ public class PCG_continue : MonoBehaviour {
 	public int level=1;
 	float maxFlyTime=10;
 	public Button closeButton;
+	public Button retryButton;
 	float upBound;
 	float downBound;
 	float rightBound;
-	
+	GameObject[] planets = new GameObject[10];
+	bool slide=false;
+
 	void Start () {
 		// get Camera
 		cam=GameObject.Find("Main Camera");
@@ -100,8 +103,12 @@ public class PCG_continue : MonoBehaviour {
 		myCam.orthographicSize=9;
 
 		Vector3 coord = Vector3.zero;
+		coord.x = -Screen.width/2+40;
+		coord.y = -Screen.height/2+40;
+		retryButton.GetComponent<RectTransform>().localPosition = coord;
+
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+15;
+		coord.y = Screen.height/2-15;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
@@ -117,6 +124,13 @@ public class PCG_continue : MonoBehaviour {
 		if(rocketManager.GetReplace()){
 			myCamera.ResetPosition();
 			rocketManager.SetReplace(false);
+		}
+
+		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end") && myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x){
+			print(rocketManager.GetCollPlanet().planetType);
+			camPosition = myCamera.GetInitialPosition();
+			scrollCamera=true;
+			slide=true;
 		}
 
 		if(planetManager.levelCompleted){
@@ -153,14 +167,13 @@ public class PCG_continue : MonoBehaviour {
 		if(scrollCamera){
 			if(myCamera.transform.position.x<camPosition.x){
 				myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.2f,myCamera.transform.position.y,-10);
-				/*if(myCamera.transform.position.x<camPosition.x){
-						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.1f,myCamera.transform.position.y,-10);
-					}*/
 			}
 			else{
 				scrollCamera=false;
 				myCamera.transform.position=camPosition;
-				myCamera.SetThisAsInitialPosition();
+				if(!slide)
+					myCamera.SetThisAsInitialPosition();
+				slide=false;
 			}
 		}
 	}
@@ -182,6 +195,7 @@ public class PCG_continue : MonoBehaviour {
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
 				planet.name="Planet";
+				planets[i*3+j]=planet;
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				planetManager.DestroySatellite(Random.Range(0,4));
 				if(i==2){
@@ -215,6 +229,7 @@ public class PCG_continue : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+		planets[9]=planet;
 
 		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
 		upBound = upBound + myCamera.GetDeltaY();
@@ -241,6 +256,16 @@ public class PCG_continue : MonoBehaviour {
 		level++;
 		myCamera.SetLevel(level);
 		return planet;
+	}
+
+	public void Retry(){
+		rocketManager.SetInitialPosition();
+		for(int l=0;l<10;l++){
+			Destroy(planets[l]);
+		}
+		level--;
+		endPlanet=GenerateLevel(startingCorner);
+		myCamera.RemoveLastStep();
 	}
 
 	public void Close(){

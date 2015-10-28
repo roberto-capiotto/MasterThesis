@@ -388,6 +388,14 @@ public class CameraContinue : MonoBehaviour {
 		cameraStep[level-1] = step;
 	}
 
+	public Vector3 GetCameraStep(int i){
+		return cameraStep[i];
+	}
+
+	public void RemoveLastStep(){
+		cameraStep[level-1] = Vector3.zero;
+	}
+
 	public void RemoveCameraStep(){
 		for(int i=0;i<20;i++)
 			cameraStep[i]=Vector3.zero;
