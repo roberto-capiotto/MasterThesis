@@ -38,6 +38,7 @@ public class PCG_tutorial : MonoBehaviour {
 	float upBound;
 	float downBound;
 	float rightBound;
+	bool slide=false;
 	
 	void Start () {
 		cam=GameObject.Find("Main Camera");
@@ -98,6 +99,20 @@ public class PCG_tutorial : MonoBehaviour {
 			rocketManager.SetReplace(false);
 		}
 
+		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end")){
+			if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x && !planetManager.levelCompleted){
+				camPosition = myCamera.GetInitialPosition();
+				scrollCamera=true;
+				slide=true;
+			}
+			else{
+				if(myCamera.IsBackStep(myCamera.transform.position.x))
+					camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
+				scrollCamera=true;
+				slide=true;
+			}
+		}
+		
 		camSize = Camera.main.orthographicSize;
 		if(locked){
 			/* OUT OF SCREEN*/
@@ -199,14 +214,13 @@ public class PCG_tutorial : MonoBehaviour {
 				if(scrollCamera){
 					if(myCamera.transform.position.x<camPosition.x){
 						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.2f,myCamera.transform.position.y,-10);
-						/*if(myCamera.transform.position.x<camPosition.x){
-						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.1f,myCamera.transform.position.y,-10);
-					}*/
 					}
 					else{
 						scrollCamera=false;
 						myCamera.transform.position=camPosition;
-						myCamera.SetThisAsInitialPosition();
+						if(!slide)
+							myCamera.SetThisAsInitialPosition();
+						slide=false;
 					}
 				}
 			}
@@ -292,14 +306,13 @@ public class PCG_tutorial : MonoBehaviour {
 				if(scrollCamera){
 					if(myCamera.transform.position.x<camPosition.x){
 						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.2f,myCamera.transform.position.y,-10);
-						/*if(myCamera.transform.position.x<camPosition.x){
-						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.1f,myCamera.transform.position.y,-10);
-					}*/
 					}
 					else{
 						scrollCamera=false;
 						myCamera.transform.position=camPosition;
-						myCamera.SetThisAsInitialPosition();
+						if(!slide)
+							myCamera.SetThisAsInitialPosition();
+						slide=false;
 					}
 				}
 			}

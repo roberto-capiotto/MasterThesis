@@ -31,6 +31,7 @@ public class PCG_randomObjects : MonoBehaviour {
 	float upBound;
 	float downBound;
 	float rightBound;
+	bool slide=false;
 	
 	void Start () {
 		// get Camera
@@ -128,6 +129,20 @@ public class PCG_randomObjects : MonoBehaviour {
 			rocketManager.SetReplace(false);
 		}
 
+		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end")){
+			if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x && !planetManager.levelCompleted){
+				camPosition = myCamera.GetInitialPosition();
+				scrollCamera=true;
+				slide=true;
+			}
+			else{
+				if(myCamera.IsBackStep(myCamera.transform.position.x))
+					camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
+				scrollCamera=true;
+				slide=true;
+			}
+		}
+		
 		if(rocketManager.GetCheck()){
 			myCamera.SetThisAsInitialPosition();
 			rocketManager.SetCheck(false);
@@ -185,7 +200,9 @@ public class PCG_randomObjects : MonoBehaviour {
 			else{
 				scrollCamera=false;
 				myCamera.transform.position=camPosition;
-				myCamera.SetThisAsInitialPosition();
+				if(!slide)
+					myCamera.SetThisAsInitialPosition();
+				slide=false;
 			}
 		}
 	}

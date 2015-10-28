@@ -216,6 +216,10 @@ public class CameraContinue : MonoBehaviour {
 					if(rocket.transform.position.x<GetLimit().x-deltaX){
 						if(curLevel==level)
 							curLevel=level-2;
+						else{
+							if(curLevel>1)
+								curLevel--;
+						}
 						position=cameraStep[curLevel-1];
 						print ("special move left");
 						if(position.y>this.transform.position.y)
@@ -390,6 +394,20 @@ public class CameraContinue : MonoBehaviour {
 
 	public Vector3 GetCameraStep(int i){
 		return cameraStep[i];
+	}
+
+	public Vector3 GetNextStep(float x){
+		for(int i=0;i<20;i++)
+			if(cameraStep[i].x==x)
+				return cameraStep[i+1];
+		return Vector3.zero;
+	}
+
+	public bool IsBackStep(float x){
+		for(int i=0;i<20;i++)
+			if(cameraStep[i].x==x)
+				return true;
+		return false;
 	}
 
 	public void RemoveLastStep(){

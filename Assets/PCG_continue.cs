@@ -126,11 +126,18 @@ public class PCG_continue : MonoBehaviour {
 			rocketManager.SetReplace(false);
 		}
 
-		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end") && myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x){
-			print(rocketManager.GetCollPlanet().planetType);
-			camPosition = myCamera.GetInitialPosition();
-			scrollCamera=true;
-			slide=true;
+		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end")){
+			if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x && !planetManager.levelCompleted){
+				camPosition = myCamera.GetInitialPosition();
+				scrollCamera=true;
+				slide=true;
+			}
+			else{
+				if(myCamera.IsBackStep(myCamera.transform.position.x))
+					camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
+					scrollCamera=true;
+					slide=true;
+			}
 		}
 
 		if(planetManager.levelCompleted){
