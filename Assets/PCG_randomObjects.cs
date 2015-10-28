@@ -27,10 +27,12 @@ public class PCG_randomObjects : MonoBehaviour {
 	float maxFlyTime=10;
 	float randomObject;
 	public Button closeButton;
+	public Button retryButton;
 	public Text texplode;
 	float upBound;
 	float downBound;
 	float rightBound;
+	GameObject[] planets = new GameObject[10];
 	bool slide=false;
 	
 	void Start () {
@@ -56,31 +58,8 @@ public class PCG_randomObjects : MonoBehaviour {
 		// place startPlanet and move Camera
 		rand=Random.Range(0,5);
 		print ("RAND: "+rand);
-		/*if(rand==0){
-			planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4-camSize/2,0);
-			camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y-5,-10);
-		}else{
-			if(rand==4){
-				planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*(rand-1/2.0f)-(rand-1/2.0f)*camSize*3/2,0);
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y+4,-10);
-			}
-			else{
-				planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-			}
-		}*/
 		planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
 		camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-		/*if(rand==0){
-			camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y-7.5f,-10);
-		}else{
-			if(rand==4){
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y+7.5f,-10);
-			}
-			else{
-				camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-			}
-		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
 		myCamera.ShowFuelText();
@@ -106,7 +85,11 @@ public class PCG_randomObjects : MonoBehaviour {
 
 		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+30;
+		coord.y = Screen.height/2-20;
+		retryButton.GetComponent<RectTransform>().localPosition = coord;
+		
+		coord.x = Screen.width/2-80;
+		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = this.transform.position.x;
@@ -241,25 +224,28 @@ public class PCG_randomObjects : MonoBehaviour {
 						planetManager.SetPlanetType("count");
 						planetManager.SetText(texplode);
 					}
-
+					planets[i*3+j]=planet;
 				}
 				else{
 					if(randomObject<0.8f){
 						swing = Instantiate(Resources.Load("Swing")) as GameObject;
 						swing.transform.position=newPosition;
 						swing.name="Swing";
+						planets[i*3+j]=swing;
 					}
 					else{
 						if(randomObject<0.9f){
 							dockingStation = Instantiate(Resources.Load("DockingStation")) as GameObject;
 							dockingStation.transform.position=newPosition;
 							dockingStation.name="DockingStation";
+							planets[i*3+j]=dockingStation;
 						}
 						else{
 //							if(randomObject<0.95f){
 								blackHole = Instantiate(Resources.Load("BlackHole")) as GameObject;
 								blackHole.transform.position=newPosition;
 								blackHole.name="BlackHole";
+								planets[i*3+j]=blackHole;
 /*							}
 							else{
 								wormhole = Instantiate(Resources.Load("Wormhole")) as GameObject;
@@ -307,6 +293,7 @@ public class PCG_randomObjects : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+		planets[9]=planet;
 
 		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
 		upBound = upBound + myCamera.GetDeltaY();
@@ -335,6 +322,16 @@ public class PCG_randomObjects : MonoBehaviour {
 		return planet;
 	}
 
+	public void Retry(){
+		rocketManager.SetInitialPosition();
+		for(int l=0;l<10;l++){
+			Destroy(planets[l]);
+		}
+		level--;
+		endPlanet=GenerateLevel(startingCorner);
+		myCamera.RemoveLastStep();
+	}
+	
 	public void Close(){
 		Application.LoadLevel("mainMenu");
 	}

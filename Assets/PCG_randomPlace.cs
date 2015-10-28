@@ -14,7 +14,6 @@ public class PCG_randomPlace : MonoBehaviour {
 	float x,y,rand,randX,randY,camSize=5;
 	public Vector3 initialPosition;
 	Vector3 newPosition;
-	Vector3 endPosition;
 	Vector3 camPosition;
 	Vector3 lastPosition;
 	public Vector3 startingCorner;
@@ -27,9 +26,11 @@ public class PCG_randomPlace : MonoBehaviour {
 	float maxFlyTime=10;
 	float randomObject;
 	public Button closeButton;
+	public Button retryButton;
 	float upBound;
 	float downBound;
 	float rightBound;
+	GameObject[] planets = new GameObject[10];
 	
 	void Start () {
 		// get Camera
@@ -55,6 +56,7 @@ public class PCG_randomPlace : MonoBehaviour {
 		rand=Random.Range(0,5);
 		rand=2;
 		print ("RAND: "+rand);
+		startingCorner=Vector3.zero;
 		planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
 		camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
 		myCamera.SetInitialPosition(camPosition);
@@ -72,17 +74,20 @@ public class PCG_randomPlace : MonoBehaviour {
 		creation=true;
 		// enable the movement of the Camera
 		myCamera.enabled=true;
-		
-		startingCorner=Vector3.zero;
-		//startPlanet=GenerateLevel(startingCorner);
-		endPlanet=GenerateLevel(planet.transform.position);
+
+		startingCorner=planet.transform.position;
+		endPlanet=GenerateLevel(startingCorner);
 		
 		//deltaLevel = camSize*4;
 		myCam.orthographicSize=9;
 
 		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+30;
+		coord.y = Screen.height/2-20;
+		retryButton.GetComponent<RectTransform>().localPosition = coord;
+		
+		coord.x = Screen.width/2-80;
+		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
@@ -103,7 +108,6 @@ public class PCG_randomPlace : MonoBehaviour {
 		if(planetManager.levelCompleted){
 			
 			planetManager.levelCompleted=false;
-			startingCorner=new Vector3(endPosition.x,endPosition.y+(level-1)*4*rand+rand*camSize*3/2-randY*level,0);
 
 			// modify Deltas
 			myCam.orthographicSize=myCam.orthographicSize+4;
@@ -129,7 +133,8 @@ public class PCG_randomPlace : MonoBehaviour {
 			rocketManager.onStart=true;
 			
 			// Generate New Level
-			endPlanet=GenerateLevel(endPlanet.transform.position);
+			startingCorner=endPlanet.transform.position;
+			endPlanet=GenerateLevel(startingCorner);
 		}
 		// horizontal scroll to New Level
 		if(scrollCamera){
@@ -227,9 +232,17 @@ public class PCG_randomPlace : MonoBehaviour {
 		
 		myCamera.SetBound(rightBound,3);
 
-		endPosition=planet.transform.position;
 		level++;
 		return planet;
+	}
+
+	public void Retry(){
+		rocketManager.SetInitialPosition();
+		for(int l=0;l<10;l++){
+			Destroy(planets[l]);
+		}
+		level--;
+		endPlanet=GenerateLevel(startingCorner);
 	}
 
 	public void Close(){

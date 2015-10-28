@@ -19,7 +19,7 @@ public class PCG_tutorial : MonoBehaviour {
 	bool scroll=false;
 	bool scrollCamera=false;
 	Vector3 camPosition;
-	Vector3 startPosition,startingCorner;
+	Vector3 startingCorner;
 	Vector3 newPosition;
 	Vector3 endPosition;
 	Vector3 lastPosition;
@@ -35,10 +35,13 @@ public class PCG_tutorial : MonoBehaviour {
 	bool locked=true;
 	public Button continueButton;
 	public Button closeButton;
+	public Button retryButton;
 	float upBound;
 	float downBound;
 	float rightBound;
+	GameObject[] planets = new GameObject[10];
 	bool slide=false;
+	Vector3 coord = Vector3.zero;
 	
 	void Start () {
 		cam=GameObject.Find("Main Camera");
@@ -61,9 +64,8 @@ public class PCG_tutorial : MonoBehaviour {
 		up=firstPlanet.transform.position.x-camSize;
 		right=firstPlanet.transform.position.x+camSize*16/10;
 		down=firstPlanet.transform.position.x+camSize;*/
-		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+30;
+		coord.y = -Screen.height/2+20;
 		continueButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = this.transform.position.x;
@@ -74,8 +76,12 @@ public class PCG_tutorial : MonoBehaviour {
 		text2.rectTransform.localPosition = coord;
 
 		coord.x = Screen.width/2-80;
-		coord.y = -Screen.height/2+30;
+		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = Screen.width;
+		coord.y = -Screen.height;
+		retryButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 
 	Vector3 WorldCoordinate (Vector3 mouseCoordinates)
@@ -162,11 +168,11 @@ public class PCG_tutorial : MonoBehaviour {
 					gen=true;
 					locked=false;
 					rocketManager.ChangeInitialPosition(new Vector3(planet.transform.position.x,planet.transform.position.y+planet.transform.localScale.y/2+myCollider.radius,0));
-					startPosition=planet.transform.position;
-					endPlanet=GenerateLevel(startPosition,"free");
+					startingCorner=planet.transform.position;
+					endPlanet=GenerateLevel(startingCorner,"free");
 					(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = true;
 					Camera.main.orthographicSize=9;
-					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
+					myCamera.transform.position=new Vector3(startingCorner.x+5*3/2.0f,startingCorner.y-5*3/2.0f,-10);
 					myCamera.SetInitialPosition(myCamera.transform.position);
 					myCamera.ShowFuelText();
 					rocketManager.FullRefill();
@@ -176,6 +182,9 @@ public class PCG_tutorial : MonoBehaviour {
 					myCamera.SetBound(camSize*7,3);
 					text.text="Play a level";
 					text2.text="";
+					coord.x = -Screen.width/2+80;
+					coord.y = Screen.height/2-20;
+					retryButton.GetComponent<RectTransform>().localPosition = coord;
 				}
 				if(planetManager.levelCompleted){
 					print ("COMPLETE");
@@ -256,19 +265,22 @@ public class PCG_tutorial : MonoBehaviour {
 					gen=true;
 					locked=false;
 					rocketManager.ChangeInitialPosition(new Vector3(planet.transform.position.x,planet.transform.position.y+planet.transform.localScale.y/2+myCollider.radius,0));
-					startPosition=planet.transform.position;
-					endPlanet=GenerateLevel(startPosition,"with");
+					startingCorner=planet.transform.position;
+					endPlanet=GenerateLevel(startingCorner,"with");
 					(cam.GetComponent( "CameraContinue" ) as MonoBehaviour).enabled = true;
 					Camera.main.orthographicSize=9;
 					// RESET DELTAS
 					myCamera.SetDeltas(5*3/2.0f,5*3/2.0f);
-					myCamera.transform.position=new Vector3(startPosition.x+5*3/2.0f,startPosition.y-5*3/2.0f,-10);
+					myCamera.transform.position=new Vector3(startingCorner.x+5*3/2.0f,startingCorner.y-5*3/2.0f,-10);
 					myCamera.SetInitialPosition(myCamera.transform.position);
 					myCamera.ShowFuelText();
 					rocketManager.FullRefill();
 					initialPosition=myCamera.transform.position;
 					text.text="Play a level";
 					text2.text="";
+					coord.x = -Screen.width/2+80;
+					coord.y = Screen.height/2-20;
+					retryButton.GetComponent<RectTransform>().localPosition = coord;
 				}
 				if(planetManager.levelCompleted){
 					print ("COMPLETE");
@@ -340,8 +352,6 @@ public class PCG_tutorial : MonoBehaviour {
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
-				//randX=0;
-				//randY=0;
 				randX=Random.Range(-1.3f,1.3f);
 				randY=Random.Range(-1.3f,1.3f);
 				print("randX: "+randX+" randY: "+randY);
@@ -351,6 +361,7 @@ public class PCG_tutorial : MonoBehaviour {
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
 				planet.name="Planet";
+				planets[i*3+j]=planet;
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				list[cont++]=planet;
 				if(i==2){
@@ -388,6 +399,7 @@ public class PCG_tutorial : MonoBehaviour {
 		rand=Random.Range(0,5);
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*5*3/2,pos.y-(level-1)*4*rand-rand*5*3/2,0);
+		planets[9]=planet;
 
 		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
 		upBound = upBound + myCamera.GetDeltaY();
@@ -415,6 +427,19 @@ public class PCG_tutorial : MonoBehaviour {
 		level++;
 		myCamera.SetLevel(level);
 		return planet;
+	}
+
+	public void Retry(){
+		rocketManager.SetInitialPosition();
+		for(int l=0;l<10;l++){
+			Destroy(planets[l]);
+		}
+		level--;
+		if(counter==1)
+			endPlanet=GenerateLevel(startingCorner,"free");
+		else
+			endPlanet=GenerateLevel(startingCorner,"with");
+		myCamera.RemoveLastStep();
 	}
 
 	public void Close(){
@@ -584,6 +609,9 @@ public class PCG_tutorial : MonoBehaviour {
 									Camera.main.transform.position=initialPosition;
 									Camera.main.orthographicSize=5;
 									myCamera.NotShowFuelText();
+									coord.x = Screen.width;
+									coord.y = -Screen.height;
+									retryButton.GetComponent<RectTransform>().localPosition = coord;
 									counter++;
 								}
 								else{
@@ -619,6 +647,9 @@ public class PCG_tutorial : MonoBehaviour {
 										Camera.main.transform.position=initialPosition;
 										Camera.main.orthographicSize=5;
 										myCamera.NotShowFuelText();
+										coord.x = Screen.width;
+										coord.y = -Screen.height;
+										retryButton.GetComponent<RectTransform>().localPosition = coord;
 										counter++;
 									}
 									else{

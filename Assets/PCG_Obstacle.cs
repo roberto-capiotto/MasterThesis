@@ -25,9 +25,11 @@ public class PCG_Obstacle : MonoBehaviour {
 	public bool[] path;
 	float maxFlyTime=10;
 	public Button closeButton;
+	public Button retryButton;
 	float upBound;
 	float downBound;
 	float rightBound;
+	GameObject[] planets = new GameObject[10];
 	bool slide=false;
 
 	void Start () {
@@ -80,7 +82,11 @@ public class PCG_Obstacle : MonoBehaviour {
 
 		Vector3 coord = Vector3.zero;
 		coord.x = -Screen.width/2+80;
-		coord.y = -Screen.height/2+30;
+		coord.y = Screen.height/2-20;
+		retryButton.GetComponent<RectTransform>().localPosition = coord;
+		
+		coord.x = Screen.width/2-80;
+		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
@@ -174,6 +180,7 @@ public class PCG_Obstacle : MonoBehaviour {
 				planet = Instantiate(Resources.Load("Planet")) as GameObject;
 				planet.transform.position= newPosition;
 				planet.name="Planet";
+				planets[i*3+j]=planet;
 				planetManager = planet.GetComponent ("Planet") as Planet;
 				planetManager.DestroySatellite(Random.Range(0,4));
 				if(i==2){
@@ -207,6 +214,7 @@ public class PCG_Obstacle : MonoBehaviour {
 		endRand=Random.Range(0,5);
 		print ("endRAND: "+endRand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2,pos.y-(level-1)*4*endRand-endRand*camSize*3/2,0);
+		planets[9]=planet;
 
 		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
 		upBound = upBound + myCamera.GetDeltaY();
@@ -411,6 +419,16 @@ public class PCG_Obstacle : MonoBehaviour {
 			asteroid.transform.position=new Vector3(x,y,0);
 		}
 		
+	}
+
+	public void Retry(){
+		rocketManager.SetInitialPosition();
+		for(int l=0;l<10;l++){
+			Destroy(planets[l]);
+		}
+		level--;
+		endPlanet=GenerateLevel(startingCorner);
+		myCamera.RemoveLastStep();
 	}
 
 	public void Close(){

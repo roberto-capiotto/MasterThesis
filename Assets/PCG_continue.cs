@@ -103,12 +103,12 @@ public class PCG_continue : MonoBehaviour {
 		myCam.orthographicSize=9;
 
 		Vector3 coord = Vector3.zero;
-		coord.x = -Screen.width/2+40;
-		coord.y = -Screen.height/2+40;
+		coord.x = -Screen.width/2+80;
+		coord.y = Screen.height/2-20;
 		retryButton.GetComponent<RectTransform>().localPosition = coord;
 
-		coord.x = -Screen.width/2+80;
-		coord.y = Screen.height/2-30;
+		coord.x = Screen.width/2-80;
+		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
