@@ -35,7 +35,8 @@ public class Planet : MonoBehaviour {
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
 	float angleCollision;
-	float m;
+	float y,m,x,q,myM;
+	float distance,minDistance;
 	// mouseClick vars
 	Vector3 mousePosClick;
 	Vector3 mousePosBefore;
@@ -51,8 +52,8 @@ public class Planet : MonoBehaviour {
 	bool counting=false;
 	bool up=false;
 	bool down=false;
-	bool left=false;
-	bool right=false;
+	public bool left=false;
+	public bool right=false;
 	public bool clockwise=false;
 	bool rotating=false;
 	public bool levelCompleted=false;
@@ -195,7 +196,38 @@ public class Planet : MonoBehaviour {
 			
 			// calculate the shootingAngle
 			m = tan (rocket.transform.position-rocketManager.GetShootPosition());
-			
+
+			// TODO: interpole data!
+			y=rocket.transform.position.y;
+			x=rocket.transform.position.x;
+			myM = (rocketManager.GetShootPosition().y-y)/(rocketManager.GetShootPosition().x-x);
+			q = rocket.transform.position.y-myM*rocket.transform.position.x;
+			minDistance=Mathf.Sqrt(Mathf.Pow(x-this.transform.position.x,2)+Mathf.Pow(y-this.transform.position.y,2));
+			distance=minDistance;
+
+			while(distance==minDistance){
+				if(rocket.transform.position.x>rocketManager.GetShootPosition().x)
+					x+=0.2f;
+				else
+					x-=0.2f;
+				y=myM*x+q;
+				distance=Mathf.Sqrt(Mathf.Pow(x-this.transform.position.x,2)+Mathf.Pow(y-this.transform.position.y,2));
+				if(distance<minDistance)
+					minDistance=distance;
+			}
+
+			if(minDistance<1){
+				// decrease orbit size
+				myCollider.radius -= 0.3f;
+				raise=true;
+				orbitLevel--;
+				// add force for continue collision
+				gravity=acceleration*(this.transform.localScale.x-1)*
+					(this.transform.localScale.x-1)*(this.transform.localScale.x-1)/
+						(this.transform.position-rocket.transform.position).sqrMagnitude*Time.deltaTime;
+				rocket.rigidbody.AddForce(-(rocket.transform.position-this.transform.position).normalized * gravity*250);
+			}
+
 			// 1st quad
 			if(right && up){
 				if(m<90 || m>=270){
