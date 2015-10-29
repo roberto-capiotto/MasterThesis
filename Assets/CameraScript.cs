@@ -28,9 +28,8 @@ public class CameraScript : MonoBehaviour {
 		position = new Vector3(0,0,0);
 		deltaX=5*3/2.0f;
 		deltaY=5*3/2.0f;
-		
-		// TODO: define NEW static bound
-		/* Bound values
+
+		/* Initial Boundaries value
 		 * 0 is left
 		 * 1 is up
 		 * 2 is down
@@ -95,129 +94,11 @@ public class CameraScript : MonoBehaviour {
 			rocketManager.FullRefill();
 			this.transform.position=initialPosition;
 		}
-
-		/*if(Mathf.Abs(rocket.transform.position.x-position.x)>camSize || Mathf.Abs(rocket.transform.position.y-position.y)>camSize){
-			position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
-			this.transform.position = position;
-		}*/
-		/*
-		if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>camSize){
-			moving=true;
-			setPosition=true;
-			// if moving right
-			if(rocket.transform.position.x-this.transform.position.x>camSize)
-				right=true;
-			// if moving left
-			else
-				left=true;
-		}
-		if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>camSize){
-			moving=true;
-			setPosition=true;
-			// if moving up
-			if(rocket.transform.position.y-this.transform.position.y>camSize)
-				up=true;
-			// if moving down
-			else
-				down=true;
-		}
-		if(moving){
-			if(setPosition){
-				// set destination position
-				position=this.transform.position;
-				if(right){
-					position=new Vector3(position.x+deltaX,position.y,-10);
-				}
-				if(up){
-					position=new Vector3(position.x,position.y+deltaY,-10);
-				}
-				if(down){
-					position=new Vector3(position.x,position.y-deltaY,-10);
-				}
-				if(left){
-					position=new Vector3(position.x-deltaX,position.y,-10);
-				}
-				setPosition=false;
-			}
-			
-			// TODO: optimize. The rocket should always be almost @ center
-			// we are moving the camera 0.35 every update
-			// it seems fluent
-			if(right){
-				this.transform.position = new Vector3(this.transform.position.x+0.35f,this.transform.position.y,-10);
-				if(this.transform.position.x-position.x>0){
-					right=false;
-					this.transform.position=new Vector3(position.x,this.transform.position.y,-10);
-				}
-			}
-			if(left){
-				this.transform.position = new Vector3(this.transform.position.x-0.35f,this.transform.position.y,-10);
-				if(this.transform.position.x-position.x<0){
-					left=false;
-					this.transform.position=new Vector3(position.x,this.transform.position.y,-10);
-				}
-			}
-			if(up){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y+0.35f,-10);
-				if(this.transform.position.y-position.y>0){
-					up=false;
-					this.transform.position=new Vector3(this.transform.position.x,position.y,-10);
-				}
-			}
-			if(down){
-				this.transform.position = new Vector3(this.transform.position.x,this.transform.position.y-0.35f,-10);
-				if(this.transform.position.y-position.y<0){
-					down=false;
-					this.transform.position=new Vector3(this.transform.position.x,position.y,-10);
-				}
-			}
-			if(!up && !down && !left && !right )
-				moving=false;
-		}*/
-	}
-	
-	/* TYPE values
-	 * 0 is left
-	 * 1 is up
-	 * 2 is down
-	 */
-	public void SetBound(float bound,int type){
-		if(type==0){
-			leftBound=bound;
-		}
-		if(type==1){
-			upBound=bound;
-		}
-		if(type==2){
-			downBound=bound;
-		}
-		if(type==3){
-			rightBound=bound;
-		}
 	}
 
-	/* TYPE values
-	 * 0 is left
-	 * 1 is up
-	 * 2 is down
-	 */
-	public float GetBound(int type){
-		if(type==0){
-			return leftBound;
-		}
-		if(type==1){
-			return upBound;
-		}
-		if(type==2){
-			return downBound;
-		}
-		if(type==3){
-			return rightBound;
-		}
-		else{
-			return 0;
-		}
-	}
+	/************************************************************************
+	 *  CAMERA POSITION METHODS
+	 ************************************************************************/
 
 	public void ResetPosition(){
 		this.transform.position=initialPosition;
@@ -246,6 +127,50 @@ public class CameraScript : MonoBehaviour {
 		return deltaY;
 	}
 
+	/************************************************************************
+	 *  BOUNDARIES METHODS
+	 ************************************************************************/
+	
+	/* TYPE values
+	 * 0 is left
+	 * 1 is up
+	 * 2 is down
+	 * 3 is right
+	 */
+	
+	public void SetBound(float bound,int type){
+		if(type==0){
+			leftBound=bound;
+		}
+		if(type==1){
+			upBound=bound;
+		}
+		if(type==2){
+			downBound=bound;
+		}
+		if(type==3){
+			rightBound=bound;
+		}
+	}
+	
+	public float GetBound(int type){
+		if(type==0){
+			return leftBound;
+		}
+		if(type==1){
+			return upBound;
+		}
+		if(type==2){
+			return downBound;
+		}
+		if(type==3){
+			return rightBound;
+		}
+		else{
+			return 0;
+		}
+	}
+
 	public void SetLimit(Vector3 l){
 		limit=l;
 	}
@@ -253,6 +178,10 @@ public class CameraScript : MonoBehaviour {
 	public Vector3 GetLimit(){
 		return limit;
 	}
+
+	/************************************************************************
+	 *  FUEL METHODS
+	 ************************************************************************/
 
 	public void NotShowFuelText(){
 		showFuel=false;

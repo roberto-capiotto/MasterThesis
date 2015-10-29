@@ -43,13 +43,10 @@ public class CameraContinue : MonoBehaviour {
 		camSize = Camera.main.orthographicSize;
 		initialPosition=Camera.main.transform.position;
 		position = new Vector3(0,0,0);
-		//deltaX=4+Camera.main.orthographicSize*3/2;
-		//deltaY=4+Camera.main.orthographicSize*3/2;
 		deltaX=5*3/2.0f;
 		deltaY=5*3/2.0f;
-		
-		// TODO: define NEW static bound
-		/* Bound values
+
+		/* Initial Boundaries value
 		 * 0 is left
 		 * 1 is up
 		 * 2 is down
@@ -60,6 +57,7 @@ public class CameraContinue : MonoBehaviour {
 		SetBound(-camSize*5,2);
 		SetBound(camSize*7,3);
 
+		// place fuelText
 		Vector3 coord = Vector3.zero;
 		coord.x = this.transform.position.x+Screen.width/2-50;
 		coord.y = this.transform.position.y+Screen.height/2-50;
@@ -193,7 +191,6 @@ public class CameraContinue : MonoBehaviour {
 						}
 						else{
 							curLevel++;
-							// CHECK INDEX
 							position=cameraStep[curLevel-1];
 							if(position.y>this.transform.position.y)
 								up=true;
@@ -213,7 +210,7 @@ public class CameraContinue : MonoBehaviour {
 					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
 				}
 				if(left){
-					if(rocket.transform.position.x<GetLimit().x-deltaX){
+					if(rocket.transform.position.x<GetLimit().x-deltaX && !rocketManager.onStart){
 						if(curLevel==level)
 							curLevel=level-2;
 						else{
@@ -230,7 +227,6 @@ public class CameraContinue : MonoBehaviour {
 					}
 					else{
 						if(position.x==initialPosition.x && camSize!=9)
-							//position=new Vector3(position.x-deltaX+(camSize-9),position.y,-10);
 							left=false;
 						else{
 							position=new Vector3(position.x-deltaX,position.y,-10);
@@ -243,7 +239,7 @@ public class CameraContinue : MonoBehaviour {
 				setPosition=false;
 			}
 			
-			// TODO: optimize. The rocket should always be almost @ center
+			// The rocket should always be almost @ center
 			// we are moving the camera 0.3 every update
 			// it seems fluent
 			if(right){
@@ -278,50 +274,11 @@ public class CameraContinue : MonoBehaviour {
 				moving=false;
 		}
 	}
-	
-	/* TYPE values
-	 * 0 is left
-	 * 1 is up
-	 * 2 is down
-	 */
-	public void SetBound(float bound,int type){
-		if(type==0){
-			leftBound=bound;
-		}
-		if(type==1){
-			upBound=bound;
-		}
-		if(type==2){
-			downBound=bound;
-		}
-		if(type==3){
-			rightBound=bound;
-		}
-	}
-	
-	/* TYPE values
-	 * 0 is left
-	 * 1 is up
-	 * 2 is down
-	 */
-	public float GetBound(int type){
-		if(type==0){
-			return leftBound;
-		}
-		if(type==1){
-			return upBound;
-		}
-		if(type==2){
-			return downBound;
-		}
-		if(type==3){
-			return rightBound;
-		}
-		else{
-			return 0;
-		}
-	}
-	
+
+	/************************************************************************
+	 *  CAMERA POSITION METHODS
+	 ************************************************************************/
+
 	public void SetInitialPosition(Vector3 pos){
 		initialPosition=pos;
 		print ("INI: x "+initialPosition.x+" y "+initialPosition.y);
@@ -345,7 +302,11 @@ public class CameraContinue : MonoBehaviour {
 		this.transform.position=initialPosition;
 		reset();
 	}
-	
+
+	public void SetOrthographicSize(float size){
+		Camera.main.orthographicSize=size;
+	}
+
 	public void SetDeltas(float x,float y){
 		deltaX=x;
 		deltaY=y;
@@ -357,6 +318,59 @@ public class CameraContinue : MonoBehaviour {
 	
 	public float GetDeltaY(){
 		return deltaY;
+	}
+
+	void reset(){
+		moving=false;
+		right=false;
+		left=false;
+		up=false;
+		down=false;
+		curLevel=level;
+	}
+
+	/************************************************************************
+	 *  BOUNDARIES METHODS
+	 ************************************************************************/
+	
+	/* TYPE values
+	 * 0 is left
+	 * 1 is up
+	 * 2 is down
+	 * 3 is right
+	 */
+
+	public void SetBound(float bound,int type){
+		if(type==0){
+			leftBound=bound;
+		}
+		if(type==1){
+			upBound=bound;
+		}
+		if(type==2){
+			downBound=bound;
+		}
+		if(type==3){
+			rightBound=bound;
+		}
+	}
+
+	public float GetBound(int type){
+		if(type==0){
+			return leftBound;
+		}
+		if(type==1){
+			return upBound;
+		}
+		if(type==2){
+			return downBound;
+		}
+		if(type==3){
+			return rightBound;
+		}
+		else{
+			return 0;
+		}
 	}
 
 	public void SetLimit(Vector3 l){
@@ -375,10 +389,10 @@ public class CameraContinue : MonoBehaviour {
 		return post;
 	}
 
-	public void SetOrthographicSize(float size){
-		Camera.main.orthographicSize=size;
-	}
-
+	/************************************************************************
+	 *  GAME LEVEL METHODS
+	 ************************************************************************/
+	
 	public void SetLevel(int lvl){
 		level=lvl;
 		curLevel=lvl;
@@ -396,6 +410,10 @@ public class CameraContinue : MonoBehaviour {
 		return curLevel;
 	}
 
+	/************************************************************************
+	 *  CAMERA STEP METHODS
+	 ************************************************************************/
+	
 	public void AddCameraStep(Vector3 step){
 		cameraStep[level-1] = new Vector3(step.x,step.y,-10);
 	}
@@ -427,6 +445,10 @@ public class CameraContinue : MonoBehaviour {
 			cameraStep[i]=Vector3.zero;
 	}
 
+	/************************************************************************
+	 *  FUEL METHODS
+	 ************************************************************************/
+	
 	public void NotShowFuelText(){
 		showFuel=false;
 		text.text="";
@@ -435,13 +457,5 @@ public class CameraContinue : MonoBehaviour {
 	public void ShowFuelText(){
 		showFuel=true;
 	}
-
-	void reset(){
-		moving=false;
-		right=false;
-		left=false;
-		up=false;
-		down=false;
-		curLevel=level;
-	}
+	
 }
