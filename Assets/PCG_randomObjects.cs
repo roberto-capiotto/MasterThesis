@@ -28,6 +28,7 @@ public class PCG_randomObjects : MonoBehaviour {
 	float randomObject;
 	public Button closeButton;
 	public Button retryButton;
+	public Button shootButton;
 	public Text texplode;
 	float upBound;
 	float downBound;
@@ -91,6 +92,10 @@ public class PCG_randomObjects : MonoBehaviour {
 		coord.x = Screen.width/2-80;
 		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = Screen.width/2-80;
+		coord.y = -Screen.height/2+20;
+		shootButton.GetComponent<RectTransform>().localPosition = coord;
 
 		coord.x = this.transform.position.x;
 		coord.y = this.transform.position.y-Screen.height/3;
@@ -320,6 +325,12 @@ public class PCG_randomObjects : MonoBehaviour {
 		level++;
 		myCamera.SetLevel(level);
 		return planet;
+	}
+
+	public void Shoot(){
+		if(rocketManager.GetColliding()){
+			rocketManager.GetCollPlanet().SetShoot(true);
+		}
 	}
 
 	public void Retry(){

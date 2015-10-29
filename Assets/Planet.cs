@@ -536,6 +536,10 @@ public class Planet : MonoBehaviour {
 		}
 	}
 
+	public void SetShoot(bool value){
+		shoot=value;
+	}
+
 	/* if 0 destroy all
 	 * if 1 destroy inSat
 	 * if 2 destroy outSat

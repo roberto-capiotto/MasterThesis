@@ -25,6 +25,7 @@ public class PCG_continue : MonoBehaviour {
 	float maxFlyTime=10;
 	public Button closeButton;
 	public Button retryButton;
+	public Button shootButton;
 	float upBound;
 	float downBound;
 	float rightBound;
@@ -110,6 +111,10 @@ public class PCG_continue : MonoBehaviour {
 		coord.x = Screen.width/2-80;
 		coord.y = Screen.height/2-20;
 		closeButton.GetComponent<RectTransform>().localPosition = coord;
+
+		coord.x = Screen.width/2-80;
+		coord.y = -Screen.height/2+20;
+		shootButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 	
 	void FixedUpdate () {
@@ -263,6 +268,12 @@ public class PCG_continue : MonoBehaviour {
 		level++;
 		myCamera.SetLevel(level);
 		return planet;
+	}
+
+	public void Shoot(){
+		if(rocketManager.GetColliding()){
+			rocketManager.GetCollPlanet().SetShoot(true);
+		}
 	}
 
 	public void Retry(){
