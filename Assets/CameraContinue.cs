@@ -55,7 +55,7 @@ public class CameraContinue : MonoBehaviour {
 		 * 2 is down
 		 * 3 is right
 		 */
-		SetBound(-camSize*2,0);
+		SetBound(-camSize,0);
 		SetBound(camSize*2,1);
 		SetBound(-camSize*5,2);
 		SetBound(camSize*7,3);
@@ -388,8 +388,16 @@ public class CameraContinue : MonoBehaviour {
 		return level;
 	}
 
+	public void SetCurLevel(int lvl){
+		curLevel=lvl;
+	}
+
+	public int GetCurLevel(){
+		return curLevel;
+	}
+
 	public void AddCameraStep(Vector3 step){
-		cameraStep[level-1] = step;
+		cameraStep[level-1] = new Vector3(step.x,step.y,-10);
 	}
 
 	public Vector3 GetCameraStep(int i){

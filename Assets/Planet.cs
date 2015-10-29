@@ -144,17 +144,17 @@ public class Planet : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision gravityCollision)
 	{
-		//TODO: check if using always SetCollPlanet might go something wrong
 		rocketManager.SetCollPlanet(this);
 		if(planetType.Equals("checkpoint")){
 			// checkpoint reached!!
-			// change initial position of rocket
-			// change initial position of camera
-			newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.3f,0);
-			rocketManager.ChangeInitialPosition(newPosition);
-			rocketManager.onStart=true;
-			rocketManager.SetCollPlanet(this);
-			rocketManager.SetCheck(true);
+			if(this.transform.position.x>rocketManager.GetInitialPosition().x){
+				// change initial position of rocket
+				// change initial position of camera
+				newPosition=new Vector3(this.transform.position.x,this.transform.position.y+1.3f,0);
+				rocketManager.ChangeInitialPosition(newPosition);
+				rocketManager.onStart=true;
+				rocketManager.SetCheck(true);
+			}
 		}
 		else{
 			if(planetType.Equals("count")){
@@ -171,7 +171,6 @@ public class Planet : MonoBehaviour {
 					if(planetType.Equals("first")){
 						// set camera position
 						rocketManager.onStart=true;
-						rocketManager.SetCollPlanet(this);
 					}
 					else{
 						rocketManager.onStart=false;

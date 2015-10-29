@@ -31,7 +31,10 @@ public class PCG_Obstacle : MonoBehaviour {
 	float downBound;
 	float rightBound;
 	GameObject[] planets = new GameObject[10];
+	GameObject[] asteroids = new GameObject[12];
 	bool slide=false;
+	bool addOnce=false;
+	int k;
 
 	void Start () {
 		// get Camera
@@ -110,16 +113,20 @@ public class PCG_Obstacle : MonoBehaviour {
 		}
 
 		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end")){
-			if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x && !planetManager.levelCompleted){
-				camPosition = myCamera.GetInitialPosition();
-				scrollCamera=true;
-				slide=true;
-			}
-			else{
-				if(myCamera.IsBackStep(myCamera.transform.position.x))
-					camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
-				scrollCamera=true;
-				slide=true;
+			// ctrl endPlanet
+			if(myCamera.transform.position.x<rocket.transform.position.x){
+				if(myCamera.IsBackStep(myCamera.transform.position.x)){
+					if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x){
+						camPosition = myCamera.GetInitialPosition();
+						myCamera.SetCurLevel(myCamera.GetLevel());
+					}
+					else{
+						camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
+						addOnce=true;
+					}
+					scrollCamera=true;
+					slide=true;
+				}
 			}
 		}
 		
@@ -165,7 +172,10 @@ public class PCG_Obstacle : MonoBehaviour {
 				myCamera.transform.position=camPosition;
 				if(!slide)
 					myCamera.SetThisAsInitialPosition();
+				if(addOnce)
+					myCamera.SetCurLevel(myCamera.GetCurLevel()+1);
 				slide=false;
+				addOnce=false;
 			}
 		}
 	}
@@ -252,6 +262,7 @@ public class PCG_Obstacle : MonoBehaviour {
 	void BuildPath(){
 		path = new bool[9];
 		int i;
+		k=0;
 		for(i=0;i<9;i++)
 			path[i]=false;
 
@@ -339,6 +350,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4+camSize*3/2;
 			y=startingCorner.y-(level-1)*4*(3/2.0f)-(3/2.0f)*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[3] && path[4])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -346,6 +359,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*2+2*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*(3/2.0f)-(3/2.0f)*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[6] && path[7])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -353,6 +368,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*3+3*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*(3/2.0f)-(3/2.0f)*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 
 		// down couple
@@ -362,6 +379,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4+camSize*3/2;
 			y=startingCorner.y-(level-1)*4*(5/2.0f)-(5/2.0f)*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[4] && path[5])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -369,6 +388,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*2+2*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*(5/2.0f)-(5/2.0f)*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[7] && path[8])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -376,6 +397,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*3+3*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*(5/2.0f)-(5/2.0f)*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 
 		// left couple
@@ -385,6 +408,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*(3/2.0f)+(3/2.0f)*camSize*3/2;
 			y=startingCorner.y-(level-1)*4-camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[1] && path[4])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -392,6 +417,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*(3/2.0f)+(3/2.0f)*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*2-2*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[2] && path[5])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -399,6 +426,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*(3/2.0f)+(3/2.0f)*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*3-3*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 
 		// right couple
@@ -408,6 +437,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*(5/2.0f)+(5/2.0f)*camSize*3/2;
 			y=startingCorner.y-(level-1)*4-camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[4] && path[7])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -415,6 +446,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*(5/2.0f)+(5/2.0f)*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*2-2*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}
 		if(!(path[5] && path[8])){
 			asteroid = Instantiate(Resources.Load("Asteroid")) as GameObject;
@@ -422,6 +455,8 @@ public class PCG_Obstacle : MonoBehaviour {
 			x=startingCorner.x+(level-1)*4*(5/2.0f)+(5/2.0f)*camSize*3/2;
 			y=startingCorner.y-(level-1)*4*3-3*camSize*3/2;
 			asteroid.transform.position=new Vector3(x,y,0);
+			asteroids[k]=asteroid;
+			k++;
 		}	
 	}
 
@@ -435,6 +470,9 @@ public class PCG_Obstacle : MonoBehaviour {
 		rocketManager.SetInitialPosition();
 		for(int l=0;l<10;l++){
 			Destroy(planets[l]);
+		}
+		for(int j=0;j<k;j++){
+			Destroy(asteroids[j]);
 		}
 		level--;
 		endPlanet=GenerateLevel(startingCorner);

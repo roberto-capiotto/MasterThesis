@@ -35,6 +35,7 @@ public class PCG_randomObjects : MonoBehaviour {
 	float rightBound;
 	GameObject[] planets = new GameObject[10];
 	bool slide=false;
+	bool addOnce=false;
 	
 	void Start () {
 		// get Camera
@@ -118,16 +119,20 @@ public class PCG_randomObjects : MonoBehaviour {
 		}
 
 		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end")){
-			if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x && !planetManager.levelCompleted){
-				camPosition = myCamera.GetInitialPosition();
-				scrollCamera=true;
-				slide=true;
-			}
-			else{
-				if(myCamera.IsBackStep(myCamera.transform.position.x))
-					camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
-				scrollCamera=true;
-				slide=true;
+			// ctrl endPlanet
+			if(myCamera.transform.position.x<rocket.transform.position.x){
+				if(myCamera.IsBackStep(myCamera.transform.position.x)){
+					if(myCamera.transform.position.x == myCamera.GetCameraStep(level-3).x){
+						camPosition = myCamera.GetInitialPosition();
+						myCamera.SetCurLevel(myCamera.GetLevel());
+					}
+					else{
+						camPosition = myCamera.GetNextStep(myCamera.transform.position.x);
+						addOnce=true;
+					}
+					scrollCamera=true;
+					slide=true;
+				}
 			}
 		}
 		
@@ -153,16 +158,6 @@ public class PCG_randomObjects : MonoBehaviour {
 			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
 			myCamera.SetLimit(camPosition);
 			print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
-			/*if(rand==0){
-				camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y-myCamera.GetDeltaY(),-10);
-			}else{
-				if(rand==4){
-					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y+myCamera.GetDeltaY(),-10);
-				}
-				else{
-					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
-				}
-			}*/
 			myCamera.SetInitialPosition(camPosition);
 			//myCamera.transform.position=camPosition;
 			//camPosition= new Vector3(endPlanet.transform.position.x,endPlanet.transform.position.y,-10);
@@ -181,16 +176,16 @@ public class PCG_randomObjects : MonoBehaviour {
 		if(scrollCamera){
 			if(myCamera.transform.position.x<camPosition.x){
 				myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.2f,myCamera.transform.position.y,-10);
-				/*if(myCamera.transform.position.x<camPosition.x){
-						myCamera.transform.position = new Vector3(myCamera.transform.position.x+0.1f,myCamera.transform.position.y,-10);
-					}*/
 			}
 			else{
 				scrollCamera=false;
 				myCamera.transform.position=camPosition;
 				if(!slide)
 					myCamera.SetThisAsInitialPosition();
+				if(addOnce)
+					myCamera.SetCurLevel(myCamera.GetCurLevel()+1);
 				slide=false;
+				addOnce=false;
 			}
 		}
 	}
