@@ -17,7 +17,6 @@ public class Planet : MonoBehaviour {
 	                             */
 	public int counter=5;
 	public SphereCollider myCollider;
-//	public float planetSize;
 	int orbitLevel=2;
 	public Text text;
 	// satellite vars
@@ -62,12 +61,6 @@ public class Planet : MonoBehaviour {
 		rocket = GameObject.Find ("Rocket");
 		myCollider = transform.GetComponent<SphereCollider>();
 		rocketManager = rocket.GetComponent ("Rocket") as Rocket;
-		/* TODO: random planetSize
-		 * it will scale also orbits
-		 * 
-		 * planetSize=Random.Range(1.8f,2.2f);
-		 */
-
 		SetPlanetType(planetType);
 
 		// place inSatellite
@@ -142,6 +135,10 @@ public class Planet : MonoBehaviour {
 			}
 		}
 	}
+
+	/************************************************************************
+	 *  COLLISION METHODS
+	 ************************************************************************/
 	
 	void OnCollisionEnter (Collision gravityCollision)
 	{
@@ -197,7 +194,7 @@ public class Planet : MonoBehaviour {
 			// calculate the shootingAngle
 			m = tan (rocket.transform.position-rocketManager.GetShootPosition());
 
-			// TODO: interpole data!
+			// interpole data!
 			y=rocket.transform.position.y;
 			x=rocket.transform.position.x;
 			myM = (rocketManager.GetShootPosition().y-y)/(rocketManager.GetShootPosition().x-x);
@@ -387,6 +384,10 @@ public class Planet : MonoBehaviour {
 		rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
 		rend.material.SetColor("_Color", color);
 	}
+
+	/************************************************************************
+	 *  MOUSE METHODS
+	 ************************************************************************/
 	
 	public void OnMouseDown(){
 		mouseClicks++;
@@ -438,6 +439,10 @@ public class Planet : MonoBehaviour {
 		mouseClicks = 0;
 	}
 
+	/************************************************************************
+	 *  TIMER METHODS
+	 ************************************************************************/
+	
 	void CountDown()
 	{
 		counting=true;
@@ -478,6 +483,34 @@ public class Planet : MonoBehaviour {
 		}
 	}
 
+	public bool GetIfCounting(){
+		return counting;
+	}
+	
+	public void SetCounter(int cont){
+		counter=cont;
+	}
+	
+	public int GetCounter(){
+		return counter;
+	}
+
+	/************************************************************************
+	 *  TEXT METHODS
+	 ************************************************************************/
+
+	public void MoveText(Vector3 p){
+		text.transform.position=p;
+	}
+
+	public void SetText(Text txt){
+		text=txt;
+	}
+
+	/************************************************************************
+	 *  PLANET METHODS
+	 ************************************************************************/
+
 	float tan (Vector3 pos)
 	{
 		if (pos.x >= 0) {
@@ -502,11 +535,11 @@ public class Planet : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	public void SetRotation(bool rotation){
 		clockwise=rotation;
 	}
-
+	
 	public void SetPlanetType(string type){
 		planetType=type;
 		if(type.Equals("count")){
@@ -534,29 +567,9 @@ public class Planet : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void MoveText(Vector3 p){
-		text.transform.position=p;
-	}
-
-	public bool GetIfCounting(){
-		return counting;
-	}
-
-	public int GetCounter(){
-		return counter;
-	}
-
-	public void SetText(Text txt){
-		text=txt;
-	}
 
 	public bool GetCollision(){
 		return collision;
-	}
-
-	public void SetCounter(int cont){
-		counter=cont;
 	}
 
 	public void SetMaxLevel(){

@@ -7,16 +7,15 @@ public class Rocket : MonoBehaviour {
 	public int maxFuel=2000;
 	Vector3 initialPosition;
 	Vector3 shootPosition;
-	public bool onStart=true;
 	public float timer;
+	public bool onStart=true;
 	public bool colliding=true;
-	Planet collPlanet;
 	bool replace;
 	bool check=false;
+	Planet collPlanet;
+	DockingStation dock;
 
 	void Start () {
-		//initialPosition=new Vector3(0 ,1.4f,0);
-		//SetInitialPosition();
 		Renderer rend = GetComponent<Renderer>();
 		rend.material.shader = Shader.Find("Specular");
 		rend.material.SetColor("_Color", Color.red);
@@ -25,6 +24,10 @@ public class Rocket : MonoBehaviour {
 
 	void FixedUpdate () {
 	}
+
+	/************************************************************************
+	 *  FUEL METHODS
+	 ************************************************************************/
 
 	public void FullRefill(){
 		fuel=maxFuel;
@@ -50,13 +53,16 @@ public class Rocket : MonoBehaviour {
 		return fuel;
 	}
 
+	/************************************************************************
+	 *  POSITION METHODS
+	 ************************************************************************/
+
 	public void SetInitialPosition(){
 		this.rigidbody.velocity = (new Vector3 (0, 0, 0));
 		this.transform.position=initialPosition;
 		onStart=true;
 	}
 
-	// use this function with checkpoint
 	public void ChangeInitialPosition(Vector3 vec){
 		initialPosition=vec;
 		print ("CHANGED! x:"+initialPosition.x+" y: "+initialPosition.y);
@@ -66,6 +72,14 @@ public class Rocket : MonoBehaviour {
 		return initialPosition;
 	}
 
+	public void SetReplace(bool flag){
+		replace=flag;
+	}
+
+	public bool GetReplace(){
+		return replace;
+	}
+	
 	public void SetShootPosition(Vector3 pos){
 		shootPosition=pos;
 	}
@@ -74,16 +88,12 @@ public class Rocket : MonoBehaviour {
 		return shootPosition;
 	}
 
+	/************************************************************************
+	 *  CURRENT STATUS METHODS
+	 ************************************************************************/
+
 	public void SetOnStart(bool start){
 		onStart=start;
-	}
-
-	public void SetTimer(float t){
-		timer=t;
-	}
-
-	public float GetTimer(){
-		return timer;
 	}
 
 	public void SetColliding(bool coll){
@@ -102,12 +112,12 @@ public class Rocket : MonoBehaviour {
 		return collPlanet;
 	}
 
-	public void SetReplace(bool flag){
-		replace=flag;
+	public void SetCollDocking(DockingStation d){
+		dock=d;
 	}
-
-	public bool GetReplace(){
-		return replace;
+	
+	public DockingStation GetCollDocking(){
+		return dock;
 	}
 
 	public bool GetCheck(){
@@ -118,4 +128,15 @@ public class Rocket : MonoBehaviour {
 		check=checkFlag;
 	}
 
+	/************************************************************************
+	 *  TIMER METHODS
+	 ************************************************************************/
+
+	public void SetTimer(float t){
+		timer=t;
+	}
+	
+	public float GetTimer(){
+		return timer;
+	}
 }

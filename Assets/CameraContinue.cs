@@ -210,7 +210,7 @@ public class CameraContinue : MonoBehaviour {
 					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
 				}
 				if(left){
-					if(rocket.transform.position.x<GetLimit().x-deltaX && !rocketManager.onStart){
+					if(rocket.transform.position.x<GetPost()-2*deltaX && !rocketManager.onStart){
 						if(curLevel==level)
 							curLevel=level-2;
 						else{

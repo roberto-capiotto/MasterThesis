@@ -3,35 +3,40 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class PCG_continue : MonoBehaviour {
-	
+
+	public int level=1;
+	float maxFlyTime=10;
+	// flags
 	bool creation=false;
+	bool slide=false;
+	bool addOnce=false;
+	// gameobjects
 	GameObject rocket,planet,cam;
+	GameObject[] planets = new GameObject[10];
+	GameObject endPlanet;
+	SphereCollider myCollider;
 	Rocket rocketManager;
 	Planet planetManager;
+	// camera
 	Camera myCam;
-	float x,y,rand,randX,randY,camSize=5;
+	public CameraContinue myCamera;
+	bool scrollCamera=false;
 	public Vector3 initialPosition;
 	Vector3 newPosition;
 	Vector3 endPosition;
 	Vector3 camPosition;
 	Vector3 lastPosition;
 	public Vector3 startingCorner;
-	GameObject endPlanet;
-	SphereCollider myCollider;
 	float deltaLevel;
-	public CameraContinue myCamera;
-	bool scrollCamera=false;
-	public int level=1;
-	float maxFlyTime=10;
+	float x,y,rand,randX,randY,camSize=5;
+	// buttons
 	public Button closeButton;
 	public Button retryButton;
 	public Button shootButton;
+	// boundaries
 	float upBound;
 	float downBound;
 	float rightBound;
-	GameObject[] planets = new GameObject[10];
-	bool slide=false;
-	bool addOnce=false;
 
 	void Start () {
 		// get Camera
@@ -182,8 +187,6 @@ public class PCG_continue : MonoBehaviour {
 		int i=0,j=0;
 		for(;i<3;i++){
 			for(j=0;j<3;j++){
-				//randX=0;
-				//randY=0;
 				randX=Random.Range(-1.3f,1.3f);
 				randY=Random.Range(-1.3f,1.3f);
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;

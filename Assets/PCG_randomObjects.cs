@@ -118,7 +118,7 @@ public class PCG_randomObjects : MonoBehaviour {
 			rocketManager.SetReplace(false);
 		}
 
-		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet().planetType.Equals("end")){
+		if(rocketManager.GetColliding() && level>2 && rocketManager.GetCollPlanet()!=null && rocketManager.GetCollPlanet().planetType.Equals("end")){
 			// ctrl endPlanet
 			if(myCamera.transform.position.x<rocket.transform.position.x){
 				if(myCamera.IsBackStep(myCamera.transform.position.x)){
@@ -324,11 +324,15 @@ public class PCG_randomObjects : MonoBehaviour {
 
 	public void Shoot(){
 		if(rocketManager.GetColliding()){
-			rocketManager.GetCollPlanet().SetShoot(true);
+			if(rocketManager.GetCollPlanet()!=null)
+				rocketManager.GetCollPlanet().SetShoot(true);
+			else
+				rocketManager.GetCollDocking().SetShoot(true);
 		}
 	}
 
 	public void Retry(){
+		rocketManager.ChangeInitialPosition(initialPosition);
 		rocketManager.SetInitialPosition();
 		for(int l=0;l<10;l++){
 			Destroy(planets[l]);

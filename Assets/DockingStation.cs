@@ -59,6 +59,8 @@ public class DockingStation : MonoBehaviour {
 	void OnCollisionEnter(Collision gravityCollision){
 		rocketManager.onStart=false;
 		rocketManager.SetColliding(true);
+		rocketManager.SetCollPlanet(null);
+		rocketManager.SetCollDocking(this);
 		angleCollision=tan(rocket.transform.position - this.transform.position);
 		// find where the rocket will touch the spaceStation
 		if(rocket.transform.position.x>this.transform.position.x)
@@ -248,5 +250,9 @@ public class DockingStation : MonoBehaviour {
 				return(180f + Mathf.Atan (pos.y / pos.x) * 180 / Mathf.PI);
 			}
 		}
+	}
+
+	public void SetShoot(bool value){
+		shoot=value;
 	}
 }
