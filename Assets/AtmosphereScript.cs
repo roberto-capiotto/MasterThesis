@@ -24,7 +24,7 @@ public class AtmosphereScript : MonoBehaviour {
 	{
 		print(gravityCollision.transform.position.x);
 		orbitCollider = transform.GetComponent<SphereCollider>();
-		swingManager.SetRadius(orbitCollider.radius*orbitCollider.transform.localScale.x/swing.transform.localScale.x);
+		//swingManager.SetRadius(orbitCollider.radius*orbitCollider.transform.localScale.x/swing.transform.localScale.x);
 	}
 
 	void OnTriggerStay (Collider collider) {

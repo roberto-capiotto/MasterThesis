@@ -6,14 +6,16 @@ public class Swing : MonoBehaviour {
 	float shootAcceleration = 200f;
 	// flag
 	bool colliding = false;
-	bool up=false;
-	bool down=false;
-	bool left=false;
-	bool right=false;
-	bool clockwise=false;
+	public bool up=false;
+	public bool down=false;
+	public bool left=false;
+	public bool right=false;
+	public bool clockwise=false;
+	bool extremeShoot=false;
+	bool shooting=false;
 	// other params
 	float angleCollision;
-	float angleDestination;
+	public float angleDestination;
 	float angleCurrent;
 	float newangle;
 	Quaternion rotate = new Quaternion (0, 0, 0, 0);
@@ -34,25 +36,53 @@ public class Swing : MonoBehaviour {
 	
 	void FixedUpdate ()
 	{
-		angleCurrent=tan(rocket.transform.position - this.transform.position);
-		if(!clockwise){
-			if(angleDestination<90){
-				if(angleCurrent>angleDestination && angleCurrent<180)
-					shoot(clockwise);
+		if(colliding){
+			angleCurrent=tan(rocket.transform.position - this.transform.position);
+			if(!clockwise){
+				if(angleDestination<90){
+					if(angleCurrent>angleDestination && angleCurrent<180){
+						shoot(clockwise);
+					}
+				}
+				else{
+					if(angleCurrent>angleDestination){
+						shoot(clockwise);
+						extremeShoot=true;
+					}
+					else{
+						if(shooting){
+							shoot(clockwise);
+							print("EXTRA SHOOT");
+						}
+					}
+					if(angleDestination>350 && angleCurrent<15 && !extremeShoot){
+						shoot(clockwise);
+						extremeShoot=true;
+					}
+				}
 			}
 			else{
-				if(angleCurrent>angleDestination)
-					shoot(clockwise);
-			}
-		}
-		else{
-			if(angleDestination>270){
-				if(angleCurrent<angleDestination && angleCurrent>180)
-					shoot(clockwise);
-			}
-			else{
-				if(angleCurrent<angleDestination)
-					shoot(clockwise);
+				if(angleDestination>270){
+					if(angleCurrent<angleDestination && angleCurrent>180){
+						shoot(clockwise);
+					}
+				}
+				else{
+					if(angleCurrent<angleDestination){
+						shoot(clockwise);
+						extremeShoot=true;
+					}
+					else{
+						if(shooting){
+							shoot(clockwise);
+							print("EXTRA SHOOT");
+						}
+					}
+					if(angleDestination<10 && angleCurrent>345 && !extremeShoot){
+						shoot(clockwise);
+						extremeShoot=true;
+					}
+				}
 			}
 		}
 	}
@@ -64,11 +94,11 @@ public class Swing : MonoBehaviour {
 		rocketManager.SetColliding(true);
 		angleCollision=tan(rocket.transform.position - this.transform.position);
 		print ("angleCollision: "+angleCollision);
-		if(myCollider.radius>=1f){
+		/*if(myCollider.radius>=1f){
 			// decrease orbit size
 			print("lowerize");
 			myCollider.radius -= 0.15f;
-		}
+		}*/
 
 		// find where the rocket will touch swingPlanet
 		if(rocket.transform.position.x>this.transform.position.x)
@@ -206,6 +236,7 @@ public class Swing : MonoBehaviour {
 			else
 				angleDestination=angleCollision+90-360;
 		}
+		print ("DEST: "+angleDestination);
 	}
 
 	void OnCollisionStay (Collision collider) {
@@ -230,6 +261,8 @@ public class Swing : MonoBehaviour {
 		down=false;
 		left=false;
 		right=false;
+		shooting=false;
+		extremeShoot=false;
 	}
 	
 	void shoot (bool direction)
@@ -241,6 +274,8 @@ public class Swing : MonoBehaviour {
 				rocket.rigidbody.AddForce(rocket.transform.right * shootAcceleration*3);
 			else
 				rocket.rigidbody.AddForce(-rocket.transform.right * shootAcceleration*3);
+			print ("SHOOT");
+			shooting=true;
 		}
 	}
 

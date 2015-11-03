@@ -11,7 +11,7 @@ public class CameraContinue : MonoBehaviour {
 	public Vector3 initialPosition;
 	Vector3 position;
 	public Vector3 limit = new Vector3(-10,0,0);
-	float post;
+	public float post;
 	public float camSize;
 	public float leftBound;
 	public float upBound;
@@ -210,7 +210,8 @@ public class CameraContinue : MonoBehaviour {
 					print ("RIGHT: x: "+position.x+" y: "+position.y+" dX: "+deltaX);
 				}
 				if(left){
-					if(rocket.transform.position.x<GetPost()-2*deltaX && !rocketManager.onStart){
+					//if(rocket.transform.position.x<GetPost()-2*deltaX && !rocketManager.onStart){
+					if(rocket.transform.position.x<GetLimit().x-deltaX && !rocketManager.onStart){
 						if(curLevel==level)
 							curLevel=level-2;
 						else{
@@ -372,6 +373,8 @@ public class CameraContinue : MonoBehaviour {
 			return 0;
 		}
 	}
+
+	// HORIZONTAL METHODS
 
 	public void SetLimit(Vector3 l){
 		limit=l;
