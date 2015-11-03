@@ -248,8 +248,8 @@ public class PCG_Obstacle : MonoBehaviour {
 		myCamera.SetBound(rightBound,3);
 
 		Vector3 step = Vector3.zero;
-		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*camSize*3/2;
-		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*camSize*3/2;
+		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*5*3/2;
+		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*5*3/2;
 		myCamera.AddCameraStep(step);
 
 		endPosition=planet.transform.position;

@@ -13,7 +13,7 @@ public class CameraContinue : MonoBehaviour {
 	public Vector3 limit = new Vector3(-10,0,0);
 	public float post;
 	public float camSize;
-	public float leftBound;
+	public float leftBound=0;
 	public float upBound;
 	public float downBound;
 	public float rightBound;
@@ -52,7 +52,8 @@ public class CameraContinue : MonoBehaviour {
 		 * 2 is down
 		 * 3 is right
 		 */
-		SetBound(-camSize,0);
+		if(leftBound==0)
+			SetBound(-camSize,0);
 		SetBound(camSize*2,1);
 		SetBound(-camSize*5,2);
 		SetBound(camSize*7,3);

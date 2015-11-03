@@ -182,9 +182,12 @@ public class PCG_tutorial : MonoBehaviour {
 					myCamera.ShowFuelText();
 					rocketManager.FullRefill();
 					initialPosition=myCamera.transform.position;
+					myCamera.SetBound(startingCorner.x-camSize/2,0);
+					print ("BOUND LEFT: "+myCamera.GetBound(0));
 					myCamera.SetBound(camSize*2,1);
 					myCamera.SetBound(-camSize*5,2);
 					myCamera.SetBound(camSize*7,3);
+					myCamera.SetPost(initialPosition.x+myCamera.GetDeltaX());
 					text.text="Play a level";
 					text2.text="";
 					coord.x = -Screen.width/2+80;
@@ -200,9 +203,9 @@ public class PCG_tutorial : MonoBehaviour {
 					// modify Deltas
 					myCam.orthographicSize=myCam.orthographicSize+4;
 					myCamera.SetDeltas(myCamera.GetDeltaX()+4,myCamera.GetDeltaY()+4);
+					print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 					
 					// move Camera
-					print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
 					camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
 					postX=camPosition.x+myCamera.GetDeltaX();
 					print ("PostX: "+postX);
@@ -258,6 +261,7 @@ public class PCG_tutorial : MonoBehaviour {
 				list[cont++]=planet;
 				scroll=true;
 				camPosition=new Vector3(12,0,-10);
+				myCamera.SetBound(planet.transform.position.x-camSize/2,0);
 				myCamera.SetBound(camSize*2,1);
 				myCamera.SetBound(-camSize*5,2);
 				myCamera.SetBound(camSize*7,3);
@@ -284,6 +288,7 @@ public class PCG_tutorial : MonoBehaviour {
 					myCamera.ShowFuelText();
 					rocketManager.FullRefill();
 					initialPosition=myCamera.transform.position;
+					myCamera.SetPost(initialPosition.x+myCamera.GetDeltaX());
 					text.text="Play a level";
 					text2.text="";
 					coord.x = -Screen.width/2+80;
@@ -429,8 +434,8 @@ public class PCG_tutorial : MonoBehaviour {
 		myCamera.SetBound(rightBound,3);
 
 		Vector3 step = Vector3.zero;
-		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*camSize*3/2;
-		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*camSize*3/2;
+		step.x = pos.x+(level-1)*4*(1+1)+(1+1)*5*3/2;
+		step.y = pos.y-(level-1)*4*(1+1)-(1+1)*5*3/2;
 		myCamera.AddCameraStep(step);
 
 		list[cont++]=planet;
@@ -609,6 +614,7 @@ public class PCG_tutorial : MonoBehaviour {
 									exe=false;
 									gen=false;
 									locked=true;
+									myCamera.SetBound(-camSize,0);
 									rocketManager.ChangeInitialPosition(absoluteInitialPosition);
 									rocketManager.SetInitialPosition();
 									rocketManager.FullRefill();
