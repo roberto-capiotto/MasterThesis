@@ -63,6 +63,20 @@ public class PCG_continue : MonoBehaviour {
 		print ("RAND: "+rand);
 		planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
 		camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
+		/*if(rand==0){
+			myCamera.SetOffset(7.5f/2);
+			camPosition=new Vector3(camPosition.x,camPosition.y-myCamera.GetOffset(),-10);
+		}
+		else{
+			if(rand==4){
+				myCamera.SetOffset(7.5f/2);
+				camPosition=new Vector3(camPosition.x,camPosition.y+myCamera.GetOffset(),-10);
+			}
+			else{
+				myCamera.SetOffset(0);
+				camPosition=new Vector3(camPosition.x,camPosition.y,-10);
+			}
+		}*/
 		myCamera.SetInitialPosition(camPosition);
 		myCamera.transform.position=camPosition;
 		myCamera.ShowFuelText();
@@ -140,13 +154,27 @@ public class PCG_continue : MonoBehaviour {
 			// modify Deltas
 			myCam.orthographicSize=myCam.orthographicSize+4;
 			myCamera.SetDeltas(myCamera.GetDeltaX()+4,myCamera.GetDeltaY()+4);
-			
-			// move Camera
 			print ("dx "+myCamera.GetDeltaX()+" dy "+myCamera.GetDeltaY());
+
+			// move Camera
 			camPosition=new Vector3(endPlanet.transform.position.x+myCamera.GetDeltaX(),endPlanet.transform.position.y,-10);
 			myCamera.SetPost(camPosition.x+myCamera.GetDeltaX());
 			// THIS IS THE LIMIT OF THIS LEVEL
 			camPosition=new Vector3(lastPosition.x+2*myCamera.GetDeltaX(),camPosition.y,-10);
+			/*if(rand==0){
+				myCamera.SetOffset(myCamera.GetDeltaY()/2);
+				camPosition=new Vector3(camPosition.x,camPosition.y-myCamera.GetOffset(),-10);
+			}
+			else{
+				if(rand==4){
+					myCamera.SetOffset(myCamera.GetDeltaY()/2);
+					camPosition=new Vector3(camPosition.x,camPosition.y+myCamera.GetOffset(),-10);
+				}
+				else{
+					myCamera.SetOffset(0);
+					camPosition=new Vector3(camPosition.x,camPosition.y,-10);
+				}
+			}*/
 			myCamera.SetLimit(camPosition);
 			print ("camX: "+camPosition.x +" lastX: "+ lastPosition.x +" DX: "+ myCamera.GetDeltaX());
 

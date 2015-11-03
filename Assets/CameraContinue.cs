@@ -12,6 +12,7 @@ public class CameraContinue : MonoBehaviour {
 	Vector3 position;
 	public Vector3 limit = new Vector3(-10,0,0);
 	public float post;
+	public float offset;
 	public float camSize;
 	public float leftBound=0;
 	public float upBound;
@@ -155,10 +156,42 @@ public class CameraContinue : MonoBehaviour {
 				position=this.transform.position;
 				print ("BEFORE: x: "+position.x+" y: "+position.y);
 				if(up){
+					/*if(offset!=0){
+						if(position.y+offset==initialPosition.y){
+							position=new Vector3(position.x,position.y+offset,-10);
+						}
+						else{
+							if(position.y==initialPosition.y){
+								position=new Vector3(position.x,position.y+offset,-10);
+							}
+							else{
+								position=new Vector3(position.x,position.y+deltaY,-10);
+							}
+						}
+					}
+					else{
+						position=new Vector3(position.x,position.y+deltaY,-10);
+					}*/
 					position=new Vector3(position.x,position.y+deltaY,-10);
 					print ("UP: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
 				if(down){
+					/*if(offset!=0){
+						if(position.y-offset==initialPosition.y){
+							position=new Vector3(position.x,position.y-offset,-10);
+						}
+						else{
+							if(position.y==initialPosition.y){
+								position=new Vector3(position.x,position.y-offset,-10);
+							}
+							else{
+								position=new Vector3(position.x,position.y-deltaY,-10);
+							}
+						}
+					}
+					else{
+						position=new Vector3(position.x,position.y-deltaY,-10);
+					}*/
 					position=new Vector3(position.x,position.y-deltaY,-10);
 					print ("DOWN: x: "+position.x+" y: "+position.y+" dY: "+deltaY);
 				}
@@ -391,6 +424,14 @@ public class CameraContinue : MonoBehaviour {
 	
 	public float GetPost(){
 		return post;
+	}
+
+	public void SetOffset(float off){
+		offset=off;
+	}
+
+	public float GetOffset(){
+		return offset;
 	}
 
 	/************************************************************************
