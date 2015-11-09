@@ -33,7 +33,7 @@ public class PCG_randomObjects : MonoBehaviour {
 	float upBound;
 	float downBound;
 	float rightBound;
-	GameObject[] planets = new GameObject[10];
+	GameObject[] planets = new GameObject[20];
 	bool slide=false;
 	bool addOnce=false;
 	
@@ -241,24 +241,26 @@ public class PCG_randomObjects : MonoBehaviour {
 							planets[i*3+j]=dockingStation;
 						}
 						else{
-//							if(randomObject<0.95f){
+							if(randomObject<0.95f){
 								blackHole = Instantiate(Resources.Load("BlackHole")) as GameObject;
 								blackHole.transform.position=newPosition;
 								blackHole.name="BlackHole";
 								planets[i*3+j]=blackHole;
-/*							}
+							}
 							else{
 								wormhole = Instantiate(Resources.Load("Wormhole")) as GameObject;
-								wormhole.transform.position=newPosition;
+								wormhole.transform.position=new Vector3(newPosition.x,newPosition.y-1,0);
 								wormhole.name="Wormhole";
+								planets[i*3+j]=wormhole;
 								wormhole2 = Instantiate(Resources.Load("Wormhole")) as GameObject;
-								wormhole2.transform.position=new Vector3(newPosition.x,newPosition.y+10,0);
+								wormhole2.transform.position=new Vector3(newPosition.x,newPosition.y+1,0);
 								wormhole2.name="Wormhole";
+								planets[10+i*3+j]=wormhole2;
 								wormholeManager = wormhole.GetComponent ("Wormhole") as Wormhole;
 								wormhole2Manager = wormhole2.GetComponent ("Wormhole") as Wormhole;
 								wormholeManager.SetExit(wormhole2);
 								wormhole2Manager.SetExit(wormhole);
-							}*/
+							}
 						}
 					}
 				}
@@ -334,7 +336,7 @@ public class PCG_randomObjects : MonoBehaviour {
 	public void Retry(){
 		rocketManager.ChangeInitialPosition(initialPosition);
 		rocketManager.SetInitialPosition();
-		for(int l=0;l<10;l++){
+		for(int l=0;l<20;l++){
 			Destroy(planets[l]);
 		}
 		level--;

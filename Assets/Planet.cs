@@ -152,6 +152,7 @@ public class Planet : MonoBehaviour {
 				rocketManager.ChangeInitialPosition(newPosition);
 				rocketManager.onStart=true;
 				rocketManager.SetCheck(true);
+				print ("CHECK");
 			}
 		}
 		else{
@@ -354,13 +355,13 @@ public class Planet : MonoBehaviour {
 			rend.material.SetColor("_Color", Color.yellow);
 		}
 		else{
-			Renderer rend = this.transform.GetChild(1).GetComponent<Renderer>();
-			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
-			rend.material.SetColor("_Color", Color.yellow);
 			//Color32 color = new Color32(215, 95, 95, 27);
-			rend = this.transform.GetChild(0).GetComponent<Renderer>();
+			Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
 			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
 			rend.material.SetColor("_Color", Color.blue);
+			rend = this.transform.GetChild(1).GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+			rend.material.SetColor("_Color", Color.yellow);
 		}
 	}
 	

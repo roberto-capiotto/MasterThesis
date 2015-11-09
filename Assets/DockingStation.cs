@@ -198,6 +198,13 @@ public class DockingStation : MonoBehaviour {
 		newangle = tan (rocket.transform.position - this.transform.position);
 		rotate.eulerAngles = new Vector3 (0, 0, newangle - 90);
 		rocket.transform.rotation = rotate;
+
+		Renderer rend = this.transform.GetComponentInChildren<Renderer>();;
+		rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+		rend.material.SetColor("_Color", Color.blue);
+		rend = this.transform.GetChild(0).GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+		rend.material.SetColor("_Color", Color.yellow);
 	}
 
 	void OnCollisionExit(){
@@ -205,6 +212,13 @@ public class DockingStation : MonoBehaviour {
 		collision=false;
 		rocketManager.SetTimer(Time.time);
 		rocketManager.SetColliding(false);
+
+		Color32 color = new Color32(215, 95, 95, 27);
+		
+		// decolor everything
+		Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
+		rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
+		rend.material.SetColor("_Color", color);
 	}
 
 	public void OnMouseDown(){
