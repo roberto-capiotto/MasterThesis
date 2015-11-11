@@ -59,7 +59,7 @@ public class CameraScript : MonoBehaviour {
 			ResetPosition();
 		}
 
-		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>0.2f){
+		if(!rocketManager.GetColliding() && Time.time-rocketManager.GetTimer()>0.1f){
 
 			if(rocket.transform.position.x>this.transform.position.x){
 				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
@@ -69,6 +69,11 @@ public class CameraScript : MonoBehaviour {
 				position=new Vector3(rocket.transform.position.x,rocket.transform.position.y,-10);
 				this.transform.position = position;
 			}
+		}
+
+		if(rocketManager.GetColliding() && !rocketManager.GetCollPlanet().planetType.Equals("end")){
+			position=new Vector3(rocketManager.GetCollPlanet().transform.position.x,rocketManager.GetCollPlanet().transform.position.y,-10);
+			this.transform.position = position;
 		}
 
 		// upper bound and lower bound

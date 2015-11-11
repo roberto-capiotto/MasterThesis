@@ -446,7 +446,8 @@ public class PCG_tutorial : MonoBehaviour {
 	}
 
 	public void Retry(){
-		rocketManager.SetInitialPosition();
+		if(!rocketManager.onStart)
+			rocketManager.SetInitialPosition();
 		for(int l=0;l<10;l++){
 			Destroy(planets[l]);
 		}

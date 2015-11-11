@@ -199,8 +199,8 @@ public class PCG_randomObjects : MonoBehaviour {
 			for(j=0;j<3;j++){
 				//randX=0;
 				//randY=0;
-				randX=Random.Range(-1.5f,1.5f);
-				randY=Random.Range(-1.5f,1.5f);
+				randX=Random.Range(-1.3f,1.3f);
+				randY=Random.Range(-1.3f,1.3f);
 				x=pos.x+(level-1)*4*(i+1)+(i+1)*camSize*3/2+randX*level;
 				y=pos.y-(level-1)*4*(j+1)-(j+1)*camSize*3/2+randY*level;
 				newPosition=new Vector3(x,y,0);
@@ -334,8 +334,10 @@ public class PCG_randomObjects : MonoBehaviour {
 	}
 
 	public void Retry(){
-		rocketManager.ChangeInitialPosition(initialPosition);
-		rocketManager.SetInitialPosition();
+		if(!(rocketManager.onStart && !rocketManager.GetCollPlanet().planetType.Equals("checkpoint"))){
+			rocketManager.ChangeInitialPosition(initialPosition);
+			rocketManager.SetInitialPosition();
+		}
 		for(int l=0;l<20;l++){
 			Destroy(planets[l]);
 		}

@@ -70,6 +70,7 @@ public class PCG_randomPlace : MonoBehaviour {
 		rocketManager.ChangeInitialPosition(initialPosition);
 		rocketManager.SetInitialPosition();
 		print ("x: "+initialPosition.x+" y: "+initialPosition.y);
+		rocketManager.SetCollPlanet(planetManager);
 		
 		// the rocket and the first planet was generated
 		creation=true;
@@ -161,7 +162,7 @@ public class PCG_randomPlace : MonoBehaviour {
 
 		lastPosition=new Vector3(0,0,0);
 
-		Vector3[] planets = new Vector3[10];
+		Vector3[] selectedPlanets = new Vector3[10];
 		bool recreate,retry=false;
 
 		int j=0,k=0,l=0;
@@ -173,8 +174,8 @@ public class PCG_randomPlace : MonoBehaviour {
 				x=pos.x+randX*Mathf.Cos(randY);
 				y=pos.y+randX*Mathf.Sin(randY);
 				print("TRY: x="+x+" y="+y+" randX="+randX+" randY="+randY+" Cos:"+Mathf.Cos(randY)+" Sin: "+Mathf.Sin(randY));
-				for(j=0;j<planets.Length;j++){
-					if(Mathf.Abs(x-planets[j].x)<5 && Mathf.Abs(y-planets[j].y)<5){
+				for(j=0;j<selectedPlanets.Length;j++){
+					if(Mathf.Abs(x-selectedPlanets[j].x)<5 && Mathf.Abs(y-selectedPlanets[j].y)<5){
 						j=10;
 						retry=true;
 						print ("ERROR - OVERLAP "+l);
@@ -191,7 +192,8 @@ public class PCG_randomPlace : MonoBehaviour {
 			planet.name="Planet";
 			planetManager = planet.GetComponent ("Planet") as Planet;
 			planetManager.DestroySatellite(Random.Range(0,4));
-			planets[k] = newPosition;
+			selectedPlanets[k] = newPosition;
+			planets[k] = planet;
 			k++;
 			print("CREATE "+l);
 			if(planet.transform.position.x>lastPosition.x)
@@ -219,6 +221,7 @@ public class PCG_randomPlace : MonoBehaviour {
 		rand=rand-2;
 		print ("endRAND: "+rand);
 		planet.transform.position=new Vector3(pos.x+(level-1)*16+4*camSize*3/2,pos.y-(level-1)*4*rand-rand*camSize*3/2,0);
+		planets[k]=planet;
 
 		print ("pos.X: "+pos.x+" planetPos: "+planet.transform.position.x);
 		rightBound = planet.transform.position.x+2*myCamera.GetDeltaX();
@@ -248,7 +251,8 @@ public class PCG_randomPlace : MonoBehaviour {
 	}
 
 	public void Retry(){
-		rocketManager.SetInitialPosition();
+		if(!rocketManager.onStart)
+			rocketManager.SetInitialPosition();
 		for(int l=0;l<10;l++){
 			Destroy(planets[l]);
 		}
