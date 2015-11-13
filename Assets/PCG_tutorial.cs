@@ -4,7 +4,7 @@ using System.Collections;
 
 public class PCG_tutorial : MonoBehaviour {
 	
-	int counter=0;
+	int counter=-1;
 	GameObject rocket,firstPlanet,planet,planet2,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
 	GameObject endPlanet,cam;
 	Rocket rocketManager;
@@ -471,6 +471,9 @@ public class PCG_tutorial : MonoBehaviour {
 			// end of tutorial
 			Destroy(planet);
 			Destroy(dockingStation);
+			Renderer rend = firstPlanet.GetComponent<Renderer>();
+			rend.material.shader = Shader.Find("Specular");
+			rend.material.SetColor("_Color", Color.magenta);
 			rocketManager.ChangeInitialPosition(rocketInitialPosition);
 			rocketManager.SetInitialPosition();
 			rocketManager.FullRefill();
@@ -672,6 +675,9 @@ public class PCG_tutorial : MonoBehaviour {
 									}
 									else{
 										if(counter==0){
+											Renderer rend = firstPlanet.GetComponent<Renderer>();
+											rend.material.shader = Shader.Find("Specular");
+											rend.material.SetColor("_Color", Color.white);
 											// two planets
 											rocketManager.SetInitialPosition();
 											rocketManager.FullRefill();
@@ -688,6 +694,16 @@ public class PCG_tutorial : MonoBehaviour {
 											planetManager = planet.GetComponent ("Planet") as Planet;
 											planetManager.DestroySatellite(0);
 											counter++;
+										}
+										else{
+											if(counter==-1){
+												Renderer rend = firstPlanet.GetComponent<Renderer>();
+												rend.material.shader = Shader.Find("Specular");
+												rend.material.SetColor("_Color", Color.magenta);
+												text.text="Move the rocket through a level in order to find this planet";
+												text2.text="If you arrive there, the level will be completed";
+												counter++;
+											}
 										}
 									}
 								}

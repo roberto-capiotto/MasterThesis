@@ -125,6 +125,32 @@ public class CameraContinue : MonoBehaviour {
 						down=true;
 				}
 			}
+			else{
+				if(rocketManager.GetCollPlanet().planetType.Equals("checkpoint")){
+					if(Mathf.Abs(rocket.transform.position.x-this.transform.position.x)>deltaX/2){
+						if(!moving)
+							setPosition=true;
+						moving=true;
+						// if moving right
+						if(rocket.transform.position.x-this.transform.position.x>deltaX/2)
+							right=true;
+						// if moving left
+						else
+							left=true;
+					}
+					if(Mathf.Abs(rocket.transform.position.y-this.transform.position.y)>deltaY/2){
+						if(!moving)
+							setPosition=true;
+						moving=true;
+						// if moving up
+						if(rocket.transform.position.y-this.transform.position.y>deltaY/2)
+							up=true;
+						// if moving down
+						else
+							down=true;
+					}
+				}
+			}
 		}
 
 		/* OUT OF SCREEN*/
@@ -245,7 +271,7 @@ public class CameraContinue : MonoBehaviour {
 				}
 				if(left){
 					//if(rocket.transform.position.x<GetPost()-2*deltaX && !rocketManager.onStart){
-					if(rocket.transform.position.x<GetLimit().x-deltaX && !(rocketManager.onStart  && !rocketManager.GetCollPlanet().planetType.Equals("checkpoint"))){
+					if(rocket.transform.position.x<GetLimit().x-deltaX && !(rocketManager.onStart && !rocketManager.GetCollPlanet().planetType.Equals("checkpoint"))){
 						if(curLevel==level)
 							curLevel=level-2;
 						else{

@@ -5,7 +5,8 @@ public class DockingStation : MonoBehaviour {
 
 	Rocket rocketManager;
 	GameObject rocket;
-	public int fuel=1000;
+	public int minFuel=500;
+	public int maxFuel=1000;
 	int fuelForShoot=10;
 	// phisics vars
 	float acceleration=180f;
@@ -179,7 +180,7 @@ public class DockingStation : MonoBehaviour {
 			}
 		}
 		// refill
-		rocketManager.Refill(fuel);
+		rocketManager.Refill(Random.Range(minFuel,maxFuel));
 		collision=true;
 	}
 
