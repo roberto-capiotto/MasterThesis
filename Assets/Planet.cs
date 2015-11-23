@@ -19,6 +19,8 @@ public class Planet : MonoBehaviour {
 	public SphereCollider myCollider;
 	int orbitLevel=2;
 	public Text text;
+	Color32 color = new Color32(215, 95, 95, 27);
+	Color32 backgroundColor = new Color32(49, 77, 121, 255);
 	// satellite vars
 	public GameObject inSatellite;
 	public GameObject outSatellite;
@@ -355,10 +357,10 @@ public class Planet : MonoBehaviour {
 			rend.material.SetColor("_Color", Color.yellow);
 		}
 		else{
-			//Color32 color = new Color32(215, 95, 95, 27);
 			Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();
 			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
-			rend.material.SetColor("_Color", Color.blue);
+			//rend.material.SetColor("_Color", Color.blue);
+			rend.material.SetColor("_Color", backgroundColor);
 			rend = this.transform.GetChild(1).GetComponent<Renderer>();
 			rend.material.shader = Shader.Find("Transparent/Bumped Diffuse");
 			rend.material.SetColor("_Color", Color.yellow);
@@ -374,8 +376,6 @@ public class Planet : MonoBehaviour {
 		right=false;
 		rocketManager.SetTimer(Time.time);
 		rocketManager.SetColliding(false);
-
-		Color32 color = new Color32(215, 95, 95, 27);
 
 		// decolor everything
 		Renderer rend = this.transform.GetChild(0).GetComponent<Renderer>();

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class PCG_tutorial : MonoBehaviour {
 	
-	int counter=-1;
+	int counter=-2;
 	GameObject rocket,firstPlanet,planet,planet2,wormhole,wormhole2,swing,blackHole,asteroid,asteroid2,asteroid3,asteroid4,dockingStation,satellite,satellite2;
 	GameObject endPlanet,cam;
 	Rocket rocketManager;
@@ -36,6 +36,7 @@ public class PCG_tutorial : MonoBehaviour {
 	public Button continueButton;
 	public Button closeButton;
 	public Button retryButton;
+	public Button shootButton;
 	float upBound;
 	float downBound;
 	float rightBound;
@@ -83,6 +84,7 @@ public class PCG_tutorial : MonoBehaviour {
 		coord.x = Screen.width;
 		coord.y = -Screen.height;
 		retryButton.GetComponent<RectTransform>().localPosition = coord;
+		shootButton.GetComponent<RectTransform>().localPosition = coord;
 	}
 
 	Vector3 WorldCoordinate (Vector3 mouseCoordinates)
@@ -445,6 +447,12 @@ public class PCG_tutorial : MonoBehaviour {
 		return planet;
 	}
 
+	public void Shoot(){
+		if(rocketManager.GetColliding()){
+			rocketManager.GetCollPlanet().SetShoot(true);
+		}
+	}
+
 	public void Retry(){
 		if(!rocketManager.onStart)
 			rocketManager.SetInitialPosition();
@@ -703,6 +711,16 @@ public class PCG_tutorial : MonoBehaviour {
 												text.text="Move the rocket through a level in order to find this planet";
 												text2.text="If you arrive there, the level will be completed";
 												counter++;
+											}
+											else{
+												if(counter==-2){
+													coord.x = Screen.width/2-80;
+													coord.y = -Screen.height/2+20;
+													shootButton.GetComponent<RectTransform>().localPosition = coord;
+													text.text="Otherwise for shooting the rocket away you can click";
+													text2.text="the button 'Shoot' placed in the bottom right corner";
+													counter++;
+												}
 											}
 										}
 									}

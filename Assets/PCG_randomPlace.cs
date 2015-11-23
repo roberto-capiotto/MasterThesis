@@ -60,9 +60,6 @@ public class PCG_randomPlace : MonoBehaviour {
 		startingCorner=Vector3.zero;
 		planet.transform.position=new Vector3(startingCorner.x,startingCorner.y-(level-1)*4*rand-rand*camSize*3/2,0);
 		camPosition=new Vector3(planet.transform.position.x+7.5f,planet.transform.position.y,-10);
-		myCamera.SetInitialPosition(camPosition);
-		myCamera.transform.position=camPosition;
-		myCamera.ShowFuelText();
 		
 		// place Rocket
 		initialPosition=new Vector3
@@ -95,6 +92,11 @@ public class PCG_randomPlace : MonoBehaviour {
 		coord.x = Screen.width/2-80;
 		coord.y = -Screen.height/2+20;
 		shootButton.GetComponent<RectTransform>().localPosition = coord;
+
+		myCamera.SetLimit(camPosition);
+		myCamera.SetInitialPosition(camPosition);
+		myCamera.transform.position=camPosition;
+		myCamera.ShowFuelText();
 	}
 	
 	void FixedUpdate () {
